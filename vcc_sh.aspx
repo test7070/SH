@@ -101,7 +101,7 @@
 				//q_cmbParse("cmbTaxtype", q_getPara('sys.taxtype'));
 				q_cmbParse("combPay", q_getPara('vcc.paytype'));
 				q_cmbParse("cmbTrantype", q_getPara('sys.tran'));
-				var t_where = "where=^^ 1=1  ^^";
+				var t_where = "where=^^ 1=0 ^^ stop=100";
 				q_gt('custaddr', t_where, 0, 0, 0, "");
 				$('#lblCash').text('收款金額');
 				
@@ -212,7 +212,7 @@
 
 				$('#txtCustno').change(function() {
 					if (!emp($('#txtCustno').val())) {
-						var t_where = "where=^^ noa='" + $('#txtCustno').val() + "'^^";
+						var t_where = "where=^^ noa='" + $('#txtCustno').val() + "'^^ stop=100";
 						q_gt('custaddr', t_where, 0, 0, 0, "");
 					}
 				});
@@ -594,7 +594,7 @@
 						$('#txtDatea').focus();
 
 						if (!emp($('#txtCustno').val())) {
-							var t_where = "where=^^ noa='" + $('#txtCustno').val() + "' ^^";
+							var t_where = "where=^^ noa='" + $('#txtCustno').val() + "' ^^ stop=100";
 							q_gt('custaddr', t_where, 0, 0, 0, "");
 						}
 						break;
@@ -912,7 +912,7 @@
 				$('#cmbTypea').val('1');
 				$('#txtDatea').focus();
 				//$('#cmbTaxtype').val('0');
-				var t_where = "where=^^ 1=1  ^^";
+				var t_where = "where=^^ 1=0 ^^ stop=100";
 				q_gt('custaddr', t_where, 0, 0, 0, "");
 			}
 
@@ -933,7 +933,7 @@
 				_btnModi();
 				$('#txtDatea').focus();
 				if (!emp($('#txtCustno').val())) {
-					var t_where = "where=^^ noa='" + $('#txtCustno').val() + "'  ^^";
+					var t_where = "where=^^ noa='" + $('#txtCustno').val() + "' ^^ stop=100";
 					q_gt('custaddr', t_where, 0, 0, 0, "");
 				}
 			}
@@ -1110,7 +1110,7 @@
 				switch (s1) {
 					case 'txtCustno':
 						if (!emp($('#txtCustno').val())) {
-							var t_where = "where=^^ noa='" + $('#txtCustno').val() + "'  ^^";
+							var t_where = "where=^^ noa='" + $('#txtCustno').val() + "' ^^ stop=100";
 							q_gt('custaddr', t_where, 0, 0, 0, "");
 						}
 						break;
