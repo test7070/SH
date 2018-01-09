@@ -104,17 +104,21 @@ from @tmp a
 outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=0)b 
 where a.recno=b.recno
 
-delete @tmp where rr%6!=1
- 
-insert @tmp(gno,datea)
-select '2',datea
+insert @tmp(gno,datea,noa)
+select '2',datea,noa
 from @tmp
-group by datea
+group by datea,noa
  
 select 
-mount+unit mount 
+mount+unit mount
+,case when isnull(total1,0)!=0 then total1 else NULL end total1
+,case when isnull(total2,0)!=0 then total1 else NULL end total2
+,case when isnull(total3,0)!=0 then total1 else NULL end total3
+,case when isnull(total4,0)!=0 then total1 else NULL end total4
+,case when isnull(total5,0)!=0 then total1 else NULL end total5
+,case when isnull(total6,0)!=0 then total1 else NULL end total6
 ,* from @tmp 
-order by datea,gno,no2
+order by noa,datea,gno,no2
 ; 
 --------------------------------------------------------------------------------------------------------
 z_tran_sh2:--z_tran_sh2
