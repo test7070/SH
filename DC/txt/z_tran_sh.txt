@@ -104,6 +104,8 @@ from @tmp a
 outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=0)b 
 where a.recno=b.recno
 
+delete @tmp where rr%6!=1
+
 insert @tmp(gno,datea,noa)
 select '2',datea,noa
 from @tmp

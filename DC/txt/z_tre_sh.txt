@@ -1,0 +1,260 @@
+﻿-----------------------------------------------------------------------------------------------------------------------------
+z_tre_sh1:--z_tre_sh1 
+SET QUOTED_IDENTIFIER OFF 
+declare @cmd nvarchar(max) 
+declare @pagecount int 
+declare @t_bdate nvarchar(10) 
+declare @t_edate nvarchar(10) 
+declare @t_bdriverno nvarchar(20) 
+declare @t_edriverno nvarchar(20) 
+declare @t_carno nvarchar(20) 
+declare @t_noa nvarchar(max) 
+declare @t_carteamno nvarchar(max) 
+declare @t_sort1 nvarchar(max)
+
+set @pagecount = 44
+set @t_bdate  = case when '#non'=[2] then '' else [2] end
+set @t_edate  =  case when '#non'=[3] then char(255) else [3] end
+set @t_bdriverno  = case when '#non'=[4] then '' else [4] end
+set @t_edriverno  =  case when '#non'=[5] then char(255) else [5] end
+set @t_carno  = case when '#non'=[6] then '' else [6] end
+set @t_sort1 = case when '#non'=[7] then '' else [7] end
+set @t_noa = case when '#non'=[8] then '' else [8] end
+set @t_carteamno = case when '#non'=[9] then '' else [9] end
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+ 
+create table #tmp(
+	gno nvarchar(1),
+	rr int,
+	page int,
+	noa nvarchar(50),
+	carno nvarchar(50),
+	driverno nvarchar(50),
+	namea nvarchar(50),
+	datea nvarchar(10),
+	typea nvarchar(10),
+	custno nvarchar(50),
+	addr nvarchar(max),
+	product nvarchar(50),
+	carchgno nvarchar(50),
+	item nvarchar(100),
+	mount float,
+	unit nvarchar(50),
+	volume float,
+	money float,
+	memo nvarchar(max),
+	tmoney float,
+	tax float,
+	taxrate float,
+	weight float,
+	plusmoney float,
+	minmoney float,
+	total float,
+	checkdate nvarchar(10),
+	checkno nvarchar(50)
+)
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,custno,addr,product,mount,unit,volume,money,memo,tmoney,tax,taxrate,plusmoney,minmoney,total,checkdate,checkno)
+select '1',a.noa,a.carno,a.driverno,a.driver,trandate,'出',b.comp,straddr,product,b.mount,unit
+,case when isnull(b.volume,0)!=0 then b.volume else b.weight end,b.money,b.memo,a.money,tax,taxrate,plusmoney,minusmoney
+,total,d.datea,a.checkno
+from view_tres b left join view_tre a on a.noa=b.noa
+left join ufs c on a.checkno=c.checkno
+left join uf d on c.noa=d.noa
+where (a.datea between @t_bdate and @t_edate)
+and (len(@t_carno)=0 or @t_carno=a.carno)
+and (isnull(a.driverno,'') between @t_bdriverno and @t_edriverno)
+and (len(@t_noa)=0 or @t_noa=a.noa)
+and isnull(caseno,'')=''
+
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
+select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
+from #tmp a left join carchg b on a.noa=b.treno
+where isnull(b.minusmoney,0)!=0
+group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
+
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
+select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
+from #tmp a left join carchg b on a.noa=b.treno
+where isnull(b.plusmoney,0)!=0
+group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
+
+--小計
+insert #tmp(gno,noa,carno,driverno,namea,mount,money)
+select '2',noa,carno,driverno,namea,SUM(mount),SUM(money)
+from #tmp
+where gno='1'
+group by noa,carno,driverno,namea
+
+insert #tmp(gno,noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkdate,checkno)
+select '4',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
+from #tmp
+where gno='1'
+group by noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkno
+
+--頁數
+update a
+set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
+from (select ROW_NUMBER()over(partition by noa order by gno)rx,rr,page from #tmp) a
+
+insert #tmp(gno,page,noa,carno,driverno,namea)
+select '0',page,noa,carno,driverno,namea
+from #tmp
+group by noa,page,carno,driverno,namea
+
+insert #tmp(gno,page,noa,carno,driverno,namea)
+select '5',page,noa,carno,driverno,namea
+from #tmp
+where gno='0'
+group by noa,page,carno,driverno,namea
+
+select 
+dbo.getComma(money,0)money
+,dbo.getComma(mount,0)mount
+,dbo.getComma(tmoney,0)tmoney
+,dbo.getComma(money,0)money
+,dbo.getComma(tax,0)tax
+,dbo.getComma(taxrate,0)taxrate
+,dbo.getComma(weight,0)weight
+,dbo.getComma(plusmoney,0)plusmoney
+,dbo.getComma(minmoney,0)minmoney
+,dbo.getComma(total,0)total
+,* from #tmp
+order by noa,page,gno,carchgno
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+;
+------------------------------------------------------------------------------------------------------------
+z_tre_sh2:--z_tre_sh2
+SET QUOTED_IDENTIFIER OFF 
+declare @cmd nvarchar(max) 
+declare @pagecount int 
+declare @t_bdate nvarchar(10) 
+declare @t_edate nvarchar(10) 
+declare @t_bdriverno nvarchar(20) 
+declare @t_edriverno nvarchar(20) 
+declare @t_carno nvarchar(20) 
+declare @t_noa nvarchar(max) 
+declare @t_carteamno nvarchar(max) 
+declare @t_sort1 nvarchar(max)
+
+set @pagecount = 44
+set @t_bdate  = case when '#non'=[2] then '' else [2] end
+set @t_edate  =  case when '#non'=[3] then char(255) else [3] end
+set @t_bdriverno  = case when '#non'=[4] then '' else [4] end
+set @t_edriverno  =  case when '#non'=[5] then char(255) else [5] end
+set @t_carno  = case when '#non'=[6] then '' else [6] end
+set @t_sort1 = case when '#non'=[7] then '' else [7] end
+set @t_noa = case when '#non'=[8] then '' else [8] end
+set @t_carteamno = case when '#non'=[9] then '' else [9] end
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+ 
+create table #tmp(
+	gno nvarchar(1),
+	rr int,
+	page int,
+	noa nvarchar(50),
+	carno nvarchar(50),
+	driverno nvarchar(50),
+	namea nvarchar(50),
+	datea nvarchar(10),
+	typea nvarchar(10),
+	custno nvarchar(50),
+	addr nvarchar(max),
+	product nvarchar(50),
+	carchgno nvarchar(50),
+	item nvarchar(100),
+	caseno nvarchar(100),
+	money float,
+	memo nvarchar(max),
+	tmoney float,
+	tax float,
+	taxrate float,
+	weight float,
+	plusmoney float,
+	minmoney float,
+	total float,
+	checkdate nvarchar(10),
+	checkno nvarchar(50)
+)
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,custno,addr,product,caseno,money,memo,tmoney,tax,taxrate,plusmoney,minmoney,total,checkdate,checkno)
+select '1',a.noa,a.carno,a.driverno,a.driver,trandate,'出',b.comp,straddr,product,b.caseno,b.money,b.memo,a.money,tax,taxrate,plusmoney,minusmoney
+,total,d.datea,a.checkno
+from view_tres b left join view_tre a on a.noa=b.noa
+left join ufs c on a.checkno=c.checkno
+left join uf d on c.noa=d.noa
+where (a.datea between @t_bdate and @t_edate)
+and (len(@t_carno)=0 or @t_carno=a.carno)
+and (isnull(a.driverno,'') between @t_bdriverno and @t_edriverno)
+and (len(@t_noa)=0 or @t_noa=a.noa)
+and isnull(caseno,'')!=''
+
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
+select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
+from #tmp a left join carchg b on a.noa=b.treno
+where isnull(b.minusmoney,0)!=0
+group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
+
+insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
+select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
+from #tmp a left join carchg b on a.noa=b.treno
+where isnull(b.plusmoney,0)!=0
+group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
+
+--小計
+insert #tmp(gno,noa,carno,driverno,namea,money)
+select '2',noa,carno,driverno,namea,SUM(money)
+from #tmp
+where gno='1'
+group by noa,carno,driverno,namea
+
+insert #tmp(gno,noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkdate,checkno)
+select '4',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
+from #tmp
+where gno='1'
+group by noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkno
+
+--頁數
+update a
+set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
+from (select ROW_NUMBER()over(partition by noa order by gno)rx,rr,page from #tmp) a
+
+insert #tmp(gno,page,noa,carno,driverno,namea)
+select '0',page,noa,carno,driverno,namea
+from #tmp
+group by noa,page,carno,driverno,namea
+
+insert #tmp(gno,page,noa,carno,driverno,namea)
+select '5',page,noa,carno,driverno,namea
+from #tmp
+where gno='0'
+group by noa,page,carno,driverno,namea
+
+select 
+dbo.getComma(money,0)money
+,dbo.getComma(tmoney,0)tmoney
+,dbo.getComma(money,0)money
+,dbo.getComma(tax,0)tax
+,dbo.getComma(taxrate,0)taxrate
+,dbo.getComma(weight,0)weight
+,dbo.getComma(plusmoney,0)plusmoney
+,dbo.getComma(minmoney,0)minmoney
+,dbo.getComma(total,0)total
+,* from #tmp
+order by noa,page,gno,carchgno
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+;
