@@ -71,13 +71,13 @@ and (len(@t_noa)=0 or @t_noa=a.noa)
 and isnull(caseno,'')=''
 
 insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
-select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
+select '4',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
 from #tmp a left join carchg b on a.noa=b.treno
 where isnull(b.minusmoney,0)!=0
 group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
 
 insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
-select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
+select '4',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
 from #tmp a left join carchg b on a.noa=b.treno
 where isnull(b.plusmoney,0)!=0
 group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
@@ -90,7 +90,7 @@ where gno='1'
 group by noa,carno,driverno,namea
 
 insert #tmp(gno,noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkdate,checkno)
-select '4',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
+select '5',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
 from #tmp
 where gno='1'
 group by noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkno
@@ -105,8 +105,14 @@ select '0',page,noa,carno,driverno,namea
 from #tmp
 group by noa,page,carno,driverno,namea
 
+insert #tmp(gno,page,noa,custno)
+select '3',page,noa,custno
+from #tmp
+where gno='4'
+group by noa,page,custno
+
 insert #tmp(gno,page,noa,carno,driverno,namea)
-select '5',page,noa,carno,driverno,namea
+select '6',page,noa,carno,driverno,namea
 from #tmp
 where gno='0'
 group by noa,page,carno,driverno,namea
@@ -200,13 +206,13 @@ and (len(@t_noa)=0 or @t_noa=a.noa)
 and isnull(caseno,'')!=''
 
 insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
-select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
+select '4',a.noa,b.carno,b.driverno,b.driver,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
 from #tmp a left join carchg b on a.noa=b.treno
 where isnull(b.minusmoney,0)!=0
 group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
 
 insert #tmp(gno,noa,carno,driverno,namea,datea,typea,carchgno,item,money,memo)
-select '3',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
+select '4',a.noa,b.carno,b.driverno,b.driver,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
 from #tmp a left join carchg b on a.noa=b.treno
 where isnull(b.plusmoney,0)!=0
 group by a.noa,b.carno,b.driverno,b.driver,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
@@ -219,7 +225,7 @@ where gno='1'
 group by noa,carno,driverno,namea
 
 insert #tmp(gno,noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkdate,checkno)
-select '4',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
+select '5',noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,'',checkno
 from #tmp
 where gno='1'
 group by noa,carno,driverno,namea,tmoney,tax,taxrate,weight,plusmoney,minmoney,total,checkno
@@ -234,8 +240,14 @@ select '0',page,noa,carno,driverno,namea
 from #tmp
 group by noa,page,carno,driverno,namea
 
+insert #tmp(gno,page,noa,custno)
+select '3',page,noa,custno
+from #tmp
+where gno='4'
+group by noa,page,custno
+
 insert #tmp(gno,page,noa,carno,driverno,namea)
-select '5',page,noa,carno,driverno,namea
+select '6',page,noa,carno,driverno,namea
 from #tmp
 where gno='0'
 group by noa,page,carno,driverno,namea
