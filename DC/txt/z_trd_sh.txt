@@ -41,7 +41,8 @@ create table #tmp(
 	custchgno nvarchar(50),
 	item nvarchar(100),
 	mount float,
-	unit nvarchar(50),
+	unit1 nvarchar(50),
+	unit2 nvarchar(50), 
 	volume float,
 	money float,
 	memo nvarchar(max),
@@ -53,17 +54,18 @@ create table #tmp(
 	minusmoney float,
 	total float
 )
-insert #tmp(gno,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
-select '1',a.noa,a.custno,a.comp,c.serial,c.tel,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit
+insert #tmp(gno,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
+select '1',a.noa,a.custno,a.comp,c.serial,c.tel,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2
 ,case when ISNULL(b.volume,0)!=0 then b.volume else b.weight end,b.total,b.memo,a.money,a.tax,a.discount,a.plus
 ,a.plusmoney,a.minusmoney,a.total
 from view_trds b left join view_trd a on a.noa=b.noa
 left join cust c on a.custno=c.noa
+left join view_trans d on b.tranno=d.noa and b.trannoq=d.noq
 where (a.datea between @t_bdate and @t_edate)
 and (a.custno between @t_bcustno and @t_ecustno)
 and (len(@t_noa)=0 or @t_noa=a.noa)
 and (len(@t_vccano)=0 or @t_vccano=a.vccano)
-and isnull(caseno,'')=''
+and isnull(b.caseno,'')=''
 
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
 select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo

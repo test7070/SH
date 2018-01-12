@@ -53,14 +53,15 @@ declare @tmp table(
 	product nvarchar(50), 
 	tranno nvarchar(50), 
 	productno2 nvarchar(50), 
-	unit nvarchar(50) 
+	unit1 nvarchar(50),
+	unit2 nvarchar(50)
 ) 
 insert @tmp 
 select '1',ROW_NUMBER()over(partition by noa,no2 order by no2) 
 ,'',noa,no2,time1,custno,cust,isnull(mount,0),isnull(volume,0),isnull(addrno,''),addr,isnull(addrno2,'')
 ,addr2,total,driverno,driver,'','','','','','','','','',''
 ,case when chk1=1 then 'V' else '' end ,case when chk2=1 then 'V' else '' end,memo,total2,'','','','','',
-isnull(productno,''),product,isnull(tranno,''),isnull(productno2,''),isnull(unit,'')
+isnull(productno,''),product,isnull(tranno,''),isnull(productno2,''),isnull(unit,''),isnull(unit2,'')
 from view_tranvcces 
 where (time1 between @t_bdate and @t_edate) 
 and (custno between @t_bcustno and @t_ecustno) 
@@ -112,7 +113,7 @@ from @tmp
 group by datea,noa
  
 select 
-mount+unit mount
+mount mount
 ,case when isnull(total1,0)!=0 then total1 else NULL end total1
 ,case when isnull(total2,0)!=0 then total1 else NULL end total2
 ,case when isnull(total3,0)!=0 then total1 else NULL end total3
@@ -168,11 +169,13 @@ declare @tmp table(
 	driver4 nvarchar(200),
 	product nvarchar(100),
 	caseno nvarchar(100),
-	po nvarchar(100)
+	po nvarchar(100),
+	unit1 nvarchar(50),
+	unit2 nvarchar(50)
 ) 
 insert @tmp 
 select '1',ROW_NUMBER()over(partition by a.noa,no2 order by no2),'',a.noa,a.no2,custno,cust,c.fax,time1,mount,volume,a.weight,a.addrno,a.addr,addrno2
-,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','',a.product,a.tranno,a.productno2
+,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','',a.product,a.tranno,a.productno2,isnull(a.unit,''),isnull(a.unit2,'')
 from view_tranvcces a
 left join view_tranvcce b on a.noa=b.noa
 left join cust c on a.custno=c.noa
@@ -284,7 +287,8 @@ declare @tmp table(
 	fax nvarchar(50),
 	datea nvarchar(10),
 	mount float,
-	unit nvarchar(20),
+	unit1 nvarchar(20),
+	unit2 nvarchar(20),
 	volume float,
 	straddrno nvarchar(50),
 	straddr nvarchar(50),
@@ -298,14 +302,14 @@ declare @tmp table(
 	total2 float
 )
 insert @tmp
-select '0',isnull(custno,''),b.comp,b.serial,b.addr_invo,b.tel,b.fax,trandate,sum(isnull(mount,0)),a.unit,sum(isnull(volume,0))
+select '0',isnull(custno,''),b.comp,b.serial,b.addr_invo,b.tel,b.fax,trandate,sum(isnull(mount,0)),a.unit,a.unit2,sum(isnull(volume,0))
 ,straddrno,straddr,endaddrno,endaddr,sum(isnull(total,0)),'','',a.memo,'',''
 from view_trans a
 left join cust b on a.custno=b.noa
 where (trandate between @t_bdate and @t_edate)
 and isnull(caseno,'')='' and ISNULL(total,0)!=0
 and(custno between @t_bcustno and @t_ecustno)
-group by custno,b.comp,b.serial,b.addr_invo,b.tel,b.fax,trandate,a.unit,straddrno,straddr,endaddrno,endaddr,a.memo
+group by custno,b.comp,b.serial,b.addr_invo,b.tel,b.fax,trandate,a.unit,a.unit2,straddrno,straddr,endaddrno,endaddr,a.memo
 
 insert @tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
@@ -522,7 +526,8 @@ declare @tmp table(
 	productno nvarchar(50),
 	product nvarchar(50),
 	mount float,
-	unit nvarchar(50),
+	unit1 nvarchar(50),
+	unit2 nvarchar(50),
 	volume float,
 	caseno nvarchar(50),
 	po nvarchar(50),
@@ -543,7 +548,7 @@ declare @tmp table(
 	total float
 )
 insert @tmp
-select '0',a.driverno,a.driver,a.trandate,custno,nick,uccno,a.product,a.mount,a.unit,a.volume,a.caseno,po,straddrno,a.straddr,endaddrno
+select '0',a.driverno,a.driver,a.trandate,custno,nick,uccno,a.product,a.mount,a.unit,a.unit2,a.volume,a.caseno,po,straddrno,a.straddr,endaddrno
 ,a.endaddr,total2,'','',a.memo,'','','','','','',''
 from view_trans a
 left join view_tres b on a.noa=b.tranno and a.noq=b.trannoq

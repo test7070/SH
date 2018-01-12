@@ -64,6 +64,7 @@
                 q_mask(bbmMask);
                 bbsMask = [['txtDatea', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
                 $('#txtDatea').datepicker();
+                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM','s');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
                 
                 $('#btnOrde').click(function(e){
@@ -94,8 +95,8 @@
                             if (!b_ret || b_ret.length == 0)
                                 return;
                                 ret = q_gridAddRow(bbsHtm, 'tbbs', 
-                                'txtOrdeno,txtCaseno2,txtTrandate,txtCustno,txtNick,txtUccno,txtProduct,txtMount,txtUnit,txtVolume,txtTotal,txtCarno,txtDriverno,txtDriver,txtMemo,txtStraddrno,txtStraddr,txtEndaddrno,txtEndaddr,txtTotal2,txtCaseno,txtPo,txtCasecustno,txtCasecust,txtWeight', b_ret.length, b_ret, 
-                                'noa,noq,time1,custno,cust,productno,product,mount,unit,volume,total,carno,driverno,driver,memo,addrno,addr,addrno2,addr2,total2,tranno,productno2,addrno3,addr3,weight', 'txtCustno,txtProductno,txtTrandate,txtMount');
+                                'txtOrdeno,txtCaseno2,txtTrandate,txtCustno,txtNick,txtUccno,txtProduct,txtMount,txtUnit,txtVolume,txtTotal,txtCarno,txtDriverno,txtDriver,txtMemo,txtStraddrno,txtStraddr,txtEndaddrno,txtEndaddr,txtTotal2,txtCaseno,txtPo,txtCasecustno,txtCasecust,txtWeight,cmbUnit2', b_ret.length, b_ret, 
+                                'noa,noq,time1,custno,cust,productno,product,mount,unit,volume,total,carno,driverno,driver,memo,addrno,addr,addrno2,addr2,total2,tranno,productno2,addrno3,addr3,weight,unit2', 'txtCustno,txtProductno,txtTrandate,txtMount');
                             }
                         break;
                     case q_name + '_s':
@@ -412,7 +413,7 @@
                 margin: -1px;
             }
             .dbbs {
-                width: 1600px;
+                width: 1800px;
             }
             .tbbs a {
                 font-size: medium;
@@ -585,6 +586,7 @@
 					<td align="center" style="width:70px"><a>數量</a></td>
 					<td align="center" style="width:50px"><a>單位</a></td>
 					<td align="center" style="width:70px"><a>材積</a></td>
+					<td align="center" style="width:70px"><a>材積重量</a></td>
 					<td align="center" style="width:70px"><a>重量</a></td>
 					<td align="center" style="width:100px"><a>起點</a></td>
                     <td align="center" style="width:100px"><a>迄點</a></td>
@@ -619,6 +621,7 @@
 					<td><input type="text" id="txtMount.*" class="num" style="width:95%;"/></td>
 					<td><input type="text" id="txtUnit.*" style="width:95%;"/></td>
 					<td><input type="text" id="txtVolume.*" class="num" style="width:95%;"/></td>
+					<td><select id="cmbUnit2.*" class="txt" style="width:95%;"> </select></td>
 					<td><input type="text" id="txtWeight.*" class="num" style="width:95%;"/></td>
 					<td>
                         <input type="text" id="txtStraddrno.*" style="float:left;width:95%;"/>

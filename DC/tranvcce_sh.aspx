@@ -65,6 +65,7 @@
                 q_mask(bbmMask);
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbTypea",'@,月結@月結,付清@付清','s');
+                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM','s');
             }
 
             function q_boxClose(s2) {
@@ -414,7 +415,7 @@
                 margin: -1px;
             }
             .dbbs {
-                width: 1600px;
+                width: 1700px;
             }
             .tbbs a {
                 font-size: medium;
@@ -535,11 +536,12 @@
 					<td align="center" style="width:75px"><a>數量</a></td>
 					<td align="center" style="width:50px"><a>單位</a></td>
 					<td align="center" style="width:75px"><a>材積</a></td>
+					<td align="center" style="width:80px"><a>材積單位</a></td>
 					<td align="center" style="width:75px"><a>重量(KG)</a></td>
 					<td align="center" style="width:100px"><a>起點</a></td>
 					<td align="center" style="width:100px"><a>迄點</a></td>
-					<td align="center" style="width:120px"><a>櫃號</a></td>
-					<td align="center" style="width:120px"><a>S/O</a></td>
+					<td align="center" style="width:140px"><a>櫃號</a></td>
+					<td align="center" style="width:140px"><a>S/O</a></td>
 					<td align="center" style="width:100px"><a>貨主</a></td>
 					<td align="center" style="width:80px"><a>金額</a></td>
 					<td align="center" style="width:100px"><a>車牌</a></td>
@@ -571,6 +573,7 @@
 					<td><input type="text" id="txtMount.*" class="num" style="width:95%;"/></td>
 					<td><input type="text" id="txtUnit.*" style="width:95%;"/></td>
 					<td><input type="text" id="txtVolume.*" class="num" style="width:95%;"/></td>
+					<td><select id="cmbUnit2.*" class="txt" style="width:95%;"> </select></td>
 					<td><input type="text" id="txtWeight.*" class="num" style="width:95%;"/></td>
 					<td>
                         <input type="text" id="txtAddrno.*" style="float:left;width:95%;"/>
