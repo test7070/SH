@@ -196,7 +196,7 @@ create table #tmp(
 	checkno nvarchar(50)
 )
 insert #tmp(gno,noa,carno,driverno,namea,datea,typea,custno,addr,product,caseno,money,memo,tmoney,tax,taxrate,plusmoney,minmoney,total,checkdate,checkno)
-select '1',a.noa,a.carno,a.driverno,a.driver,trandate,'出',b.comp,straddr,product,b.caseno,b.money,b.memo,a.money,tax,taxrate,plusmoney,minusmoney
+select '1',a.noa,a.carno,a.driverno,a.driver,trandate,'出',b.comp,b.straddr,product,b.caseno,b.money,b.memo,a.money,tax,taxrate,plusmoney,minusmoney
 ,total,d.datea,a.checkno
 from view_tres b left join view_tre a on a.noa=b.noa
 left join ufs c on a.checkno=c.checkno
