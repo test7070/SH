@@ -19,9 +19,9 @@
             var q_readonly = ['txtNoa', 'txtWeight','txtTotal', 'txtWorker', 'txtWorker2'];
             var q_readonlys = [];
             var bbmNum = [];
-            var bbsNum = [['txtWeight', 10, 2, 1],['txtUweight', 10, 2, 1],['txtHeight', 10, 3, 1],['txtVolume', 10, 3, 1],['txtTvolume', 10, 0, 1],['txtTotal', 10, 2, 1]];
+            var bbsNum = [['txtMount', 10, 2, 1],['txtWeight', 10, 2, 1],['txtVolume', 10, 3, 1],['txtTotal', 10, 2, 1],['txtTotal2', 10, 0, 1]];
             var bbmMask = [];
-            var bbsMask = [['txtTime1','999/99/99'],];
+            var bbsMask = [['txtTime1','999/99/99']];
             q_sqlCount = 6;
             brwCount = 6;
             brwList = [];
@@ -92,6 +92,24 @@
 
             function btnOk() {
             	sum();
+            	for(var i=0;i<q_bbsCount;i++){
+            	//數量 重量 材積需為數字
+                	if((($('#txtMount_'+i).val().length > 0 && !((/^[0-9]+$/g).test($('#txtMount_'+i).val()) || (/^[0-9]+\,[0-9]+$/g).test($('#txtMount_'+i).val()))))){
+                        alert('數量輸入錯誤，內有含有中文!');   
+                        Unlock(1);
+                        return;
+                    }
+                    if((($('#txtVolume_'+i).val().length > 0 && !((/^[0-9]+$/g).test($('#txtVolume_'+i).val()) || (/^[0-9]+\,[0-9]+$/g).test($('#txtVolume_'+i).val()) || (/^[0-9]+\.[0-9]+$/g).test($('#txtVolume_'+i).val()) || (/^[0-9]+\,[0-9]+\.[0-9]+$/g).test($('#txtVolume_'+i).val()))))){
+                        alert('材積輸入錯誤，內有含有中文!');   
+                        Unlock(1);
+                        return;
+                    }
+                    if((($('#txtWeight_'+i).val().length > 0 && !((/^[0-9]+$/g).test($('#txtWeight_'+i).val()) || (/^[0-9]+\,[0-9]+$/g).test($('#txtWeight_'+i).val()) || (/^[0-9]+\.[0-9]+$/g).test($('#txtWeight_'+i).val()) || (/^[0-9]+\,[0-9]+\.[0-9]+$/g).test($('#txtWeight_'+i).val()))))){
+                        alert('重量輸入錯誤，內有含有中文!');   
+                        Unlock(1);
+                        return;
+                    }
+                }
                 if(q_cur ==1){
                     $('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
