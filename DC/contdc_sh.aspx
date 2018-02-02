@@ -401,7 +401,7 @@
 						<input id="chkBrow.*" type="checkbox" style=''/>
 						</td>
 						<td align="center" id='noa'>~noa</td>
-						<td align="center" id='nick'>~nick</td>
+						<td align="center" id='comp'>~comp</td>
 						<td align="center" id='econtdate'>~econtdate</td>
 					</tr>
 				</table>

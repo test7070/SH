@@ -92,6 +92,7 @@
 					<th align="center"><a id=''>金額</a></th>
 					<th align="center"><a id=''>出車車號</a></th>
 					<th align="center"><a id=''>司機</a></th>
+					<th align="center"><a id=''>讀單</a></th>
 				</tr>
 				<tr  style='background:#cad3ff;'>
 					<td style="width:25px;"><input id="chkSel.*" type="checkbox"/></td>
@@ -143,6 +144,9 @@
                     </td>
                     <td style="display:none;">
                         <input id="txtUnit.*" style="display:none;" />
+                    </td>
+                    <td style="width:20px;">
+                       <input id="chkChk1.*" type="checkbox"/>
                     </td>
 				</tr>
 			</table>

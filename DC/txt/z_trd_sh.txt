@@ -30,7 +30,8 @@ create table #tmp(
 	custno nvarchar(50),
 	comp nvarchar(100),
 	serial nvarchar(50),
-	tel nvarchar(50),  
+	tel nvarchar(50),
+	mo2 nvarchar(max),
 	btrandatea nvarchar(10),
 	etrandatea nvarchar(10),
 	vccano nvarchar(max),
@@ -54,8 +55,8 @@ create table #tmp(
 	minusmoney float,
 	total float
 )
-insert #tmp(gno,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
-select '1',a.noa,a.custno,a.comp,c.serial,c.tel,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
+select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2
 ,case when ISNULL(b.volume,0)!=0 then b.volume else b.weight end,b.total,b.memo,a.money,a.tax,a.discount,a.plus
 ,a.plusmoney,a.minusmoney,a.total
 from view_trds b left join view_trd a on a.noa=b.noa
@@ -165,7 +166,8 @@ create table #tmp(
 	custno nvarchar(50),
 	comp nvarchar(100),
 	serial nvarchar(50),
-	tel nvarchar(50),  
+	tel nvarchar(50),
+	mo2 nvarchar(max),
 	btrandatea nvarchar(10),
 	etrandatea nvarchar(10),
 	vccano nvarchar(max),
@@ -186,8 +188,8 @@ create table #tmp(
 	minusmoney float,
 	total float
 )
-insert #tmp(gno,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,datea,addr,product,caseno,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
-select '1',a.noa,a.custno,a.comp,c.serial,c.tel,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,caseno,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
+select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno
 ,b.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,a.total
 from view_trds b left join view_trd a on a.noa=b.noa
 left join cust c on a.custno=c.noa

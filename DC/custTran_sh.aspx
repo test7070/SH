@@ -33,7 +33,7 @@
             , ['txtCustno2', 'lblCust2', 'cust', 'noa,comp', 'txtCustno2,txtCust2', 'cust_b.aspx']
             , ['txtSalesno', 'lblSales', 'sss', 'noa,namea', 'txtSalesno,txtSales', 'sss_b.aspx']
             , ['txtSalesno2', 'lblSales2', 'sss', 'noa,namea', 'txtSalesno2,txtSales2', 'sss_b.aspx']
-            , ['txtGrpno', 'lblGrp', 'team', 'noa,team', 'txtGrpno,txtGrpname', 'team_b.aspx']);
+            , ['txtGrpno', 'lblGrp', 'cust', 'noa,comp', 'txtGrpno,txtGrpname', 'cust_b.aspx']);
             $(document).ready(function() {
                 bbmKey = ['noa'];
                 q_brwCount();
@@ -603,6 +603,13 @@
                         <td><input id="txtNick" type="text"  class="txt c1"/></td>
                     </tr>
                     <tr>
+                        <td><span> </span><a id="lblGrp"  class="lbl btn"> </a></td>
+                        <td  colspan="2">
+                            <input id="txtGrpno" type="text" style="float:left; width:40%;"/>
+                            <input id="txtGrpname" type="text" style="float:left; width:60%;"/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><span> </span><a id='lblBoss' class="lbl"> </a></td>
                         <td><input id="txtboss" type="text" class="txt c1"/> </td>
                         <td><span> </span><a id='lblHead' class="lbl"> </a></td>
@@ -768,8 +775,8 @@
                         <td><span> </span><a id='lblMemo' class="lbl"> </a></td>
                         <td colspan="5"><textarea id="txtMemo" style="width:100%; height:100px;"> </textarea></td>
                     </tr>
-                    <tr class="isWJ">
-                        <td><span> </span><a id='lblMemo2' class="lbl">注意事項</a></td>
+                    <tr>
+                        <td><span> </span><a id='lblMemo2_sh' class="lbl">承運備註</a></td>
                         <td colspan="5"><textarea id="txtMemo2" style="width:100%; height:100px;"> </textarea></td>
                     </tr>
                     <tr>

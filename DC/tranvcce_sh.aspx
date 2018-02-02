@@ -30,7 +30,7 @@
             q_alias = '';
             q_desc = 1;
             aPop = new Array(['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
-            , ['txtCustno_', 'btnCust_', 'cust', 'noa,nick,paytype', 'txtCustno_,txtCust_,cmbTypea_', 'cust_b.aspx']
+            , ['txtCustno_', 'btnCust_', 'cust', 'noa,nick', 'txtCustno_,txtCust_', 'cust_b.aspx']
             , ['txtProductno_', 'btnProduct_', 'ucc', 'noa,product', 'txtProductno_,txtProduct_', 'ucc_b.aspx']
             , ['txtCarno_', 'btnCarno_', 'car2', 'a.noa,driverno,driver', 'txtCarno_,txtDriverno_,txtDriver_', 'car2_b.aspx']
             , ['txtAddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtAddrno_,txtAddr_', 'addr_b.aspx']
@@ -64,7 +64,7 @@
                 q_getFormat();
                 q_mask(bbmMask);
                 $('#txtDatea').datepicker();
-                q_cmbParse("cmbTypea",'@,月結@月結,付清@付清','s');
+                q_cmbParse("cmbTypea",'月結@月結,付清@付清','s');
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM','s');
             }
 
@@ -565,7 +565,7 @@
 					<td align="center" style="width:100px"><a>車牌</a></td>
 					<td align="center" style="width:80px"><a>司機</a></td>
 					<td align="center" style="width:80px"><a>司機運費</a></td>
-					<td align="center" style="width:20px"><a>登錄</a></td>
+					<td align="center" style="width:20px"><a>讀單</a></td>
 					<td align="center" style="width:20px"><a>確認</a></td>
 					<td align="center" style="width:100px"><a>備註</a></td>
 				</tr>
