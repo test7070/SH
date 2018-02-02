@@ -32,7 +32,7 @@
             aPop = new Array(['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtCustno_', 'btnCust_', 'cust', 'noa,nick', 'txtCustno_,txtCust_', 'cust_b.aspx']
             , ['txtProductno_', 'btnProduct_', 'ucc', 'noa,product', 'txtProductno_,txtProduct_', 'ucc_b.aspx']
-            , ['txtCarno_', 'btnCarno_', 'car2', 'a.noa,driverno,driver', 'txtCarno_,txtDriverno_,txtDriver_', 'car2_b.aspx']
+            , ['txtCarno_', 'btnCarno_', 'car2', 'driverno,a.noa,driver', 'txtDriverno_,txtCarno_,txtDriver_', 'car2_b.aspx']
             , ['txtAddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtAddrno_,txtAddr_', 'addr_b.aspx']
             , ['txtAddrno2_', 'btnEndaddr_',  'addr', 'noa,addr', 'txtAddrno2_,txtAddr2_', 'addr_b.aspx']
             , ['txtAddrno3_', 'btnAddr3_', 'cust', 'noa,nick', 'txtAddrno3_,txtAddr3_', 'cust_b.aspx']
