@@ -64,7 +64,7 @@
                 q_mask(bbmMask);
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbTypea",'月結@月結,付清@付清','s');
-                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM','s');
+                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
             }
 
             function q_boxClose(s2) {

@@ -64,7 +64,7 @@
                 q_mask(bbmMask);
                 bbsMask = [['txtDatea', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
                 $('#txtDatea').datepicker();
-                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM','s');
+                q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
                 
                 $('#btnOrde').click(function(e){
