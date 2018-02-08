@@ -60,7 +60,7 @@ insert @tmp
 select '1',ROW_NUMBER()over(partition by noa,no2 order by no2) 
 ,'',noa,no2,time1,custno,cust,isnull(mount,0),isnull(volume,0),isnull(addrno,''),addr,isnull(addrno2,'')
 ,addr2,total,driverno,driver,'','','','','','','','','',''
-,case when chk1=1 then 'V' else '' end ,case when chk2=1 then 'V' else '' end,memo,total2,'','','','','',
+,case when chk1=1 then 'V' else '' end ,case when chk2=1 then 'V' else '' end,memo,isnull(total2,null),null,null,null,null,null,
 isnull(productno,''),product,isnull(tranno,''),isnull(productno2,''),isnull(unit,''),isnull(unit2,'')
 from view_tranvcces 
 where (time1 between @t_bdate and @t_edate) 
@@ -114,12 +114,6 @@ group by datea,noa
  
 select 
 mount mount 
-,case when isnull(total1,0)!=0 then total1 else NULL end total1 
-,case when isnull(total2,0)!=0 then total2 else NULL end total2 
-,case when isnull(total3,0)!=0 then total3 else NULL end total3 
-,case when isnull(total4,0)!=0 then total4 else NULL end total4 
-,case when isnull(total5,0)!=0 then total5 else NULL end total5 
-,case when isnull(total6,0)!=0 then total6 else NULL end total6 
 ,* from @tmp 
 order by noa,datea,gno,no2 
 ; 

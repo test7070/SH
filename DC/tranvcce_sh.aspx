@@ -65,6 +65,7 @@
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbTypea",'月結@月結,付清@付清','s');
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
+
             }
 
             function q_boxClose(s2) {
@@ -178,7 +179,11 @@
                                     var s17 = $('#txtNo2_' + i).val();
                                     $('#txtNo2_' + b_seq).val(s17); 
                                     var s18 = $('#cmbTypea_' + i).val();
-                                    $('#cmbTypea_' + b_seq).val(s18);                                       
+                                    $('#cmbTypea_' + b_seq).val(s18);
+                                    var s19 = $('#txtWeight_' + i).val();
+                                    $('#txtWeight_' + b_seq).val(s19); 
+                                    var s20 = $('#cmbUnit2_' + i).val();
+                                    $('#cmbUnit2_' + b_seq).val(s20);                                     
                                 }
                             }
                   });
@@ -228,6 +233,13 @@
                             if (!$(this).val())
                                 q_msg($(this), '=號複製上一筆資料');
                   });
+                  $('#cmbTypea_' + i).change(function() {  
+                        for(var i=0;i<q_bbsCount;i++){
+                            if($('#cmbTypea_'+i).val()=="付清"){
+                                $('#cmbTypea_'+i).css('color','red');
+                            };
+                        }
+                  });
                 }
                 _bbsAssign();
                 $('#tbbs').find('tr.data').children().hover(function(e){
@@ -248,6 +260,11 @@
                 if (emp($('#txtNoa').val()))
                     return;
                 _btnModi();
+                for(var i=0;i<q_bbsCount;i++){
+                    if($('#cmbTypea_'+i).val()=="付清"){
+                          $('#cmbTypea_'+i).css('color','red');
+                    };
+                }
             }
 
             function btnPrint() {
@@ -282,6 +299,11 @@
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                for(var i=0;i<q_bbsCount;i++){
+                    if($('#cmbTypea_'+i).val()=="付清"){
+                          $('#cmbTypea_'+i).css('color','red');
+                    };
+                }
             }
 
             function btnMinus(id) {
