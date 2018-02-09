@@ -59,7 +59,7 @@
 				q_getFormat();
 				bbmMask = [['txtDatea', r_picd], ['txtCucdate', r_picd]];
 				q_mask(bbmMask);
-				
+				q_cmbParse("cmbSpec",'坪@坪,M^3@M^3,噸@噸,材@材','s');
 				$('#txtCustno').change(function() {
                     if (!emp($('#txtCustno').val())) {
                         var t_where = "where=^^ custno='" + $('#txtCustno').val() + "' and datea>='"+q_cdn(q_date(),-183)+"' ^^ stop=999";
@@ -70,6 +70,12 @@
                 $('#btnPrice').click(function(e) {//價格
                       t_where = "custno='" + $('#txtCustno').val() + "'";
                       q_box("contdc_sh.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'etc', "95%", "95%", q_getMsg('btnPirce'));
+                });
+                
+                $('#btnOrde').click(function(e){
+                    t_custno=$('#txtAddrno').val();
+                    var t_where = "";
+                    q_box("ina_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'ordes', "95%", "650px");
                 });
 			}
 
@@ -388,6 +394,19 @@
 				margin: 0 -1px;
 				padding: 0;
 			}
+			
+			num {
+                text-align: right;
+            }
+            
+            select {
+                font-size: medium;
+            }
+            
+            .font1 {
+                font-family: "細明體", Arial, sans-serif;
+            }
+            
 			.tbbm td input[type="text"] {
 				border-width: 1px;
 				padding: 0px;
@@ -509,25 +528,30 @@
 			<table id="tbbs" class='tbbs' border="1" cellpadding='2' cellspacing='1' >
 				<tr style='color:White; background:#003366;' >
                     <td align="center" style="width:1%;"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /> </td>
-                    <td align="center" style="width:12%;"><a id='lblUno_sh'>條碼</a></td>
                     <td align="center" style="width:10%;"><a id='lblProductno_s'> </a></td>
-                    <td align="center" style="width:13%;"><a id='lblProduct_sh'>品名</a></td>
-                    <td align="center" style="width:10%;"><a id='lblType_sh'>儲位</a></td>
-                    <td align="center" style="width:6%;"><a id='lblUnit_s'> </a></td>
-                    <td align="center" style="width:10%;"><a id='lblMount_s'> </a></td>
+                    <td align="center" style="width:20%;"><a id='lblProduct_sh'>品名</a></td>
+                    <td align="center" style="width:8%;"><a id='lblSpec_sh'>計價單位</a></td>
+                    <td align="center" style="width:8%;"><a id='lblWeight_sh'>計價量(面積)</a></td>
+                    <td align="center" style="width:8%;"><a id='lblUnit_sh'>貨物單位</a></td>
+                    <td align="center" style="width:8%;"><a id='lblMount_sh'>貨物數量</a></td>
+                    <td align="center" style="width:15%;"><a id='lblType_sh'>儲位</a></td>
+                    <td align="center" style="width:10%;"><a id='lblOrdeno_sh'>入庫單號</a></td>
                     <td align="center" id='Memo'><a id='lblMemo_s'> </a></td>
                 </tr>
                 <tr  style='background:#cad3ff;'>
                     <td><input class="btn"  id="btnMinus.*" type="button" value='-' style=" font-weight: bold;" /></td>
-                    <td><input id="txtUno.*" type="text"/></td>
                     <td><input id="txtProductno.*" type="text" style="width:75%;" />
                         <input class="btn"  id="btnProductno.*" type="button" value='...' style="width:15%;"/>
                     </td>
                     <td><input class="txt c1" id="txtProduct.*" type="text" /></td>
-                    <td><input class="txt  c1" id="txtTypea.*" type="text"/></td>
+                    <td><select id="cmbSpec.*" class="txt" style="width:95%;"> </select></td>
+                    <td><input class="txt num c1" id="txtWeight.*" type="text"/></td>
                     <td><input class="txt c1" id="txtUnit.*" type="text"/></td>
                     <td><input class="txt num c1" id="txtMount.*" type="text"/></td>
                     <td><input class="txt c1" id="txtMemo.*" type="text" />
+                    <td><input class="txt  c1" id="txtTypea.*" type="text"/></td>
+                    <td><input class="txt c1" id="txtOrdeno.*" type="text" />
+                        <input class="txt c1" id="txtno2.*" type="text" /></td>    
                     <input id="txtNoq.*" type="hidden" /><input id="recno.*" type="hidden" /></td>
                 </tr>
 			</table>

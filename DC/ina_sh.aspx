@@ -55,6 +55,7 @@
                 q_getFormat();
                 bbmMask = [['txtDatea', r_picd]];
                 q_mask(bbmMask);
+                q_cmbParse("cmbSpec",'坪@坪,M^3@M^3,噸@噸,材@材','s');
                 /* 若非本會計年度則無法存檔 */
                 $('#txtDatea').focusout(function() {
                     if ($(this).val().substr(0, 3) != r_accy) {
@@ -401,6 +402,23 @@
             input[type="text"], input[type="button"] {
                 font-size: medium;
             }
+            
+            .num {
+                text-align: right;
+            }
+            
+            select {
+                font-size: medium;
+            }
+            
+            .font1 {
+                font-family: "細明體", Arial, sans-serif;
+            }
+            
+            #tableTranordet tr td input[type="text"] {
+                width: 80px;
+            }
+            
             .dbbs .tbbs {
                 margin: 0;
                 padding: 2px;
@@ -492,25 +510,25 @@
 			<table id="tbbs" class='tbbs'  border="1"  cellpadding='2' cellspacing='1'  >
 				<tr style='color:White; background:#003366;' >
 					<td align="center" style="width:1%;"><input class="btn"  id="btnPlus" type="button" value='＋' style="font-weight: bold;"  /></td>
-					<td align="center" style="width:15%;"><a id="lblUno_sh" >條碼</a></td>
-					<td align="center" style="width:10%;"><a id='lblProductno_s'> </a></td>
-					<td align="center" style="width:12%;"><a id='lblProduct_s'> </a></td>
-					<td align="center" style="width:5%;"><a id='lblUnit_s'> </a></td>
-					<td align="center" style="width:5%;"><a id='lblMweight_s'>單量</a></td>
-					<td align="center" style="width:8%;"><a id='lblMount_s'></a></td>
+					<td align="center" style="width:15%;"><a id='lblProductno_s'> </a></td>
+					<td align="center" style="width:20%;"><a id='lblProduct_s'> </a></td>
+					<td align="center" style="width:8%;"><a id='lblSpes_sh'>計價單位</a></td>
+					<td align="center" style="width:8%;"><a id='lblMWeight_sh'>計價量(面積)</a></td>
+					<td align="center" style="width:8%;"><a id='lblUnit_sh'> </a>貨物單位</td>
+					<td align="center" style="width:8%;"><a id='lblMount_sh'>貨物數量</a></td>
 					<td align="center" style="width:10%;"><a id='lblType_sh'>儲位</a></td>
 					<td align="center"><a id='lblMemo_st'> </a></td>
 				</tr>
 				<tr  style='background:#cad3ff;'>
 					<td ><input class="btn"  id="btnMinus.*" type="button" value='－' style=" font-weight: bold;" /></td>
-					<td ><input  id="txtUno.*" type="text" class="txt c1"/></td>
 					<td >
 						<input  id="txtProductno.*" type="text" style="width:70%;" />
 						<input class="btn"  id="btnProductno.*" type="button" value='...' style="width:16%;"  />
 					</td>
 					<td ><input class="txt c1" id="txtProduct.*" type="text" /></td>
-					<td ><input class="txt c1" id="txtUnit.*" type="text"/></td>
+					<td><select id="cmbSpec.*" class="txt" style="width:95%;"> </select></td>
 					<td ><input class="txt num c1" id="txtMweight.*" type="text"  /></td>
+					<td ><input class="txt c1" id="txtUnit.*" type="text"/></td>
 					<td ><input class="txt num c1" id="txtMount.*" type="text"  /></td>
 					<td ><input class="txt c1" id="txtTypea.*" type="text"/></td>
 					<td >
