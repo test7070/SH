@@ -18,7 +18,7 @@
 			q_tables = 's';
 			var q_name = "get";
 			var q_readonly = ['txtNoa', 'txtWorker','txtStation','txtComp','txtStore','txtCardeal','txtWorker2'];
-			var q_readonlys = [];
+			var q_readonlys = ['txtOrdeno','txtNo2'];
 			var bbmNum = [['txtTotal', 15, 1,1],['txtPrice', 10, 2 ,1],['txtTranmoney', 15, 0,1]];
 			var bbsNum = [
 				['txtSize1', 10, 3], ['txtSize2', 10, 2], ['txtSize3', 10, 3],
@@ -37,6 +37,7 @@
 			aPop = new Array(
 				['txtStoreno', 'lblStore', 'store', 'noa,store', 'txtStoreno,txtStore', 'store_b.aspx'],
 				['txtProductno_', 'btnProductno_', 'ucc', 'noa,product,unit', 'txtProductno_,txtProduct_,txtUnit_', 'ucc_b.aspx'],
+				['txtCardealno', 'lblCardeals', 'driver', 'noa,namea', 'txtCardealno,txtCardeal', 'driver_b.aspx'],
 				['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno,txtComp', 'cust_b.aspx']
 			);
 
@@ -62,7 +63,7 @@
 				q_cmbParse("cmbSpec",'坪@坪,M^3@M^3,噸@噸,材@材','s');
 				$('#txtCustno').change(function() {
                     if (!emp($('#txtCustno').val())) {
-                        var t_where = "where=^^ custno='" + $('#txtCustno').val() + "' and datea>='"+q_cdn(q_date(),-183)+"' ^^ stop=999";
+                        var t_where = "custno='" + $('#txtCustno').val() + "' and datea>='"+q_cdn(q_date(),-183)+"' ^^ stop=999";
                         q_gt('view_get', t_where, 0, 0, 0, "custgetaddr", r_accy);
                     }
                 });
@@ -73,9 +74,9 @@
                 });
                 
                 $('#btnOrde').click(function(e){
-                    t_custno=$('#txtAddrno').val();
-                    var t_where = "";
-                    q_box("ina_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'ordes', "95%", "650px");
+                    t_custno=$('#txtCustno').val();
+                    var t_where = "(noa+noq in (select sa.noa+sa.noq from view_inas sa left join view_ina sb on sa.noa=sb.noa outer apply(select sum(isnull(mount,0))mount from view_gets where sa.noa=ordeno and sa.noq=no2 group by ordeno,no2)b where sa.mount!=ISNULL(b.mount,0) and sb.custno='"+t_custno+"' group by sa.noa,sa.noq))";
+                    q_box("ina_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'ordes', "75%", "650px");
                 });
 			}
 
@@ -90,7 +91,7 @@
 								return;
 							}
 							var i, j = 0;
-							ret = q_gridAddRow(bbsHtm, 'tbbs', 'txtProductno,txtProduct,txtSpec,txtSize,txtDime,txtWidth,txtLengthb,txtUnit,txtOrdeno,txtNo2', b_ret.length, b_ret, 'productno,product,spec,size,dime,width,lengthb,unit,noa,no2', 'txtProductno,txtProduct,txtSpec');
+							ret = q_gridAddRow(bbsHtm, 'tbbs', 'txtProductno,txtProduct,txtSpec,txtWeight,txtMount,txtUnit,txtOrdeno,txtNo2', b_ret.length, b_ret, 'productno,product,spec,mweight,mount,unit,noa,noq', 'txtProductno,txtProduct,txtSpec');
 							bbsAssign();
 						}
 						break;
@@ -200,7 +201,7 @@
 			}
 
 			function btnPrint() {
-				//q_box('z_getp.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
+				q_box('z_ina_sh.aspx' + "?;;;;" + r_accy + ";noa=" + trim($('#txtNoa').val()), '', "95%", "95%", q_getMsg("popPrint"));
 			}
 
 			function wrServer(key_value) {
@@ -474,7 +475,9 @@
 							<input id="txtCustno" type="text" class="txt c2"/>
 							<input id="txtComp" type="text" class="txt c3"/>
 						</td>
-						<td colspan="2"><input type="button" id="btnPrice" value="合約價格"/></td>
+						<td colspan="2"><input type="button" id="btnPrice" value="合約價格"/>
+						                <input id="btnOrde" type="button" value="入庫匯入"/>
+						</td>
 					</tr>
 					<!--<tr class="tr4">
 						<td class="td1"><span> </span><a id="lblStore" class="lbl btn"> </a></td>
@@ -498,6 +501,13 @@
                         <td class="td4" colspan="3">
                             <input id="txtTranstart" type="text" class="txt c1" style="width:90%;"/>
                             <select id="combAddr" style="width: 20px" onchange='combAddr_chg()'> </select>
+                        </td>
+                    </tr>
+                    <tr class="tr4">
+                        <td><span> </span><a id="lblCardeals" class="lbl btn">司機</a></td>
+                        <td colspan="2">
+                            <input type="text" id="txtCardealno" class="txt" style="float:left;width:40%;"/>
+                            <input type="text" id="txtCardeal" class="txt" style="float:left;width:60%;"/>
                         </td>
                     </tr>
 					<tr class="tr5">
@@ -534,7 +544,7 @@
                     <td align="center" style="width:8%;"><a id='lblWeight_sh'>計價量(面積)</a></td>
                     <td align="center" style="width:8%;"><a id='lblUnit_sh'>貨物單位</a></td>
                     <td align="center" style="width:8%;"><a id='lblMount_sh'>貨物數量</a></td>
-                    <td align="center" style="width:15%;"><a id='lblType_sh'>儲位</a></td>
+                    <td align="center" style="width:10%;"><a id='lblType_sh'>儲位</a></td>
                     <td align="center" style="width:10%;"><a id='lblOrdeno_sh'>入庫單號</a></td>
                     <td align="center" id='Memo'><a id='lblMemo_s'> </a></td>
                 </tr>
@@ -548,11 +558,11 @@
                     <td><input class="txt num c1" id="txtWeight.*" type="text"/></td>
                     <td><input class="txt c1" id="txtUnit.*" type="text"/></td>
                     <td><input class="txt num c1" id="txtMount.*" type="text"/></td>
-                    <td><input class="txt c1" id="txtMemo.*" type="text" />
                     <td><input class="txt  c1" id="txtTypea.*" type="text"/></td>
                     <td><input class="txt c1" id="txtOrdeno.*" type="text" />
-                        <input class="txt c1" id="txtno2.*" type="text" /></td>    
-                    <input id="txtNoq.*" type="hidden" /><input id="recno.*" type="hidden" /></td>
+                        <input class="txt c1" id="txtNo2.*" type="text" />   
+                        <input id="txtNoq.*" type="hidden" /><input id="recno.*" type="hidden" /></td>
+                    <td><input class="txt c1" id="txtMemo.*" type="text" />
                 </tr>
 			</table>
 		</div>

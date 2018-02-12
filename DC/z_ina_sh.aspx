@@ -30,26 +30,35 @@
 							name : 'accy',
 							value : r_accy
 					},{
-						type : '1',//[2][3]
+                        type : '1',//[2]
+                        name : 'xnoa'
+                    },{
+						type : '1',//[3][4]
 						name : 'xdate'
 					},{
-						type : '2', //[4][5]
+						type : '2', //[5][6]
 						name : 'xcust',
 						dbf : 'cust',
 						index : 'noa,comp',
 						src : 'cust_b.aspx'
 					},{
-                        type : '2', //[6][7]
+                        type : '2', //[7][8]
                         name : 'xproductno',
                         dbf : 'ucc',
                         index : 'noa,product',
                         src : 'ucc_b.aspx'
                     },{
-                        type : '6',//[8]
+                        type : '6',//[9]
                         name : 'xdatea'
                     }]
                     });
                  q_popAssign();
+               
+                 var wParent = window.parent.document;
+                    var t_Noa= wParent.getElementById("txtNoa").value
+                    $('#txtXnoa1').val(t_Noa);
+                    $('#txtXnoa2').val(t_Noa);
+                    
                  $('#txtXdate1').mask('999/99/99');
 	             $('#txtXdate1').datepicker();
 	             $('#txtXdate2').mask('999/99/99');
@@ -57,7 +66,7 @@
 	             $('#txtXdatea').mask('999/99/99');
                  $('#txtXdatea').datepicker(); 
                  $('#txtXdatea').val(q_date());
-              
+   
                  var t_date,t_year,t_month,t_day;
 	                t_date = new Date();
 	                t_date.setDate(1);
