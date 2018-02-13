@@ -30,34 +30,36 @@
 							name : 'accy',
 							value : r_accy
 					},{
-                        type : '1',//[2]
+                        type : '1',//[2][3]
                         name : 'xnoa'
                     },{
-						type : '1',//[3][4]
+						type : '1',//[4][5]
 						name : 'xdate'
 					},{
-						type : '2', //[5][6]
+						type : '2', //[6][7]
 						name : 'xcust',
 						dbf : 'cust',
 						index : 'noa,comp',
 						src : 'cust_b.aspx'
 					},{
-                        type : '2', //[7][8]
+                        type : '2', //[8][9]
                         name : 'xproductno',
                         dbf : 'ucc',
                         index : 'noa,product',
                         src : 'ucc_b.aspx'
                     },{
-                        type : '6',//[9]
+                        type : '6',//[10]
                         name : 'xdatea'
                     }]
                     });
                  q_popAssign();
                
-                 var wParent = window.parent.document;
-                    var t_Noa= wParent.getElementById("txtNoa").value
-                    $('#txtXnoa1').val(t_Noa);
-                    $('#txtXnoa2').val(t_Noa);
+                 if(window.parent.q_name=='ina' || window.parent.q_name=='get'){
+                     var wParent = window.parent.document;
+                        var t_Noa= wParent.getElementById("txtNoa").value
+                        $('#txtXnoa1').val(t_Noa);
+                        $('#txtXnoa2').val(t_Noa);
+                 }
                     
                  $('#txtXdate1').mask('999/99/99');
 	             $('#txtXdate1').datepicker();

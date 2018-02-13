@@ -288,6 +288,9 @@
                     return;
                 }
                 q_nowf();
+                if (!as['time1']){
+                    as['time1'] = abbm2['datea'];  
+                }
                 as['cno'] = abbm2['cno'];
                 as['acomp'] = abbm2['acomp'];
                 return true;n

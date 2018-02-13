@@ -38,7 +38,8 @@
 				['txtStoreno', 'lblStore', 'store', 'noa,store', 'txtStoreno,txtStore', 'store_b.aspx'],
 				['txtProductno_', 'btnProductno_', 'ucc', 'noa,product,unit', 'txtProductno_,txtProduct_,txtUnit_', 'ucc_b.aspx'],
 				['txtCardealno', 'lblCardeals', 'driver', 'noa,namea', 'txtCardealno,txtCardeal', 'driver_b.aspx'],
-				['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno,txtComp', 'cust_b.aspx']
+				['txtCustno', 'lblCustno', 'cust', 'noa,comp', 'txtCustno,txtComp', 'cust_b.aspx'],
+				['txtTranstartno', 'lblTranstartno', 'conn', 'namea,addr,tel,fax', 'txtTranstartno,txtTranstart,txtTrantype,txtTranstyle', '']
 			);
 
 			$(document).ready(function() {
@@ -78,6 +79,12 @@
                     var t_where = "(noa+noq in (select sa.noa+sa.noq from view_inas sa left join view_ina sb on sa.noa=sb.noa outer apply(select sum(isnull(mount,0))mount from view_gets where sa.noa=ordeno and sa.noq=no2 group by ordeno,no2)b where sa.mount!=ISNULL(b.mount,0) and sb.custno='"+t_custno+"' group by sa.noa,sa.noq))";
                     q_box("ina_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'ordes', "75%", "650px");
                 });
+                
+                $('#lblTranstartno').click(function(e){
+                    t_custno=$('#txtCustno').val();
+                    var t_where = "noa='"+t_custno+"'";
+                    q_box("conn_b_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'conn', "75%", "650px");
+                });
 			}
 
 			function q_boxClose(s2) {
@@ -106,26 +113,6 @@
 
 			function q_gtPost(t_name) {
 				switch (t_name) {
-				   case 'custgetaddr':
-                        var as = _q_appendData("view_get", "", true);
-                        var t_item = " @ ";
-                        
-                        for (var i = 0; i < as.length; i++) {
-                            var tt_item=t_item.split(',');
-                            var t_exists=false;
-                            for (var j=0;j<tt_item.length;j++){
-                                if(as[i].transtartno + '@' + as[i].transtart==tt_item[j]){
-                                    t_exists=true;
-                                    break;
-                                }
-                            }
-                            if(!t_exists)
-                                t_item = t_item + (t_item.length > 0 ? ',' : '') + as[i].transtartno + '@' + as[i].transtart;
-                        }
-                        
-                        document.all.combAddr.options.length = 0;
-                        q_cmbParse("combAddr", t_item);
-                        break;
                     case 'btnModi':
                         var as = _q_appendData("get", "", true);
                         if (as[0] != undefined) {
@@ -180,6 +167,25 @@
 						
 						$('#txtMount_' + j).change(function() {
                            sum();
+                        });
+                        
+                        $('#txtMount_' + i).focusin(function(e) {
+                            if (q_cur == 1 || q_cur == 2) {
+                                t_IdSeq = -1;
+                                q_bodyId($(this).attr('id'));
+                                b_seq = t_IdSeq;
+                                if (!emp($('#txtNoa_' + b_seq).val())) {
+                                    //庫存
+                                    mouse_point=e;
+                                    mouse_point.pageY=$('#txtMount_'+b_seq).offset().top;
+                                    mouse_point.pageX=$('#txtMount_'+b_seq).offset().left;
+                                    document.getElementById("stk_Noa").innerHTML = $('#txtNoa_' + b_seq).val();
+                                    document.getElementById("stk_Noq").innerHTML = $('#txtNoq_' + b_seq).val();
+                                    //庫存
+                                    var t_where = "where=^^  ^^";
+                                    q_gt('calstk', t_where, 0, 0, 0, "msg_stk_all", r_accy);
+                                }
+                            }
                         });
 					}
 				}
@@ -445,6 +451,31 @@
 		</style>
 	</head>
 	<body>
+	   <div id="div_stk" style="position:absolute; top:300px; left:400px; display:none; width:400px; background-color: #CDFFCE; border: 5px solid gray;">
+            <table id="table_stk" style="width:100%;" border="1" cellpadding='2'  cellspacing='0'>
+                <tr>
+                    <td style="background-color: #f8d463;" align="center">單據編號</td>
+                    <td style="background-color: #f8d463;" colspan="2" id='stk_noa'> </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f8d463;" align="center">項次</td>
+                    <td style="background-color: #f8d463;" colspan="2" id='stk_noq'> </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f8d463;" align="center">品名</td>
+                    <td style="background-color: #f8d463;" colspan="2" id='stk_product'> </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f8d463;" align="center">貨物數量</td>
+                    <td style="background-color: #f8d463;" colspan="2" id='stk_mount'> </td>
+                </tr>
+                <tr id='stk_close'>
+                    <td align="center" colspan='3'>
+                        <input id="btnClose_div_stk" type="button" value="關閉視窗">
+                    </td>
+                </tr>
+            </table>
+        </div>
 		<!--#include file="../inc/toolbar.inc"-->
 		<div id='dmain' style="width: 1260px;">
 			<div class="dview" id="dview" style="float: left; width:32%;" >
@@ -493,15 +524,18 @@
 						</td>
 					</tr>
 					<tr class="tr4">
-						<td class="td1"><span> </span><a id="lblTranstartno" class="lbl">受貨商</a></td>
-						<td class="td2" colspan="2"><input id="txtTranstartno" type="text" class="txt c1"/></td>
+						<td class="td1"><span> </span><a id="lblTranstartno" class="lbl btn">受貨商</a></td>
+						<td class="td2" colspan="3"><input id="txtTranstartno" type="text" class="txt c3"/></td>
+						<td class="td1"><span> </span><a id="lblTrantype_sh" class="lbl">電話</a></td>
+						<td class="td2" colspan="3"><input id="txtTrantype" type="text" class="txt c3" style="width:95%;"/></td>
 					</tr>
 					<tr class="tr4">
                         <td class="td3"><span> </span><a id="lblTranstart" class="lbl">受貨商地址</a></td>
                         <td class="td4" colspan="3">
-                            <input id="txtTranstart" type="text" class="txt c1" style="width:90%;"/>
-                            <select id="combAddr" style="width: 20px" onchange='combAddr_chg()'> </select>
+                            <input id="txtTranstart" type="text" class="txt c1" style="width:95%;"/>
                         </td>
+                        <td class="td1"><span> </span><a id="lblTranstyle_sh" class="lbl">傳真</a></td>
+                        <td class="td2" colspan="3"><input id="txtTranstyle" type="text" class="txt" style="width:95%;"/></td>
                     </tr>
                     <tr class="tr4">
                         <td><span> </span><a id="lblCardeals" class="lbl btn">司機</a></td>
