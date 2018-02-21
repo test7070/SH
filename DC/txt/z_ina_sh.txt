@@ -318,3 +318,208 @@ dbo.getComma(mount,0)mount
 ,* from @tmp
 order by custno,gno
 ;
+----------------------------------------------------------------------------------------------
+z_ina_sh05:--z_ina_sh05
+declare @t_bdate nvarchar(20)
+declare @t_edate nvarchar(20)
+declare @t_bcustno nvarchar(20)
+declare @t_ecustno nvarchar(20)
+set @t_bdate = case when '#non'=[4] then '' else [4] end 
+set @t_edate = case when '#non'=[5] then char(255) else [5] end 
+set @t_bcustno = case when '#non'=[6] then '' else [6] end 
+set @t_ecustno = case when '#non'=[7] then char(255) else [7] end
+declare @t_bdate1 nvarchar(20)=(CONVERT(varchar(10),left(@t_bdate,3)+1911)+right(@t_bdate,6))
+declare @t_edate2 nvarchar(20)=(CONVERT(varchar(10),left(@t_edate,3)+1911)+right(@t_edate,6))
+
+declare @tmpa table(
+	gno nvarchar(1),
+	rr int,
+	custno nvarchar(50),
+	datea nvarchar(10),
+	typea nvarchar(10),
+	m1 float,
+	ma float,
+	spec nvarchar(50),
+	price float,
+	money float,
+	i1 float,
+	i2 float,
+	i3 float,
+	--進貨
+	m2 float,
+	unit1 nvarchar(50),
+	--出貨
+	m3 float,
+	unit2 nvarchar(50),
+	--累計
+	mt float,
+	m4 float,
+	unit4 nvarchar(50)
+)
+--進貨前期累計
+insert @tmpa(gno,custno,typea,ma,spec,mt,unit4)
+select '9',a.custno,'1',SUM(isnull(b.mweight,0)),b.spec,SUM(isnull(b.mount,0)),b.unit
+from view_ina a left join view_inas b on a.noa=b.noa
+left join cust c on a.custno=c.noa
+where (a.datea<@t_bdate)
+and(a.custno between @t_bcustno and @t_ecustno)
+group by a.custno,b.spec,b.unit
+
+--出貨前期
+insert @tmpa(gno,custno,typea,ma,spec,mt,unit4)
+select '9',a.custno,'2',SUM(isnull(b.weight,0))*-1,b.spec,SUM(isnull(b.mount,0))*-1,b.unit
+from view_get a left join view_gets b on a.noa=b.noa
+left join cust c on a.custno=c.noa
+where (a.datea<@t_bdate)
+and(a.custno between @t_bcustno and @t_ecustno)
+group by a.custno,b.spec,b.unit
+
+insert @tmpa(gno,custno,ma,spec,mt,unit4)
+select '1',custno,sum(ma),spec,sum(mt),unit4
+from @tmpa
+where ma!=0
+group by custno,spec,unit4
+
+delete @tmpa where gno='9'
+
+--進貨
+insert @tmpa(gno,custno,datea,typea,ma,spec,i1,i2,i3,m2,unit1,mt,unit4)
+select '2',a.custno,a.datea,'1',SUM(isnull(b.mweight,0))
+,b.spec,a.tranmoney,a.price,a.overpay,SUM(isnull(b.mount,0)),b.unit,SUM(isnull(b.mount,0)),b.unit
+from view_ina a left join view_inas b on a.noa=b.noa
+where (a.datea between @t_bdate and @t_edate)
+and(a.custno between @t_bcustno and @t_ecustno)
+group by a.custno,a.datea,b.spec,a.tranmoney,a.price,a.overpay,b.unit
+
+--出貨
+insert @tmpa(gno,custno,datea,typea,ma,spec,i1,i2,i3,m3,unit2,mt,unit4)
+select '2',a.custno,a.datea,'2',SUM(isnull(b.weight,0))*-1
+,b.spec,a.price,a.tranmoney,a.money,SUM(isnull(b.mount,0)),b.unit,SUM(isnull(b.mount,0))*-1,b.unit
+from view_get a left join view_gets b on a.noa=b.noa
+where (a.datea between @t_bdate and @t_edate)
+and(a.custno between @t_bcustno and @t_ecustno)
+group by a.custno,a.datea,b.spec,a.tranmoney,a.price,a.money,b.unit
+
+
+declare @tmpb table(
+    gno nvarchar(1),
+	custno nvarchar(50), 
+	datea nvarchar(10),
+	spec nvarchar(50),
+	unit nvarchar(50)
+)
+insert @tmpb
+select '0',b.custno,
+CONVERT(varchar(10),left(replace(CONVERT(varchar(10),DATEADD(dd,a.number,@t_bdate1),120),'-','/'),4)-1911)+
+right(replace(CONVERT(varchar(10),DATEADD(dd,a.number,@t_bdate1),120),'-','/'),6) as datea
+,b.spec,b.unit4
+from  master..spt_values a 
+outer apply (select * from @tmpa)b--系统表
+where a.type = 'P'  
+AND number BETWEEN 0 AND (select DATEDIFF(dd,@t_bdate1,@t_edate2))
+group by b.custno,a.number,b.spec,b.unit4
+
+declare @tmp table(
+	gno nvarchar(1),
+	rr int,
+	custno nvarchar(50),
+	datea nvarchar(10),
+	m1 float,
+	ma float,
+	spec nvarchar(50),
+	price float,
+	money float,
+	i1 float,
+	i2 float,
+	i3 float,
+	--進貨
+	m2 float,
+	unit1 nvarchar(50),
+	--出貨
+	m3 float,
+	unit2 nvarchar(50),
+	--累計
+	m4 float,
+	mt float,
+	unit4 nvarchar(50),
+	--總計
+	t1 float,
+	t2 float,
+	t3 float,
+	t4 float,
+	tax float,
+	total float,
+	memo nvarchar(max)
+)
+insert @tmp(gno,rr,custno,datea,ma,spec,mt,unit4)
+select '9','0',custno,'前期',ma,spec,mt,unit4
+from @tmpa
+where gno=1
+
+insert @tmp(gno,custno,datea,spec,unit4)
+select '1' a,custno,datea,spec,unit
+from @tmpb
+
+update @tmp
+set i1=b.i1,i2=b.i2,i3=b.i3,m2=b.m2,m3=b.m3,unit1=b.unit1,unit2=b.unit2,ma=b.ma,mt=isnull(b.m2,0)-isnull(b.m3,0)
+from @tmp a
+outer apply(select * from @tmpa where a.datea=isnull(datea,'') and a.spec=spec and a.unit4=unit4 and custno=a.custno)b
+where typea!=0
+
+update a
+set rr=rx
+from (select ROW_NUMBER()over(partition by custno,spec,unit4 order by datea)rx,rr from @tmp where gno='1')a
+
+--計價單位累計
+update a
+set m1=b.m1,m4=b.m4
+from @tmp a
+outer apply(select sum(isnull(ma,0))m1,sum(isnull(mt,0))m4 from @tmp where rr<=a.rr and spec=a.spec and a.custno=custno and unit4=a.unit4)b
+
+update a
+set price=case spec when '坪' then b.oilbase when 'M^3' then b.mprice when '材' then b.pprice when '噸' then b.tprice end
+,money=case when m1>0 then (case spec when '坪' then b.oilbase when 'M^3' then b.mprice when '材' then b.pprice when '噸' then b.tprice end)*m1 else 0 end
+from @tmp a
+outer apply(select top 1 * from contdc where a.custno=custno and (a.datea between bcontdate and (case when len(changecontdate)!=0 then changecontdate else econtdate end)))b
+where isnull(m1,0)>0
+
+--總計
+insert @tmp (gno,rr,custno,spec,unit4,t1,t2,t3,t4,tax,total,money)
+select '2','99998',custno,spec,unit4,SUM(ISNULL(money,0)),SUM(ISNULL(i1,0)),SUM(ISNULL(i2,0)),SUM(ISNULL(i3,0))
+,(SUM(ISNULL(money,0))+SUM(ISNULL(i1,0))+SUM(ISNULL(i2,0))+SUM(ISNULL(i3,0)))*0.05
+,(SUM(ISNULL(money,0))+SUM(ISNULL(i1,0))+SUM(ISNULL(i2,0))+SUM(ISNULL(i3,0)))*1.05
+,(SUM(ISNULL(money,0))+SUM(ISNULL(i1,0))+SUM(ISNULL(i2,0))+SUM(ISNULL(i3,0)))
+from @tmp
+group by custno,spec,unit4
+
+insert @tmp (gno,rr,custno,spec,unit4)
+select '3','99999',custno,spec,unit4
+from @tmp
+group by custno,spec,unit4
+
+select
+@t_bdate bdate,@t_edate edate
+,case when m1!=0 then dbo.getComma(m1,-1)else null end m1
+,dbo.getComma(i1,-1)i1
+,dbo.getComma(i2,-1)i2
+,dbo.getComma(i3,-1)i3
+,case when m2!=0 then dbo.getComma(m2,-1)else null end m2
+,case when m2!=0 then unit1 else null end unit11
+,case when m3!=0 then dbo.getComma(m3,-1)else null end m3
+,case when m3!=0 then unit2 else null end unit21
+,case when m4!=0 then dbo.getComma(m4,-1)else null end m4
+,case when m4!=0 then unit4 else null end unit41
+,dbo.getComma(price,-1)price
+,case when money!=0 then dbo.getComma(money,0) else null end money
+,case when m1!=0 then spec else null end spec1
+,dbo.getComma(t1,0)t1
+,dbo.getComma(t2,0)t2
+,dbo.getComma(t3,0)t3
+,dbo.getComma(t4,0)t4
+,case when tax!=0 then dbo.getComma(tax,0) else null end  tax
+,case when total!=0 then dbo.getComma(total,0) else null end total
+,a.*,b.comp comp,b.addr_comp addr,b.tel tel,b.fax fax,b.serial serial,b.memo memo 
+from @tmp a
+left join cust b on a.custno=b.noa
+order by custno,a.spec,a.unit4,rr,datea
+;
