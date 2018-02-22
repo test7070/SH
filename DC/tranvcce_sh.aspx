@@ -30,7 +30,7 @@
             q_alias = '';
             q_desc = 1;
             aPop = new Array(['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
-            , ['txtCustno_', 'btnCust_', 'cust', 'noa,nick', 'txtCustno_,txtCust_', 'cust_b.aspx']
+            , ['txtCustno_', 'btnCust_', 'cust', 'noa,nick,paytype', 'txtCustno_,txtCust_,cmbTypea_', 'cust_b.aspx']
             , ['txtProductno_', 'btnProduct_', 'ucc', 'noa,product', 'txtProductno_,txtProduct_', 'ucc_b.aspx']
             , ['txtCarno_', 'btnCarno_', 'car2', 'driverno,a.noa,driver', 'txtDriverno_,txtCarno_,txtDriver_', 'car2_b.aspx']
             , ['txtAddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtAddrno_,txtAddr_', 'addr_b.aspx']
@@ -283,7 +283,7 @@
             }
 
             function bbsSave(as) {
-                if (!as['time1'] && !as['custno'] && !as['cust'] && !as['productno'] && !as['product'] && !as['mount'] ) {
+                if (!as['no2'] && !as['time1'] && !as['custno'] && !as['cust'] && !as['productno'] && !as['product'] && !as['mount'] ) {
                     as[bbsKey[1]] = '';
                     return;
                 }
@@ -535,7 +535,7 @@
 						<td>
 						<input id="txtNoa" type="text" class="txt c1"/>
 						</td>
-						<td><span> </span><a id="lblDatea" class="lbl" > </a></td>
+						<td><span> </span><a id="lblDatea_sh" class="lbl" >出車日期</a></td>
 						<td>
 						<input id="txtDatea" type="text" class="txt c1" />
 						</td>
@@ -572,7 +572,7 @@
 					<td align="center" style="width:20px;"> </td>
 					<td align="center" style="width:50px"><a>項次</a></td>
 					<td align="center" style="width:70px"><a>付款</a></td>
-					<td align="center" style="width:90px"><a>出車日期</a></td>
+					<td align="center" style="width:90px;display:none;"><a>出車日期</a></td>
 					<td align="center" style="width:90px"><a>客戶</a></td>
 					<td align="center" style="width:100px"><a>品項</a></td>
 					<td align="center" style="width:75px"><a>數量</a></td>
@@ -601,7 +601,7 @@
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
 					<td><input type="text" id="txtNo2.*" style="width:95%;"/></td>
 					<td><select id="cmbTypea.*" class="txt" style="width:95%;"> </select></td>
-					<td><input type="text" id="txtTime1.*" style="width:95%;"/></td>
+					<td style="display:none;"><input type="text" id="txtTime1.*" style="width:95%;"/></td>
 					<td>
 						<input type="text" id="txtCustno.*" style="float:left;width:95%;" />
 						<input type="text" id="txtCust.*" style="float:left;width:95%;">
