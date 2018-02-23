@@ -97,7 +97,9 @@
                         break;
                 }
                 q_cmbParse("cmbTrantype", q_getPara('sys.tran'));
-                
+                //預設A0401,買方也要有申請電子發票才能用A0101
+				q_cmbParse("cmbMessagetype", "A0401@A0401_平台存證,A0101@A0101_發票");
+				
                 $('#txtNoa').change(function(e){
                     $(this).val($.trim($(this).val()).toUpperCase());       
                     if($(this).val().length>0){
@@ -608,6 +610,9 @@
                             <input id="txtGrpno" type="text" style="float:left; width:40%;"/>
                             <input id="txtGrpname" type="text" style="float:left; width:60%;"/>
                         </td>
+                        <td> </td>
+                        <td><span> </span><a class="lbl">訊息編號</a></td>
+						<td><select id="cmbMessagetype" class="txt c1"> </select></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id='lblBoss' class="lbl"> </a></td>
