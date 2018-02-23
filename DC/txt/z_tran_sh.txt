@@ -59,21 +59,22 @@ declare @tmp table(
 	unit2 nvarchar(50)
 ) 
 insert @tmp 
-select '1',ROW_NUMBER()over(partition by noa,no2 order by no2) 
-,'',noa,no2,time1,custno,cust,isnull(mount,0),isnull(volume,0),isnull(addrno,''),addr,isnull(addrno2,'')
+select '1',ROW_NUMBER()over(partition by a.noa,no2 order by no2) 
+,'',a.noa,no2,b.datea,custno,cust,isnull(mount,0),isnull(volume,0),isnull(a.addrno,''),a.addr,isnull(addrno2,'')
 ,addr2,total,driverno,driver,'','','','','','','','','',''
-,case when chk1=1 then 'V' else '' end ,case when chk2=1 then 'V' else '' end,memo,isnull(total2,null),null,null,null,null,null,
-isnull(productno,''),product,isnull(tranno,''),isnull(productno2,''),isnull(unit,''),isnull(unit2,'')
-from view_tranvcces 
-where (time1 between @t_bdate and @t_edate) 
+,case when a.chk1=1 then 'V' else '' end ,case when a.chk2=1 then 'V' else '' end,a.memo,isnull(total2,null),null,null,null,null,null,
+isnull(productno,''),product,isnull(a.tranno,''),isnull(productno2,''),isnull(unit,''),isnull(unit2,'')
+from view_tranvcces a
+left join view_tranvcce b on a.noa=b.noa
+where (b.datea between @t_bdate and @t_edate) 
 and (custno between @t_bcustno and @t_ecustno) 
-and ((addrno between @t_baddr1 and @t_eaddr1) or (addr between @t_baddr1 and @t_eaddr1)) 
+and ((a.addrno between @t_baddr1 and @t_eaddr1) or (a.addr between @t_baddr1 and @t_eaddr1)) 
 and ((addrno2 between @t_baddr2 and @t_eaddr2) or (addr2 between @t_baddr2 and @t_eaddr2)) 
 and (driverno between @t_bdriver and @t_edriver) 
-and (len(@t_chk1)=0 or chk1=@t_chk1) 
-and (len(@t_chk2)=0 or chk1=@t_chk2)
-and (noa between @t_bnoa and @t_enoa)
-order by time1,noa,noq
+and (len(@t_chk1)=0 or a.chk1=@t_chk1) 
+and (len(@t_chk2)=0 or a.chk1=@t_chk2)
+and (b.noa between @t_bnoa and @t_enoa)
+order by b.datea,a.noa,noq
 
 update @tmp
 set recno=(rr-1)/6
