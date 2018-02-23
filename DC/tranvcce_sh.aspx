@@ -233,6 +233,7 @@
                             if (!$(this).val())
                                 q_msg($(this), '=號複製上一筆資料');
                   });
+                  
                   $('#cmbTypea_' + i).change(function() {  
                         for(var i=0;i<q_bbsCount;i++){
                             if($('#cmbTypea_'+i).val()=="付清"){
