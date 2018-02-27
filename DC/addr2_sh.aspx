@@ -29,8 +29,8 @@
             brwNowPage = 0;
             brwKey = 'noa';
             aPop = new Array(
-                ['txtAddr_', 'btnStraddr_', 'addr', 'noa,addr', 'txtAddrno_,txtAddr_', 'addr_b.aspx']
-                , ['txtAddress_', 'btnEndaddr_', 'addr', 'noa,addr', 'txtAddrno2_,txtAddress_', 'addr_b.aspx']
+                ['txtAddr_', 'btnStraddr_', 'addr', 'noa,addr', '0txtAddrno_,txtAddr_', 'addr_b.aspx']
+                , ['txtAddress_', 'btnEndaddr_', 'addr', 'noa,addr', '0txtAddrno2_,txtAddress_', 'addr_b.aspx']
                 , ['txtCustno', 'lblCust', 'cust', 'noa,comp', 'txtCustno,txtCust', 'cust_b.aspx']
             );
             $(document).ready(function() {
