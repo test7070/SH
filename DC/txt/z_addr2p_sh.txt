@@ -88,5 +88,5 @@ case when p1=0 then null else dbo.getComma(p1,0) end p1
 ,case when p2=0 then null else dbo.getComma(p2,0) end p2
 ,case when p3=0 then null else dbo.getComma(p3,0) end p3
 ,* from @tmp
-order by noa,page,gno
+order by noa,page,gno,rr
 ;
