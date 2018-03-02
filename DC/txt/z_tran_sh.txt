@@ -146,7 +146,7 @@ declare @tmp table(
 	custno nvarchar(50),
 	comp nvarchar(50),							
 	fax nvarchar(50),	
-	datea nvarchar(10),
+	datea nvarchar(50),
 	mount float,
 	volume float,
 	weight float,
