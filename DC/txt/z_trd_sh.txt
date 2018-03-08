@@ -53,30 +53,36 @@ create table #tmp(
 	pl float,
 	plusmoney float,
 	minusmoney float,
-	total float
+	total float,
+	ordeno nvarchar(50),
+	ordenoq nvarchar(50)
 )
-insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total,ordeno,ordenoq)
 select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2
-,case when ISNULL(b.volume,0)!=0 then b.volume else b.weight end,b.total,b.memo,a.money,a.tax,a.discount,a.plus
-,a.plusmoney,a.minusmoney,a.total
+,case when ISNULL(b.volume,0)!=0 then b.volume else b.weight end,sum(b.total),b.memo,a.money,a.tax,a.discount,a.plus
+,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2
 from view_trds b left join view_trd a on a.noa=b.noa
 left join cust c on a.custno=c.noa
 left join view_trans d on b.tranno=d.noa and b.trannoq=d.noq
+left join view_tranvcces e on d.ordeno=e.noa and d.caseno2=e.noq
 where (a.datea between @t_bdate and @t_edate)
 and (a.custno between @t_bcustno and @t_ecustno)
 and (len(@t_noa)=0 or @t_noa=a.noa)
 and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')=''
+group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,b.weight,b.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
 
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
 select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
 from #tmp a left join custchg b on a.noa=b.trdno
 where ISNULL(b.minusmoney,0)!=0
+group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
 
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
 select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
 from #tmp a left join custchg b on a.noa=b.trdno
 where ISNULL(b.plusmoney,0)!=0
+group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
 
 insert #tmp(gno,noa,custno,mount,money)
 select '2',noa,custno,SUM(mount),sum(money)
@@ -140,123 +146,130 @@ declare @pagecount int
 declare @t_bdate nvarchar(10) 
 declare @t_edate nvarchar(10) 
 declare @t_bcustno nvarchar(20) 
-declare @t_ecustno nvarchar(20)
+declare @t_ecustno nvarchar(20) 
 declare @t_vccano nvarchar(max) 
 declare @t_noa nvarchar(max) 
 
-set @pagecount = 43
-set @t_bdate = case when '#non'=[4] then '' else [4] end 
-set @t_edate = case when '#non'=[5] then char(255) else [5] end 
-set @t_bcustno = case when '#non'=[2] then '' else [2] end 
-set @t_ecustno = case when '#non'=[3] then char(255) else [3] end
-set @t_vccano = case when '#non'=[6] then '' else [6] end 
-set @t_noa = case when '#non'=[8] then '' else [8] end 
+set @pagecount = 43 
+set @t_bdate = case when '#non'='#non' then '' else '#non' end 
+set @t_edate = case when '#non'='#non' then char(255) else '#non' end 
+set @t_bcustno = case when '#non'='#non' then '' else '#non' end 
+set @t_ecustno = case when '#non'='#non' then char(255) else '#non' end 
+set @t_vccano = case when '#non'='#non' then '' else '#non' end 
+set @t_noa = case when '#non'='BF1070308001' then '' else 'BF1070308001' end 
 
 
-IF OBJECT_ID('tempdb..#tmp')is not null
-BEGIN
-   drop table #tmp
-END
- 
-create table #tmp(
-	gno nvarchar(1),
-	rr int,
-	page int,
-	noa nvarchar(50),
-	custno nvarchar(50),
-	comp nvarchar(100),
-	serial nvarchar(50),
-	tel nvarchar(50),
-	mo2 nvarchar(max),
-	btrandatea nvarchar(10),
-	etrandatea nvarchar(10),
-	vccano nvarchar(max),
-	datea nvarchar(10),
-	typea nvarchar(10),
-	addr nvarchar(max),
-	product nvarchar(50),
-	custchgno nvarchar(50),
-	item nvarchar(100),
-	caseno nvarchar(50),
-	money float,
-	memo nvarchar(max),
-	tmoney float,
-	tax float,
-	discount float,
-	pl float,
-	plusmoney float,
-	minusmoney float,
-	total float
-)
-insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,caseno,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
-select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno
-,b.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,a.total
+IF OBJECT_ID('tempdb..#tmp')is not null 
+BEGIN 
+drop table #tmp 
+END 
+
+create table #tmp( 
+	gno nvarchar(1), 
+	rr int, 
+	page int, 
+	noa nvarchar(50), 
+	custno nvarchar(50), 
+	comp nvarchar(100), 
+	serial nvarchar(50), 
+	tel nvarchar(50), 
+	mo2 nvarchar(max), 
+	btrandatea nvarchar(10), 
+	etrandatea nvarchar(10), 
+	vccano nvarchar(max), 
+	datea nvarchar(10), 
+	typea nvarchar(10), 
+	addr nvarchar(max), 
+	product nvarchar(50), 
+	custchgno nvarchar(50), 
+	item nvarchar(100), 
+	caseno nvarchar(50), 
+	money float, 
+	memo nvarchar(max), 
+	tmoney float, 
+	tax float, 
+	discount float, 
+	pl float, 
+	plusmoney float, 
+	minusmoney float, 
+	total float,
+	ordeno nvarchar(50),
+	ordenonoq nvarchar(50)  
+) 
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,caseno,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total,ordeno,ordenonoq) 
+select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno 
+,sum(b.total),b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2 
 from view_trds b left join view_trd a on a.noa=b.noa
 left join cust c on a.custno=c.noa
-where (a.datea between @t_bdate and @t_edate)
-and (a.custno between @t_bcustno and @t_ecustno)
-and (len(@t_noa)=0 or @t_noa=a.noa)
-and (len(@t_vccano)=0 or @t_vccano=a.vccano)
-and isnull(caseno,'')!=''
+left join view_trans d on b.tranno=d.noa and b.trannoq=d.noq
+left join view_tranvcces e on d.ordeno=e.noa and d.caseno2=e.noq
+where (a.datea between @t_bdate and @t_edate) 
+and (a.custno between @t_bcustno and @t_ecustno) 
+and (len(@t_noa)=0 or @t_noa=a.noa) 
+and (len(@t_vccano)=0 or @t_vccano=a.vccano) 
+and isnull(b.caseno,'')!=''
+group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
-select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
-from #tmp a left join custchg b on a.noa=b.trdno
-where ISNULL(b.minusmoney,0)!=0
+insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
+from #tmp a left join custchg b on a.noa=b.trdno 
+where ISNULL(b.minusmoney,0)!=0 
+group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
-select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
-from #tmp a left join custchg b on a.noa=b.trdno
+insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
+from #tmp a left join custchg b on a.noa=b.trdno 
 where ISNULL(b.plusmoney,0)!=0
+group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
 
-insert #tmp(gno,noa,custno,money)
-select '2',noa,custno,sum(money)
-from #tmp
-where gno='1'
-group by noa,custno
+insert #tmp(gno,noa,custno,money) 
+select '2',noa,custno,sum(money) 
+from #tmp 
+where gno='1' 
+group by noa,custno 
 
-insert #tmp(gno,noa,custno,tmoney,tax,discount,pl,plusmoney,minusmoney,total)
-select '5',noa,custno,tmoney,tax,discount,pl,plusmoney,minusmoney,total
-from #tmp
-where gno='1'
-group by noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,tmoney,tax,discount,pl,plusmoney,minusmoney,total
+insert #tmp(gno,noa,custno,tmoney,tax,discount,pl,plusmoney,minusmoney,total) 
+select '5',noa,custno,tmoney,tax,discount,pl,plusmoney,minusmoney,total 
+from #tmp 
+where gno='1' 
+group by noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,tmoney,tax,discount,pl,plusmoney,minusmoney,total 
 
---頁數
-update a
-set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
-from (select ROW_NUMBER()over(partition by noa order by gno)rx,rr,page from #tmp) a
+--頁數 
+update a 
+set rr=rx,page=ceiling(cast(rx as float)/@pagecount) 
+from (select ROW_NUMBER()over(partition by noa order by gno)rx,rr,page from #tmp) a 
 
-insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano)
-select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano
-from #tmp
-where gno='1'
-group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano
+insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano) 
+select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano 
+from #tmp 
+where gno='1' 
+group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano 
 
-insert #tmp(gno,page,noa,custno)
-select '3',page,noa,custno
-from #tmp
-where gno='4'
-group by noa,page,custno
+insert #tmp(gno,page,noa,custno) 
+select '3',page,noa,custno 
+from #tmp 
+where gno='4' 
+group by noa,page,custno 
 
-insert #tmp(gno,page,noa,custno)
-select '6',page,noa,custno
-from #tmp
-group by noa,page,custno
+insert #tmp(gno,page,noa,custno) 
+select '6',page,noa,custno 
+from #tmp 
+group by noa,page,custno 
 
 select 
-dbo.getComma(tmoney,0)tmoney
-,dbo.getComma(money,0)money
-,dbo.getComma(tax,0)tax
-,dbo.getComma(discount,0)discount
-,dbo.getComma(pl,0)pl
-,dbo.getComma(plusmoney,0)plusmoney
-,dbo.getComma(minusmoney,0)minusmoney
-,dbo.getComma(total,0)total
-,* from #tmp
-order by noa,page,gno,custchgno
+dbo.getComma(tmoney,0)tmoney 
+,dbo.getComma(money,0)money 
+,dbo.getComma(tax,0)tax 
+,dbo.getComma(discount,0)discount 
+,dbo.getComma(pl,0)pl 
+,dbo.getComma(plusmoney,0)plusmoney 
+,dbo.getComma(minusmoney,0)minusmoney 
+,dbo.getComma(total,0)total 
+,* from #tmp 
+order by noa,page,gno,custchgno 
 
-IF OBJECT_ID('tempdb..#tmp')is not null
-BEGIN
-   drop table #tmp
-END
+IF OBJECT_ID('tempdb..#tmp')is not null 
+BEGIN 
+drop table #tmp 
+END 
 ;
