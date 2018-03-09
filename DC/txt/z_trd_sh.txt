@@ -72,17 +72,17 @@ and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')=''
 group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,b.weight,b.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
-select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo
-from #tmp a left join custchg b on a.noa=b.trdno
-where ISNULL(b.minusmoney,0)!=0
-group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo
+insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
+from #tmp a left join custchg b on a.noa=b.trdno 
+where ISNULL(minusitem,'')!=''
+group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo)
-select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo
+insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno
-where ISNULL(b.plusmoney,0)!=0
-group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo
+where ISNULL(plusitem,'')!=''
+group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
 
 insert #tmp(gno,noa,custno,mount,money)
 select '2',noa,custno,SUM(mount),sum(money)
@@ -151,13 +151,12 @@ declare @t_vccano nvarchar(max)
 declare @t_noa nvarchar(max) 
 
 set @pagecount = 43 
-set @t_bdate = case when '#non'='#non' then '' else '#non' end 
-set @t_edate = case when '#non'='#non' then char(255) else '#non' end 
-set @t_bcustno = case when '#non'='#non' then '' else '#non' end 
-set @t_ecustno = case when '#non'='#non' then char(255) else '#non' end 
-set @t_vccano = case when '#non'='#non' then '' else '#non' end 
-set @t_noa = case when '#non'='BF1070308001' then '' else 'BF1070308001' end 
-
+set @t_bdate = case when '#non'=[4] then '' else [4] end 
+set @t_edate = case when '#non'=[5] then char(255) else [5] end 
+set @t_bcustno = case when '#non'=[2] then '' else [2] end 
+set @t_ecustno = case when '#non'=[3] then char(255) else [3] end
+set @t_vccano = case when '#non'=[6] then '' else [6] end 
+set @t_noa = case when '#non'=[8] then '' else [8] end 
 
 IF OBJECT_ID('tempdb..#tmp')is not null 
 BEGIN 
@@ -213,13 +212,13 @@ group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
 select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno 
-where ISNULL(b.minusmoney,0)!=0 
+where ISNULL(minusitem,'')!=''
 group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
 
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
 select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
-from #tmp a left join custchg b on a.noa=b.trdno 
-where ISNULL(b.plusmoney,0)!=0
+from #tmp a left join custchg b on a.noa=b.trdno
+where ISNULL(plusitem,'')!=''
 group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
 
 insert #tmp(gno,noa,custno,money) 
