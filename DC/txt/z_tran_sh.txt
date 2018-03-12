@@ -78,6 +78,11 @@ and (b.noa between @t_bnoa and @t_enoa)
 order by b.datea,a.noa,noq
 
 update @tmp
+set total=b.total
+from @tmp a
+outer apply(select SUM(isnull(total,0))total from view_tranvcces where (noa between @t_bnoa and @t_enoa) and noa=a.noa and no2=a.no2 group by noa,no2)b
+
+update @tmp
 set recno=(rr-1)/6
 
 update @tmp 
