@@ -16,9 +16,9 @@
 		<script type="text/javascript">
             q_tables = 's';
             var q_name = "tran";
-            var q_readonly = ['txtNoa', 'txtMount', 'txtVolume', 'txtWeight','txtTotal','txtTotal2', 'txtWorker', 'txtWorker2'];
+            var q_readonly = ['txtNoa', 'txtMount', 'txtVolume', 'txtWeight', 'txtWorker', 'txtWorker2'];
             var q_readonlys = ['txtOrdeno', 'txtCaseno2',];
-            var bbmNum = [['txtTotal', 10, 2, 1],['txtTotal2', 10, 0, 1]];
+            var bbmNum = [];
             var bbsNum = [['txtMount', 10, 0, 1],['txtVolume', 10, 3, 1],['txtWeight', 10, 2, 1],['txtTotal', 10, 0, 1],['txtTotal2', 10, 0, 1]];
             var bbmMask = [['txtDatea','999/99/99'],['textMon','999/99']];
             var bbsMask = [];
@@ -57,7 +57,6 @@
             }
 
             function sum() {
-                
             }
 
             function mainPost() {
@@ -69,7 +68,7 @@
                 
                 $('#btnOrde').click(function(e){
                     t_custno=$('#txtAddrno').val();
-                    var t_where = "chk2=1 and custno='"+t_custno+"' and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno)";
+                    var t_where = "chk2=1 and custno='"+t_custno+"' and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2)";
                     q_box("tranvcce_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'tranvcce_tran', "95%", "650px");
                 });
                 
@@ -211,21 +210,6 @@
                         e.preventDefault();
                         var n = $(this).attr('id').replace(/^(.*)_(\d+)$/,'$2');
                         $('#btnDriver_'+n).click();
-                    });
-                    $('#txtWeight_' + i).change(function() {
-                        sum();
-                    });
-                    $('#txtWeight2_' + i).change(function() {
-                        sum();
-                    });
-                    $('#txtPrice_' + i).change(function() {
-                        sum();
-                    });
-                    $('#txtPrice2_' + i).change(function() {
-                        sum();
-                    });
-                    $('#txtMount3_' + i).change(function() {
-                        sum();
                     });
                 }
                 _bbsAssign();
@@ -541,13 +525,6 @@
 						<input id="txtDatea" type="text" class="txt c1" />
 						</td>
 					</tr>
-					<!--<tr>
-                        <td><span> </span><a id="lblCno" class="lbl btn" >公司</a></td>
-                        <td colspan="3">
-                            <input type="text" id="txtCno" class="txt" style="float:left;width:40%;"/>
-                            <input type="text" id="txtAcomp" class="txt" style="float:left;width:60%;"/>
-                        </td>
-                    </tr>-->
                     <tr>
                         <td><span> </span><a id="lblCarteam" class="lbl">車隊</a></td>
                         <td>
@@ -561,22 +538,6 @@
                             <input type="text" id="txtAddr" class="txt" style="float:left;width:60%;"/>
                         </td>
                     </tr>
-					<tr>
-                        <td><span> </span><a id="lbl" class="lbl" >應收金額</a></td>
-                        <td><input id="txtTotal" type="text" class="txt c1 num" /></td>
-                        <td><span> </span><a id="lbl" class="lbl" >應付金額</a></td>
-                        <td><input id="txtTotal2" type="text" class="txt c1 num" /></td>
-                    </tr>
-					<!--<tr>
-					    <td><span> </span><a id="lbl" class="lbl" >發票號碼</a></td>
-                        <td>
-                        <input id="txtDeparture" type="text" class="txt c1" />
-                        </td>
-						<td><span> </span><a id="lbl" class="lbl" >稅金</a></td>
-						<td>
-						<input id="txtTotal2" type="text" class="txt c1 num" />
-						</td>
-					</tr>-->
 					<tr>
 						<td><span> </span><a id="lblMemo" class="lbl" > </a></td>
 						<td colspan="4"><textarea id="txtMemo" style="height:40px;" class="txt c1"> </textarea></td>
