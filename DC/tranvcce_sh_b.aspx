@@ -16,13 +16,17 @@
             var isBott = false;
             var txtfield = [], afield, t_data, t_htm;
             var i, s1;
-            brwCount2 = 20;
-            q_desc=1;
+            brwCount = -1;
+            brwCount2 = 0;
             $(document).ready(function() {
                 if (!q_paraChk())
                     return;
 
                 main();
+                $('#btnTop').hide();
+                $('#btnPrev').hide();
+                $('#btnNext').hide();
+                $('#btnBott').hide();
             });
 
             function main() {

@@ -20,7 +20,7 @@
             var q_readonlys = ['txtOrdeno', 'txtCaseno2',];
             var bbmNum = [];
             var bbsNum = [['txtMount', 10, 0, 1],['txtVolume', 10, 3, 1],['txtWeight', 10, 2, 1],['txtTotal', 10, 0, 1],['txtTotal2', 10, 0, 1]];
-            var bbmMask = [['txtDatea','999/99/99'],['textMon','999/99']];
+            var bbmMask = [['txtDatea','999/99/99'],['textBdate','999/99/99'],['textEdate','999/99/99']];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
@@ -66,10 +66,21 @@
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
                 
-                $('#btnOrde').click(function(e){
-                    t_custno=$('#txtAddrno').val();
-                    var t_where = "chk2=1 and custno='"+t_custno+"' and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2)";
-                    q_box("tranvcce_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'tranvcce_tran', "95%", "650px");
+                $('#btnImport').click(function() {
+                    $('#divImport').toggle();
+                    $('#textBdate').focus();
+                });
+                /*$('#btnCancel_import').click(function() {
+                    $('#divImport').toggle();
+                });*/
+                
+                $('#btnImport_trans').click(function(e){
+                        t_custno=$('#txtAddrno').val();
+                        var t_bdate = $('#textBdate').val();
+                        var t_edate = $('#textEdate').val();
+                        var t_where = "chk2=1 and custno='"+t_custno+"' and ((len('"+t_bdate+"')=0) or (len('"+t_edate+"')=0) or(time1 between '"+t_bdate+"' and '"+t_edate+"')) and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2) order by noa,noq";
+                        q_box("tranvcce_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'tranvcce_tran', "95%", "650px");
+                        $('#divImport').toggle();
                 });
                 
             }
@@ -462,7 +473,7 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
-	<div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+	   <div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
             <table style="width:100%;">
                 <tr style="height:1px;">
                     <td style="width:150px;"></td>
@@ -472,17 +483,19 @@
                     <td style="width:80px;"></td>
                 </tr>
                 <tr style="height:35px;">
-                    <td><span> </span><a id="lblMon" style="float:right; color: blue; font-size: medium;">月份</a></td>
-                    <td colspan="4">
-                    <input id="textMon"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    <td><span> </span><a id="lblMon" style="float:right; color: blue; font-size: medium;">日期</a></td>
+                    <td colspan="1">
+                    <input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    </td>
+                    <td colspan="1" style="width:20px;">~</td>
+                    <td colspan="1">
+                    <input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
                     </td>
                 </tr>               
                 <tr style="height:35px;">
                     <td> </td>
-                    <td><input id="btnImport_trans" type="button" value="付款"/></td>
-                    <td></td>
-                    <td></td>
-                    <td><input id="btnCancel_import" type="button" value="關閉"/></td>
+                    <td><input id="btnImport_trans" type="button" value="匯入"/></td>
+                    
                 </tr>
             </table>
         </div>
@@ -551,7 +564,7 @@
 						<td>
 						<input id="txtWorker2" type="text" class="txt c1" />
 						</td>
-						<td><input id="btnOrde" type="button" value="派車匯入" style="width:100%;"/></td>
+						<td><input id="btnImport" type="button" value="派車匯入" style="width:100%;"/></td>
 					</tr>
 				</table>
 			</div>
