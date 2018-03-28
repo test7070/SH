@@ -183,6 +183,61 @@
                                     var s20 = $('#cmbUnit2_' + i).val();
                                     $('#cmbUnit2_' + b_seq).val(s20);                                     
                                 }
+                            }else  if(s1.length == 1 && s1 == "@") {
+                                t_IdSeq = -1;  /// 要先給  才能使用 q_bodyId()
+                                q_bodyId($(this).attr('id'));
+                                b_seq = t_IdSeq;
+                                if (b_seq > 0) {
+                                    var y=-1;
+                                    for (var x = -1;x <b_seq;x++) {
+                                        if ($('#Copy_'+x).is(':checked')==true) {
+                                                y=y+1;
+                                                var seq=b_seq+y;
+                                                var s1 = $('#txtTime1_' + x).val();
+                                                $('#txtTime1_' + seq).val(s1);
+                                                var s2 = $('#txtCustno_' + x).val();
+                                                $('#txtCustno_' + seq).val(s2); 
+                                                var s3 = $('#txtCust_' + x).val();
+                                                $('#txtCust_' + seq).val(s3);
+                                                var s4 = $('#txtMount_' + x).val();
+                                                $('#txtMount_' + seq).val(s4);
+                                                var s5 = $('#txtUnit_' + x).val();
+                                                $('#txtUnit_' + seq).val(s5); 
+                                                var s6 = $('#txtAddrno_' + i).val();
+                                                $('#txtAddrno_' + seq).val(s6);
+                                                var s7 = $('#txtAddr_' + x).val();
+                                                $('#txtAddr_' + seq).val(s7);
+                                                var s8 = $('#txtAddrno2_' + x).val();
+                                                $('#txtAddrno2_' + seq).val(s8); 
+                                                var s9 = $('#txtAddr2_' + x).val();
+                                                $('#txtAddr2_' + seq).val(s9);
+                                                var s10 = $('#txtVolume_' + x).val();
+                                                $('#txtVolume_' + seq).val(s10);
+                                                var s11 = $('#txtTranno_' + x).val();
+                                                $('#txtTranno_' + seq).val(s11); 
+                                                var s12 = $('#txtProductno2_' + x).val();
+                                                $('#txtProductno2_' + seq).val(s12);
+                                                var s13 = $('#txtProductno_' + x).val();
+                                                $('#txtProductno_' + seq).val(s13); 
+                                                var s14 = $('#txtProduct_' + x).val();
+                                                $('#txtProduct_' + seq).val(s14);
+                                                var s15 = $('#txtAddrno3_' + x).val();
+                                                $('#txtAddrno3_' + seq).val(s15); 
+                                                var s16 = $('#txtAddr3_' + x).val();
+                                                $('#txtAddr3_' + seq).val(s16);
+                                                var s17 = $('#txtNo2_' + x).val();
+                                                $('#txtNo2_' + seq).val(s17); 
+                                                var s18 = $('#cmbTypea_' + x).val();
+                                                $('#cmbTypea_' + seq).val(s18);
+                                                var s19 = $('#txtWeight_' + x).val();
+                                                $('#txtWeight_' + seq).val(s19); 
+                                                var s20 = $('#cmbUnit2_' + x).val();
+                                                $('#cmbUnit2_' + seq).val(s20);
+                                        }else{
+                                                y=y
+                                        }
+                                    }                                    
+                                }
                             }
                   });
                   $('#txtCustno_' + i).bind('contextmenu', function(e) {
@@ -229,7 +284,7 @@
                   });
                   $('#txtNo2_' + i).focus(function () {
                             if (!$(this).val())
-                                q_msg($(this), '=號複製上一筆資料');
+                                q_msg($(this), '=號複製上一筆資料,@複製多筆勾選資料');
                   });
                   
                   $('#cmbTypea_' + i).change(function() {  
@@ -567,6 +622,7 @@
 				<tr style='color:white; background:#003366;' >
 					<td align="center" style="width:25px"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /></td>
 					<td align="center" style="width:20px;"> </td>
+					<td align="center" style="width:10px"><a>複製</a></td>
 					<td align="center" style="width:50px"><a>項次</a></td>
 					<td align="center" style="width:70px"><a>付款</a></td>
 					<td align="center" style="width:90px;display:none;"><a>出車日期</a></td>
@@ -596,6 +652,7 @@
 						<input type="text" id="txtNoq.*" style="display:none;"/>
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
+					<td align="center"><input id="Copy.*" type="checkbox"/></td>
 					<td><input type="text" id="txtNo2.*" style="width:95%;"/></td>
 					<td><select id="cmbTypea.*" class="txt" style="width:95%;"> </select></td>
 					<td style="display:none;"><input type="text" id="txtTime1.*" style="width:95%;"/></td>

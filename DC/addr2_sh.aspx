@@ -399,7 +399,7 @@
 					<input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  />
 					</td>
 					<td align="center" style="width:20px;"></td>
-					<td align="center" style="width:100px;"><a>車型</a></td>
+					<td align="center" style="width:100px;"><a>項目</a></td>
 					<td align="center" style="width:100px;"><a>單位</a></td>
 					<td align="center" style="width:100px;"><a>材積</a></td>
 					<td align="center" style="width:100px;"><a>重量</a></td>
