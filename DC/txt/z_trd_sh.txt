@@ -99,7 +99,7 @@ group by noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,tmoney,tax,disc
 --頁數
 update a
 set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
-from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenoq)rx,rr,page from #tmp) a
+from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenoq,datea)rx,rr,page from #tmp) a
 
 insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano)
 select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano
@@ -236,7 +236,7 @@ group by noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,tmoney,tax,disc
 --頁數 
 update a 
 set rr=rx,page=ceiling(cast(rx as float)/@pagecount) 
-from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenonoq)rx,rr,page from #tmp) a 
+from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenonoq,datea)rx,rr,page from #tmp) a 
 
 insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano) 
 select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano 

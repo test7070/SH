@@ -385,7 +385,8 @@ left join view_tranvcces c on a.ordeno=c.noa and a.caseno2=c.noq
 where (trandate between @t_bdate and @t_edate)
 and len(caseno)!=0 and ISNULL(a.total,0)!=0
 and(a.custno between @t_bcustno and @t_ecustno)
-group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,trandate,a.unit,straddrno,straddr,endaddrno,endaddr,a.memo,a.product,caseno,c.typea
+group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,trandate,a.unit,straddrno,straddr,endaddrno,endaddr,a.memo,a.product,caseno,c.typea,a.noa,a.noq
+order by a.noa,a.noq
 
 insert @tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
