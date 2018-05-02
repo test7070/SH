@@ -298,6 +298,16 @@
                             };
                         }
                   });
+                  $('#btnC1').click(function() {  
+                        for(var i=0;i<q_bbsCount;i++){
+                            $('#chkChk1_'+i).prop('checked',true);
+                        }
+                  });
+                  $('#btnC2').click(function() {  
+                        for(var i=0;i<q_bbsCount;i++){
+                            $('#chkChk2_'+i).prop('checked',true);
+                        }
+                  });
                 }
                 _bbsAssign();
                 $('#tbbs').find('tr.data').children().hover(function(e){
@@ -640,14 +650,18 @@
 					<td align="center" style="width:100px"><a>起點</a></td>
 					<td align="center" style="width:100px"><a>迄點</a></td>
 					<td align="center" style="width:140px"><a>櫃號</a></td>
-					<td align="center" style="width:140px"><a>S/O</a></td>
-					<td align="center" style="width:100px"><a>貨主</a></td>
+					<td align="center" style="width:140px;display:none;"><a>S/O</a></td>
+					<td align="center" style="width:100px;display:none;"><a>貨主</a></td>
 					<td align="center" style="width:80px"><a>金額</a></td>
 					<td align="center" style="width:100px"><a>車牌</a></td>
 					<td align="center" style="width:80px"><a>司機</a></td>
 					<td align="center" style="width:80px"><a>司機運費</a></td>
-					<td align="center" style="width:20px"><a>讀單</a></td>
-					<td align="center" style="width:20px"><a>確認</a></td>
+					<td align="center" style="width:50px"><a>讀單</a>
+					    <input type="button" id="btnC1" value="≡">
+					</td>
+					<td align="center" style="width:50px"><a>確認</a>
+					    <input type="button" id="btnC2" value="≡">
+					</td>
 					<td align="center" style="width:100px"><a>備註</a></td>
 				</tr>
 				<tr class="data" style='background:#cad3ff;'>
@@ -686,8 +700,8 @@
                         <input type="button" id="btnEndaddr.*" style="display:none;"/>
                     </td>
                     <td><input type="text" id="txtTranno.*" style="float:left;width:95%;"/></td>
-                    <td><input type="text" id="txtProductno2.*" style="float:left;width:95%;"/></td>
-                    <td>
+                    <td style="display: none"><input type="text" id="txtProductno2.*" style="float:left;width:95%;"/></td>
+                    <td style="display: none">
                         <input type="text" id="txtAddrno3.*" style="float:left;width:95%;"/>
                         <input type="text" id="txtAddr3.*" style="float:left;width:95%;"/>
                         <input type="button" id="btnAddr3.*" style="display:none;"/>

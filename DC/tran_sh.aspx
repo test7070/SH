@@ -585,8 +585,8 @@
 					<td align="center" style="width:100px"><a>起點</a></td>
                     <td align="center" style="width:100px"><a>迄點</a></td>
                     <td align="center" style="width:120px"><a>櫃號</a></td>
-                    <td align="center" style="width:120px"><a>S/O</a></td>
-                    <td align="center" style="width:80px"><a>貨主</a></td>
+                    <td align="center" style="width:120px;display:none;"><a>S/O</a></td>
+                    <td align="center" style="width:80px;display:none;"><a>貨主</a></td>
 					<td align="center" style="width:80px"><a>應收運費</a></td>
 					<td align="center" style="width:80px"><a>應付運費</a></td>
 					<td align="center" style="width:90px"><a>出車車號</a></td>
@@ -628,8 +628,8 @@
                         <input type="button" id="btnEndaddr.*" style="display:none;"/>
                     </td>
                     <td><input type="text" id="txtCaseno.*" style="width:95%;"/></td>
-                    <td><input type="text" id="txtPo.*" style="width:95%;"/></td>
-                    <td>
+                    <td  style="display: none"><input type="text" id="txtPo.*" style="width:95%;"/></td>
+                    <td  style="display: none">
                         <input type="text" id="txtCasecustno.*" style="float:left;width:95%;"/>
                         <input type="text" id="txtCasecust.*" style="float:left;width:95%;"/>
                         <input type="button" id="btnCasecust.*" style="display:none;"/>
