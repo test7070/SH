@@ -55,12 +55,14 @@ create table #tmp(
 	minusmoney float,
 	total float,
 	ordeno nvarchar(50),
-	ordenoq nvarchar(50)
+	ordenoq nvarchar(50),
+	weight nvarchar(50)
 )
-insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total,ordeno,ordenoq)
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total,ordeno,ordenoq,weight)
 select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2
-,case when ISNULL(b.volume,0)!=0 then b.volume else b.weight end,sum(b.total),b.memo,a.money,a.tax,a.discount,a.plus
+,b.volume,sum(b.total),b.memo,a.money,a.tax,a.discount,a.plus
 ,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2
+,case when isnull(d.weight,0)!=0 then dbo.getComma(d.weight,0)+'KG' end
 from view_trds b left join view_trd a on a.noa=b.noa
 left join cust c on a.custno=c.noa
 left join view_trans d on b.tranno=d.noa and b.trannoq=d.noq
@@ -70,7 +72,7 @@ and (a.custno between @t_bcustno and @t_ecustno)
 and (len(@t_noa)=0 or @t_noa=a.noa)
 and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')=''
-group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,b.weight,b.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
+group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,d.weight,b.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
 
 insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
 select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 

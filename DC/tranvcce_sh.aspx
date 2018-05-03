@@ -656,7 +656,7 @@
 					<td align="center" style="width:100px"><a>車牌</a></td>
 					<td align="center" style="width:80px"><a>司機</a></td>
 					<td align="center" style="width:80px"><a>司機運費</a></td>
-					<td align="center" style="width:50px"><a>讀單</a>
+					<td align="center" style="width:30px"><a>讀單</a>
 					    <input type="button" id="btnC1" value="≡">
 					</td>
 					<td align="center" style="width:50px"><a>確認</a>
