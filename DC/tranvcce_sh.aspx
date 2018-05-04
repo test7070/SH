@@ -19,7 +19,7 @@
             var q_readonly = ['txtNoa', 'txtWeight','txtTotal', 'txtWorker', 'txtWorker2'];
             var q_readonlys = [];
             var bbmNum = [];
-            var bbsNum = [['txtMount', 10, 2, 1],['txtWeight', 10, 2, 1],['txtVolume', 10, 3, 1],['txtTotal', 10, 2, 1],['txtTotal2', 10, 0, 1]];
+            var bbsNum = [['txtMount', 10, 2, 1],['txtWeight', 10, 2, 1],['txtVolume', 10, 1, 1],['txtTotal', 10, 2, 1],['txtTotal2', 10, 0, 1]];
             var bbmMask = [];
             var bbsMask = [['txtTime1','999/99/99']];
             q_sqlCount = 6;
