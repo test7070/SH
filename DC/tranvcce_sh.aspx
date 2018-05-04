@@ -183,7 +183,7 @@
                                     var s20 = $('#cmbUnit2_' + i).val();
                                     $('#cmbUnit2_' + b_seq).val(s20);
                                     var s21 = $('#txtMemo_' + i).val();
-                                    $('#txtMemo_' + b_seq).val(s16);                                     
+                                    $('#txtMemo_' + b_seq).val(s21);                                     
                                 }
                             }else  if(s1.length == 1 && s1 == "@") {
                                 t_IdSeq = -1;  /// 要先給  才能使用 q_bodyId()
