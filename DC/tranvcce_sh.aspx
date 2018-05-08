@@ -63,7 +63,22 @@
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbTypea",'月結@月結,付清@付清','s');
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
-
+                if (q_cur=='0'){
+                    $('#textNoa').css('color', 'black').css('background', 'white').removeAttr('readonly');
+                    $('#textNoq').css('color', 'black').css('background', 'white').removeAttr('readonly');
+                }
+                
+                $('#btnshseek').click(function() {
+                      for(var i=0;i<q_bbsCount;i++){
+                           if ($('#txtNo2_' +i).val()==$('#textNoq').val()) {
+                            $('#trSel_' + i).addClass('chksel');
+                                    //變色
+                          }else{
+                            $('#trSel_' + b_seq).removeClass('chksel');
+                                    //取消變色
+                          }
+                      }      
+                });
             }
 
             function q_boxClose(s2) {
@@ -303,11 +318,11 @@
                             $('#chkChk1_'+i).prop('checked',true);
                         }
                   });
-                  $('#btnC2').click(function() {  
+                  /*$('#btnC2').click(function() {  
                         for(var i=0;i<q_bbsCount;i++){
                             $('#chkChk2_'+i).prop('checked',true);
                         }
-                  });
+                  });*/
                 }
                 _bbsAssign();
                 $('#tbbs').find('tr.data').children().hover(function(e){
@@ -364,10 +379,15 @@
 
             function refresh(recno) {
                 _refresh(recno);
+                
             }
 
             function readonly(t_para, empty) {
                 _readonly(t_para, empty);
+                if (q_cur=='0'){
+                    $('#textNoa').css('color', 'black').css('background', 'white').removeAttr('readonly');
+                    $('#textNoq').css('color', 'black').css('background', 'white').removeAttr('readonly');
+                }
                 for(var i=0;i<q_bbsCount;i++){
                     if($('#cmbTypea_'+i).val()=="付清"){
                           $('#cmbTypea_'+i).css('color','red');
@@ -561,6 +581,9 @@
                 text-align: center;
                 border: 2px pink double;
             }
+            .tbbs tr.chksel {
+                background: #FA0300;
+            }
 		</style>
 	</head>
 	<body ondragstart="return false" draggable="false"
@@ -627,12 +650,19 @@
 						<input id="txtWorker2" type="text" class="txt c1" />
 						</td>
 					</tr>
+					<tr>
+                        <td><span> </span><a id="lblWorker" class="lbl" > </a></td>
+                        <td colspan="2"><input id="textNoa" type="text" class="txt c1"  style="width: 60%;"/>
+                            <input id="textNoq" type="text" class="txt c1"  style="width: 35%;" /></td>
+                        <td><input id="btnshseek" type="button" value="查詢" style="width:30%;"/>
+                            <input id="btnImport" type="button" value="讀單確認" style="width:50%;"/></td>
+                    </tr>
 				</table>
 			</div>
 		</div>
 		<!--2017/10/31 于小姐討論後 數量跟材積都是數字 貨櫃的櫃型打在品名 多櫃號、S/O、貨主-->
 		<div class='dbbs' >
-			<table id="tbbs" class='tbbs' >
+			<table id="tbbs" class='tbbs' style="background:#cad3ff;">
 				<tr style='color:white; background:#003366;' >
 					<td align="center" style="width:25px"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /></td>
 					<td align="center" style="width:20px;"> </td>
@@ -659,12 +689,12 @@
 					<td align="center" style="width:30px"><a>讀單</a>
 					    <input type="button" id="btnC1" value="≡">
 					</td>
-					<td align="center" style="width:50px"><a>確認</a>
+					<!--<td align="center" style="width:50px"><a>確認</a>
 					    <input type="button" id="btnC2" value="≡">
-					</td>
+					</td>-->
 					<td align="center" style="width:100px"><a>備註</a></td>
 				</tr>
-				<tr class="data" style='background:#cad3ff;'>
+				<tr id="trSel.*">
 					<td align="center">
 						<input class="btn"  id="btnMinus.*" type="button" value='-' style=" font-weight: bold;" />
 						<input type="text" id="txtNoq.*" style="display:none;"/>
@@ -718,7 +748,7 @@
                     </td>
                     <td><input type="text" id="txtTotal2.*" class="num" style="width:95%;"/></td>
 					<td align="center"><input id="chkChk1.*" type="checkbox"/></td>
-					<td align="center"><input id="chkChk2.*" type="checkbox"/></td>
+					<!--<td align="center"><input id="chkChk2.*" type="checkbox"/></td>-->
 					<td><input type="text" id="txtMemo.*" style="width:95%;"/></td>
 				</tr>
 			</table>

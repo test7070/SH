@@ -30,7 +30,7 @@
             q_desc = 1;
             aPop = new Array(['txtDriverno', 'lblDriverno', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
             , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
-            , ['txtAddrno', 'lblAddr', 'cust', 'noa,comp', 'txtAddrno,txtAddr', 'cust_b.aspx']
+            , ['txtAddrno', '', 'cust', 'noa,comp', 'txtAddrno,txtAddr', '']
             , ['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtUccno_', 'btnProduct_', 'ucc', 'noa,product', 'txtUccno_,txtProduct_', 'ucc_b.aspx']
             , ['txtStraddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtStraddrno_,txtStraddr_', 'addr_b.aspx']
@@ -65,22 +65,18 @@
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
-                
-                $('#btnImport').click(function() {
-                    $('#divImport').toggle();
-                    $('#textBdate').focus();
-                });
-                /*$('#btnCancel_import').click(function() {
-                    $('#divImport').toggle();
-                });*/
-                
-                $('#btnImport_trans').click(function(e){
+
+                $('#btnImport').click(function(e){
                         t_custno=$('#txtAddrno').val();
                         var t_bdate = $('#textBdate').val();
                         var t_edate = $('#textEdate').val();
-                        var t_where = "chk2=1 and custno='"+t_custno+"' and ((len('"+t_bdate+"')=0) or (len('"+t_edate+"')=0) or(time1 between '"+t_bdate+"' and '"+t_edate+"')) and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2) order by noa,noq";
+                        var t_where = "custno='"+t_custno+"' and ((len('"+t_bdate+"')=0) or (len('"+t_edate+"')=0) or(time1 between '"+t_bdate+"' and '"+t_edate+"')) and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2) order by noa,noq";
                         q_box("tranvcce_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'tranvcce_tran', "95%", "650px");
-                        $('#divImport').toggle();
+                });
+                
+                $('#lblAddr').click(function(e){
+                        var t_where = "";
+                        q_box("cust_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'cust', "95%", "650px");
                 });
                 
             }
@@ -107,6 +103,15 @@
                                 ret = q_gridAddRow(bbsHtm, 'tbbs', 
                                 'txtOrdeno,txtCaseno2,txtTrandate,txtCustno,txtNick,txtUccno,txtProduct,txtMount,txtUnit,txtVolume,txtTotal,txtCarno,txtDriverno,txtDriver,txtMemo,txtStraddrno,txtStraddr,txtEndaddrno,txtEndaddr,txtTotal2,txtCaseno,txtPo,txtCasecustno,txtCasecust,txtWeight,cmbUnit2', b_ret.length, b_ret, 
                                 'noa,noq,time1,custno,cust,productno,product,mount,unit,volume,total,carno,driverno,driver,memo,addrno,addr,addrno2,addr2,total2,tranno,productno2,addrno3,addr3,weight,unit2', 'txtCustno,txtProductno,txtTrandate,txtMount');
+                            }
+                        break;
+                    case 'cust':
+                        if (q_cur > 0 && q_cur < 4) {
+                            b_ret = getb_ret();
+                            if (!b_ret || b_ret.length == 0)
+                                return;
+                                $('#txtAddrno').val(b_ret[0].noa);
+                                $('#txtAddr').val(b_ret[0].comp);
                             }
                         break;
                     case q_name + '_s':
@@ -473,32 +478,6 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
-	   <div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
-            <table style="width:100%;">
-                <tr style="height:1px;">
-                    <td style="width:150px;"></td>
-                    <td style="width:80px;"></td>
-                    <td style="width:80px;"></td>
-                    <td style="width:80px;"></td>
-                    <td style="width:80px;"></td>
-                </tr>
-                <tr style="height:35px;">
-                    <td><span> </span><a id="lblMon" style="float:right; color: blue; font-size: medium;">日期</a></td>
-                    <td colspan="1">
-                    <input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
-                    </td>
-                    <td colspan="1" style="width:20px;">~</td>
-                    <td colspan="1">
-                    <input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
-                    </td>
-                </tr>               
-                <tr style="height:35px;">
-                    <td> </td>
-                    <td><input id="btnImport_trans" type="button" value="匯入"/></td>
-                    
-                </tr>
-            </table>
-        </div>
 		<!--#include file="../inc/toolbar.inc"-->
 		<div id="dmain" >
 			<div class="dview" id="dview">
@@ -543,6 +522,9 @@
                         <td>
                             <select id="cmbPort" class="txt c1"> </select>
                         </td>
+                        <td><span> </span><a id="lblBdate" class="lbl">匯入日期區間</a></td>
+                        <td colspan="2"><input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                                        <input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblAddr" class="lbl btn" >客戶</a></td>
