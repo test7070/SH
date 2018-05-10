@@ -75,7 +75,9 @@
                 });
                 
                 $('#lblAddr').click(function(e){
-                        var t_where = "";
+                        var t_bdate = $('#textBdate').val();
+                        var t_edate = $('#textEdate').val();
+                        var t_where = "noa in(select custno from view_tranvcces where time1 between '"+t_bdate+"' and '"+t_edate+"' group by custno ) and noa not in(select addrno from view_tran where datea between '"+t_bdate+"' and '"+t_edate+"' group by addrno)";
                         q_box("cust_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'cust', "95%", "650px");
                 });
                 

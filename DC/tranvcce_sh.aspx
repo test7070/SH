@@ -74,10 +74,24 @@
                             $('#trSel_' + i).addClass('chksel');
                                     //變色
                           }else{
-                            $('#trSel_' + b_seq).removeClass('chksel');
+                            $('#trSel_' +i).removeClass('chksel');
                                     //取消變色
                           }
                       }      
+                });
+                $('#btnImport').click(function() {
+                      for(var i=0;i<q_bbsCount;i++){
+                           var t_noa = $('#textNoa').val();
+                           var t_noq = $('#textNoq').val();
+                           if(t_noa.length==0 || t_noq.length==0){
+                               alert('讀單編號或是項次空白!!');
+                           }else{
+                               q_func('qtxt.query.tranvccesh_chk1', 'tranvcce.txt,tranvccesh_chk1,' + encodeURI(t_noa) + ';' + encodeURI(t_noq));
+                           }
+                           if ($('#txtNoa').val()==$('#textNoa').val() && $('#txtNo2_' +i).val()==$('#textNoq').val()) {
+                                $('#chkChk1_'+i).prop('checked',true);
+                          }
+                      }     
                 });
             }
 
@@ -543,7 +557,7 @@
                 margin: -1px;
             }
             .dbbs {
-                width: 1700px;
+                width: 1900px;
             }
             .tbbs a {
                 font-size: medium;
@@ -651,7 +665,7 @@
 						</td>
 					</tr>
 					<tr>
-                        <td><span> </span><a id="lblWorker" class="lbl" > </a></td>
+                        <td><span> </span><a id="lblWorker" class="lbl" >讀單單號</a></td>
                         <td colspan="2"><input id="textNoa" type="text" class="txt c1"  style="width: 60%;"/>
                             <input id="textNoq" type="text" class="txt c1"  style="width: 35%;" /></td>
                         <td><input id="btnshseek" type="button" value="查詢" style="width:30%;"/>
@@ -667,6 +681,9 @@
 					<td align="center" style="width:25px"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /></td>
 					<td align="center" style="width:20px;"> </td>
 					<td align="center" style="width:10px"><a>複製</a></td>
+					<td align="center" style="width:30px"><a>讀單</a>
+					    <input type="button" id="btnC1" value="≡">
+                    </td>
 					<td align="center" style="width:50px"><a>項次</a></td>
 					<td align="center" style="width:70px"><a>付款</a></td>
 					<td align="center" style="width:90px;display:none;"><a>出車日期</a></td>
@@ -686,13 +703,11 @@
 					<td align="center" style="width:100px"><a>車牌</a></td>
 					<td align="center" style="width:80px"><a>司機</a></td>
 					<td align="center" style="width:80px"><a>司機運費</a></td>
-					<td align="center" style="width:30px"><a>讀單</a>
-					    <input type="button" id="btnC1" value="≡">
-					</td>
+					    
 					<!--<td align="center" style="width:50px"><a>確認</a>
 					    <input type="button" id="btnC2" value="≡">
 					</td>-->
-					<td align="center" style="width:100px"><a>備註</a></td>
+					<td align="center" style="width:250px"><a>備註</a></td>
 				</tr>
 				<tr id="trSel.*">
 					<td align="center">
@@ -700,7 +715,8 @@
 						<input type="text" id="txtNoq.*" style="display:none;"/>
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
-					<td align="center"><input id="Copy.*" type="checkbox"/></td>
+					<td align="center"><input id="Copy.*" type="checkbox" style="zoom:1.5"/></td>
+					<td align="center"><input id="chkChk1.*" type="checkbox" style="zoom:1.5"/></td>
 					<td><input type="text" id="txtNo2.*" style="width:95%;"/></td>
 					<td><select id="cmbTypea.*" class="txt" style="width:95%;"> </select></td>
 					<td style="display:none;"><input type="text" id="txtTime1.*" style="width:95%;"/></td>
@@ -747,9 +763,8 @@
                         <input type="button" id="btnDriver.*" style="display:none;"/>
                     </td>
                     <td><input type="text" id="txtTotal2.*" class="num" style="width:95%;"/></td>
-					<td align="center"><input id="chkChk1.*" type="checkbox"/></td>
 					<!--<td align="center"><input id="chkChk2.*" type="checkbox"/></td>-->
-					<td><input type="text" id="txtMemo.*" style="width:95%;"/></td>
+					<td><input type="text" id="txtMemo.*" style="float:left;width:98%;"/></textarea></td>
 				</tr>
 			</table>
 		</div>
