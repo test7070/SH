@@ -91,10 +91,12 @@
                            if ($('#txtNoa').val()==$('#textNoa').val() && $('#txtNo2_' +i).val()==$('#textNoq').val()) {
                                 $('#chkChk1_'+i).prop('checked',true);
                           }
-                      }     
+                      }
+                      if(t_noa.length!=0 || t_noq.length!=0){
+                            alert('讀單已確認!!'); 
+                      }  
                 });
             }
-
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
