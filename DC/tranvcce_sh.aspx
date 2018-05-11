@@ -33,8 +33,8 @@
             , ['txtCustno_', 'btnCust_', 'cust', 'noa,paytype,nick', 'txtCustno_,cmbTypea_,txtCust_', 'cust_b.aspx']
             , ['txtProductno_', 'btnProduct_', 'ucc', 'noa,product', 'txtProductno_,txtProduct_', 'ucc_b.aspx']
             , ['txtCarno_', 'btnCarno_', 'car2', 'driverno,a.noa,driver', 'txtDriverno_,txtCarno_,txtDriver_', 'car2_b.aspx']
-            , ['txtAddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtAddrno_,txtAddr_', 'addr_b.aspx']
-            , ['txtAddrno2_', 'btnEndaddr_',  'addr', 'noa,addr', 'txtAddrno2_,txtAddr2_', 'addr_b.aspx']
+            , ['txtAddrno_', 'btnStraddr_', 'addr', 'noa,addr', '0txtAddrno_,txtAddr_', 'addr_b.aspx']
+            , ['txtAddrno2_', 'btnEndaddr_',  'addr', 'noa,addr', '0txtAddrno2_,txtAddr2_', 'addr_b.aspx']
             , ['txtAddrno3_', 'btnAddr3_', 'cust', 'noa,nick', 'txtAddrno3_,txtAddr3_', 'cust_b.aspx']
             , ['txtDriverno_', 'btnDriver_', 'driver', 'noa,namea', 'txtDriverno_,txtDriver_', 'driver_b.aspx']);
 
@@ -80,17 +80,20 @@
                       }      
                 });
                 $('#btnImport').click(function() {
-                      for(var i=0;i<q_bbsCount;i++){
-                           var t_noa = $('#textNoa').val();
-                           var t_noq = $('#textNoq').val();
-                           if(t_noa.length==0 || t_noq.length==0){
+                      var t_noa = $('#textNoa').val();
+                      var t_noq = $('#textNoq').val();
+                      if(t_noa.length==0 || t_noq.length==0){
                                alert('讀單編號或是項次空白!!');
-                           }else{
-                               q_func('qtxt.query.tranvccesh_chk1', 'tranvcce.txt,tranvccesh_chk1,' + encodeURI(t_noa) + ';' + encodeURI(t_noq));
+                      }else{
+                           q_func('qtxt.query.tranvccesh_chk1', 'tranvcce.txt,tranvccesh_chk1,' + encodeURI(t_noa) + ';' + encodeURI(t_noq));
+                           if(t_noa.length!=0 || t_noq.length!=0 && $('#txtNoa').val()==$('#textNoa').val()){
+                               for(var i=0;i<q_bbsCount;i++){
+                                   if ($('#txtNo2_' +i).val()==$('#textNoq').val()) {
+                                        $('#chkChk1_'+i).prop('checked',true);
+                                   }
+                               }
                            }
-                           if ($('#txtNoa').val()==$('#textNoa').val() && $('#txtNo2_' +i).val()==$('#textNoq').val()) {
-                                $('#chkChk1_'+i).prop('checked',true);
-                          }
+                           
                       }
                       if(t_noa.length!=0 || t_noq.length!=0){
                             alert('讀單已確認!!'); 
