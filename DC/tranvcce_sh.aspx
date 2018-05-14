@@ -95,11 +95,20 @@
                            }
                            
                       }
-                      if(t_noa.length!=0 || t_noq.length!=0){
-                            alert('讀單已確認!!'); 
-                      }  
                 });
             }
+            
+            function q_funcPost(t_func, result) {
+                switch(t_func) {
+                    case 'qtxt.query.tranvccesh_chk1':
+                        var as = _q_appendData("tmp0", "", true, true);
+                        alert(as[0].msg);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
             function q_boxClose(s2) {
                 var ret;
                 switch (b_pop) {
