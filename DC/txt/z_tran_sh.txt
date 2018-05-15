@@ -14,7 +14,12 @@ declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13]
 declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
 
-declare @tmp table( 
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+	drop table #tmp
+END 
+
+create table #tmp( 
 	gno nvarchar(10), 
 	rr int,
 	recno int,
@@ -60,11 +65,11 @@ declare @tmp table(
 	unit2 nvarchar(50),
 	weight nvarchar(50)
 ) 
-insert @tmp 
+insert #tmp 
 select '1',ROW_NUMBER()over(partition by a.noa,a.no2 order by a.no2,a.noq) 
 ,'',a.noa,a.no2,b.datea,a.custno,cust,isnull(a.mount,0),isnull(a.volume,0),isnull(a.addrno,''),a.addr,isnull(addrno2,'')
 ,addr2,addr3,total,driverno,driver,'','','','','','','','','',''
-,case when a.chk1=1 then 'V' else '' end ,case when a.chk2=1 then 'V' else '' end,a.memo,isnull(total2,null),null,null,null,null,null,
+,case when a.chk1=1 then 'V' else '' end ,a.typea,a.memo,isnull(total2,null),null,null,null,null,null,
 isnull(productno,''),product,isnull(a.tranno,''),isnull(productno2,''),isnull(a.unit,''),isnull(unit2,'')
 ,case when isnull(a.weight,0)!=0 then cast(a.weight as nvarchar(50))+'KG' end
 from view_tranvcces a
@@ -74,60 +79,66 @@ and (a.custno between @t_bcustno and @t_ecustno)
 and ((a.addrno between @t_baddr1 and @t_eaddr1) or (a.addr between @t_baddr1 and @t_eaddr1)) 
 and ((addrno2 between @t_baddr2 and @t_eaddr2) or (addr2 between @t_baddr2 and @t_eaddr2)) 
 and (driverno between @t_bdriver and @t_edriver) 
-and (len(@t_chk1)=0 or a.chk1=@t_chk1) 
-and (len(@t_chk2)=0 or a.chk1=@t_chk2)
+and (len(@t_chk1)=0 or a.chk1=@t_chk1)
+and (len(@t_chk2)=0 or a.typea=@t_chk2)
 and (b.noa between @t_bnoa and @t_enoa)
+and b.datea>='107/01/01'
 order by b.datea,a.noa,noq
 
-update @tmp
+update #tmp
 set total=b.total
-from @tmp a
+from #tmp a
 outer apply(select SUM(isnull(total,0))total from view_tranvcces where (noa between @t_bnoa and @t_enoa) and noa=a.noa and no2=a.no2 group by noa,no2)b
 
-update @tmp
+update #tmp
 set recno=(rr-1)/6
 
-update @tmp 
+update #tmp 
 set driverno2=b.driverno1,driver2=b.driver1,total2=b.total1 
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=2)b
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%6=2)b
 where a.recno=a.recno
 
-update @tmp 
+update #tmp 
 set driverno3=b.driverno1,driver3=b.driver1,total3=b.total1 
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=3)b 
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%6=3)b 
 where a.recno=b.recno
 
-update @tmp 
+update #tmp 
 set driverno4=b.driverno1,driver4=b.driver1,total4=b.total1 
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=4)b 
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%6=4)b 
 where a.recno=b.recno
 
-update @tmp 
+update #tmp 
 set driverno5=b.driverno1,driver5=b.driver1,total5=b.total1 
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=5)b 
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%6=5)b 
 where a.recno=b.recno
 
-update @tmp 
+update #tmp 
 set driverno6=b.driverno1,driver6=b.driver1,total6=b.total1 
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%6=0)b 
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%6=0)b 
 where a.recno=b.recno
 
-delete @tmp where rr%6!=1
+delete #tmp where rr%6!=1
 
-insert @tmp(gno,datea,noa)
+insert #tmp(gno,datea,noa)
 select '2',datea,noa
-from @tmp
+from #tmp
 group by datea,noa
  
 select 
 mount mount 
-,* from @tmp 
-order by noa,datea,gno,no2 
+,* from #tmp 
+order by noa,datea,gno,no2
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+	drop table #tmp
+END
 ; 
 --------------------------------------------------------------------------------------------------------
 z_tran_sh2:--z_tran_sh2
@@ -144,7 +155,12 @@ declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13]
 declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
 
-declare @tmp table( 
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+	drop table #tmp
+END
+
+create table #tmp( 
 	gno nvarchar(10),
 	rr int,
 	page int,
@@ -182,7 +198,7 @@ declare @tmp table(
 	unit1 nvarchar(50),
 	unit2 nvarchar(50)
 ) 
-insert @tmp 
+insert #tmp
 select '9',ROW_NUMBER()over(partition by a.noa,a.no2 order by a.no2),'',a.noa,a.no2,a.custno,cust,c.fax,time1,a.mount,a.volume
 ,case when isnull(a.weight,0)!=0 then '('+cast(a.weight as nvarchar(50))+'KG)' end,a.addrno,a.addr,addrno2
 ,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','','','',''
@@ -196,33 +212,34 @@ and (a.custno between @t_bcustno and @t_ecustno)
 and ((a.addrno between @t_baddr1 and @t_eaddr1) or (a.addr between @t_baddr1 and @t_eaddr1))
 and ((addrno2 between @t_baddr2 and @t_eaddr2) or (addr2 between @t_baddr2 and @t_eaddr2))
 and a.custno!='1'
+and datea>='107/01/01'
 
-update @tmp 
+update #tmp 
 set driver2=b.driver,driverno2=b.driverno
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=2)b
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%4=2)b
 
-update @tmp 
+update #tmp 
 set driver3=b.driver,driverno3=b.driverno
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=3)b
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%4=3)b
 
-update @tmp 
+update #tmp 
 set driver4=b.driver,driverno4=b.driverno
-from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=0)b
+from #tmp a 
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and rr%4=0)b
 
-delete @tmp where rr%4!=1
+delete #tmp where rr%4!=1
 
-insert @tmp
+insert #tmp
 select '1',rr,page,noa,no2,custno,comp,fax,datea,mount,volume,weight,addrno,addr,addrno2,addr2,total,memo,addrno3,addr3,te1,address,worker,driverno,driver
 ,driverno2,driver2,driverno3,driver3,driverno4,driver4,product,caseno,po,unit1,unit2
-from @tmp where (driverno  between @t_bdriver and @t_edriver)
+from #tmp where (driverno  between @t_bdriver and @t_edriver)
 or (driverno2 between @t_bdriver and @t_edriver)
 or (driverno3 between @t_bdriver and @t_edriver)
 or (driverno4 between @t_bdriver and @t_edriver)
 
-delete @tmp where gno='9'
+delete  #tmp where gno='9'
 
 declare @pageline int =2--一頁個品項
 declare @custno nvarchar(50)
@@ -233,7 +250,7 @@ declare @page int
 
 --補空白行
 declare cursor_table cursor for 
-select noa,no2,custno,MAX(rr),MAX(page) from @tmp group by custno,noa,no2
+select noa,no2,custno,MAX(rr),MAX(page) from #tmp group by custno,noa,no2
 open cursor_table 
 fetch next from cursor_table 
 into @noa,@no2,@custno,@idno,@page
@@ -242,7 +259,7 @@ begin
 	while ((@idno)%@pageline>0)
 	begin
 		set @idno=@idno+1
-		insert @tmp(gno,noa,no2,custno,rr,page)
+		insert #tmp(gno,noa,no2,custno,rr,page)
 		select '2',@noa,@no2,@custno,@idno,@page
 	end
 
@@ -252,34 +269,39 @@ end
 close cursor_table 
 deallocate cursor_table
 
-insert @tmp(gno,rr,noa,no2,addr3,address,te1,worker)
+insert #tmp(gno,rr,noa,no2,addr3,address,te1,worker)
 select '3',9998,noa,no2,addr3,address,te1,worker
-from @tmp
+from #tmp
 where gno='1'
 group by noa,no2,addr3,address,te1,worker
 
-update @tmp
+update #tmp
 set driver=isnull(b.driver,'')+' '+isnull(b.driver2,'')+' '+isnull(b.driver3,'')+' '+isnull(b.driver4,'')
-from @tmp a
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and gno='1')b
+from #tmp a
+outer apply(select * from #tmp where a.noa=noa and a.no2=no2 and gno='1')b
 where a.gno='3'
 
-insert @tmp(gno,rr,noa,no2,custno,comp,fax,datea)
+insert #tmp(gno,rr,noa,no2,custno,comp,fax,datea)
 select '5','0',noa,no2,custno,comp,fax,datea
-from @tmp
+from #tmp
 where gno='1'
 
-update @tmp
+update #tmp
 set gno='6'
 where gno='5' and no2!='001'
 
-insert @tmp(gno,rr,noa,no2)
+insert #tmp(gno,rr,noa,no2)
 select '4',9999,noa,no2
-from @tmp
+from #tmp
 group by noa,no2
 
-select * from @tmp
+select * from #tmp
 order by noa,no2,rr
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+	drop table #tmp
+END
 ;
 --------------------------------------------------------------------------------------------------
 z_tran_sh3:--z_tran_sh3

@@ -21,6 +21,15 @@
             $(document).ready(function() {
             	q_getId();
                 q_gf('', 'z_tran_sh');
+                
+                 $('#q_report .report ').click(function(e) {
+                        if($('#q_report').data().info.reportData[$('#q_report').data().info.radioIndex].report=='z_tran_sh1'
+                           || $('#q_report').data().info.reportData[$('#q_report').data().info.radioIndex].report=='z_tran_sh2'
+                        ){
+                           $('#txtXdate1').val(q_date());
+                           $('#txtXdate2').val(q_date());
+                        }                                  
+                 }); 
             });
             
             aPop = new Array(
@@ -70,11 +79,11 @@
                     },{
                         type : '5', //[14]
                         name : 'xchk1',
-                        value : (' @全部,0@未登錄,1@已登錄').split(',')
+                        value : (' @全部,0@未讀單,1@已讀單').split(',')
                     },{
                         type : '5', //[15]
                         name : 'xchk2',
-                        value : (' @全部,0@未確認,1@已確認').split(',')
+                        value : (' ,月結,付清').split(',')
                     },{
                         type : '8', //[16]
                         name : 'xdetail',
@@ -172,7 +181,6 @@
                         } else
                             alert('請輸入交運月份。');
                     });
-
 	        }
             function q_funcPost(t_func, result) {
                       switch(t_func) {
