@@ -141,20 +141,6 @@ BEGIN
 END
 ; 
 --------------------------------------------------------------------------------------------------------
-z_tran_sh2:--z_tran_sh2
-declare @t_bdate nvarchar(20) = case when '#non'=[2] then '' else [2] end
-declare @t_edate nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
-declare @t_bcustno nvarchar(20) = case when '#non'=[6] then '' else [6] end
-declare @t_ecustno nvarchar(20) = case when '#non'=[7] then char(255) else [7] end
-declare @t_baddr1 nvarchar(20) = case when '#non'=[8] then '' else [8] end 
-declare @t_eaddr1 nvarchar(20) = case when '#non'=[9] then char(255) else [9] end
-declare @t_baddr2 nvarchar(20) = case when '#non'=[10] then '' else [10] end 
-declare @t_eaddr2 nvarchar(20) = case when '#non'=[11] then char(255) else [11] end
-declare @t_bdriver nvarchar(20) = case when '#non'=[12] then '' else [12] end
-declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13] end
-declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
-declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
-
 IF OBJECT_ID('tempdb..#tmp')is not null
 BEGIN
 	drop table #tmp
@@ -234,10 +220,7 @@ delete #tmp where rr%4!=1
 insert #tmp
 select '1',rr,page,noa,no2,custno,comp,fax,datea,mount,volume,weight,addrno,addr,addrno2,addr2,total,memo,addrno3,addr3,te1,address,worker,driverno,driver
 ,driverno2,driver2,driverno3,driver3,driverno4,driver4,product,caseno,po,unit1,unit2
-from #tmp where (driverno  between @t_bdriver and @t_edriver)
-or (driverno2 between @t_bdriver and @t_edriver)
-or (driverno3 between @t_bdriver and @t_edriver)
-or (driverno4 between @t_bdriver and @t_edriver)
+from #tmp where (driverno between @t_bdriver and @t_edriver)
 
 delete  #tmp where gno='9'
 
@@ -347,16 +330,17 @@ declare @tmp table(
 )
 insert @tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.mount,a.unit
-,a.unit2,sum(isnull(a.volume,0))
-,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
+,a.unit2,case when isnull(a.volume,0)!=0 then a.volume else null end
+,a.addrno,a.addr + REPLICATE('　',6-len(a.addr)) +'- '+a.addr2,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
 ,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'',''
-,'('+dbo.getComma(isnull(a.weight,0),0)+'KG)',a.noa,a.no2
+,case when isnull(a.weight,0)!=0 then '('+dbo.getComma(isnull(a.weight,0),0)+'KG)' else null end,a.noa,a.no2
 from view_tranvcces a
 left join cust b on a.custno=b.noa
 where (a.time1 between @t_bdate and @t_edate)
 and isnull(a.tranno,'')=''
 and(a.custno between @t_bcustno and @t_ecustno)
-group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.unit2,a.addrno,a.addr,a.addrno2,a.addr2,a.typea,a.noa,a.no2,a.weight,a.memo,a.mount
+group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.unit2,a.addrno,a.addr,a.addrno2,a.addr2,a.typea,a.noa,a.no2,a.weight,a.memo,a.mount,a.volume
+
 insert @tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
 from @tmp
@@ -419,7 +403,7 @@ declare @tmp table(
 insert @tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1
 ,a.product,a.tranno
-,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
+,a.addrno,a.addr + REPLICATE('　',6-len(a.addr)) +'- '+a.addr2,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
 ,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'','',min(a.noa),min(a.noq)
 from view_tranvcces a
 left join cust b on a.custno=b.noa
