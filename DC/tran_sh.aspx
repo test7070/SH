@@ -548,8 +548,14 @@
 						<td>
 						<input id="txtWorker2" type="text" class="txt c1" />
 						</td>
-						<td><input id="btnImport" type="button" value="派車匯入" style="width:100%;"/></td>
 					</tr>
+					<tr>
+					    <td></td>
+                        <td><input id="btnImport" type="button" value="派車匯入" style="width:100%;"/></td>
+                        <td><input id="btnTranvcce2tran" type="button" value="派車整批匯入" style="width:100%;"/></td>
+                        <td><input id="btnCusttrd" type="button" value="客戶立帳" style="width:100%;"/></td>
+                        <td><input id="btnDrivertrd" type="button" value="司機立帳" style="width:100%;"/></td>
+                    </tr>
 				</table>
 			</div>
 		</div>
