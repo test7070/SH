@@ -98,13 +98,19 @@
                             type : '5', //[19]
                             name : 'details',
                             value : ('統計,明細').split(',')
+                    },{
+                        type : '6',//[20]
+                        name : 'xncustno'
                     }]
                     });
                 q_popAssign();
                  $('#txtXdate1').mask('999/99/99');
 	             $('#txtXdate1').datepicker();
 	             $('#txtXdate2').mask('999/99/99');
-	             $('#txtXdate2').datepicker(); 
+	             $('#txtXdate2').datepicker();
+	             
+	             $('#Xncustno').css("width","605px");
+                 $('#txtXncustno').css("width","500px");
                
                 var t_noa=typeof(q_getId()[5])=='undefined'?'':q_getId()[5];
                 t_noa  =  t_noa.replace('noa=','');
