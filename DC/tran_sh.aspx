@@ -103,8 +103,8 @@
                             if (!b_ret || b_ret.length == 0)
                                 return;
                                 ret = q_gridAddRow(bbsHtm, 'tbbs', 
-                                'txtOrdeno,txtCaseno2,txtTrandate,txtCustno,txtNick,txtUccno,txtProduct,txtMount,txtUnit,txtVolume,txtTotal,txtCarno,txtDriverno,txtDriver,txtMemo,txtStraddrno,txtStraddr,txtEndaddrno,txtEndaddr,txtTotal2,txtCaseno,txtPo,txtCasecustno,txtCasecust,txtWeight,cmbUnit2', b_ret.length, b_ret, 
-                                'noa,noq,time1,custno,cust,productno,product,mount,unit,volume,total,carno,driverno,driver,memo,addrno,addr,addrno2,addr2,total2,tranno,productno2,addrno3,addr3,weight,unit2', 'txtCustno,txtProductno,txtTrandate,txtMount');
+                                'txtOrdeno,txtCaseno2,txtTrandate,txtCustno,txtNick,txtUccno,txtProduct,txtMount,txtUnit,txtVolume,txtTotal,txtCarno,txtDriverno,txtDriver,txtMemo,txtStraddrno,txtStraddr,txtEndaddrno,txtEndaddr,txtTotal2,txtCaseno,txtPo,txtCasecustno,txtCasecust,txtWeight,cmbUnit2,txtTtype', b_ret.length, b_ret, 
+                                'noa,noq,time1,custno,cust,productno,product,mount,unit,volume,total,carno,driverno,driver,memo,addrno,addr,addrno2,addr2,total2,tranno,productno2,addrno3,addr3,weight,unit2,typea', 'txtCustno,txtProductno,txtTrandate,txtMount');
                             }
                         break;
                     case 'cust':
@@ -525,8 +525,8 @@
                             <select id="cmbPort" class="txt c1"> </select>
                         </td>
                         <td><span> </span><a id="lblBdate" class="lbl">匯入日期區間</a></td>
-                        <td colspan="2"><input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
-                                        <input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                        <td colspan="2"><input id="txtBtime"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                                        <input id="txtEtime"  type="text" style="float:left; width:100px; font-size: medium;"/>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblAddr" class="lbl btn" >客戶</a></td>
@@ -564,6 +564,7 @@
 				<tr style='color:white; background:#003366;' >
 					<td align="center" style="width:25px"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /></td>
 					<td align="center" style="width:20px;"> </td>
+					<td align="center" style="width:40px"><a>付款</a></td>
 					<td align="center" style="width:90px"><a>出車日期</a></td>
 					<td align="center" style="width:80px"><a>客戶</a></td>
 					<td align="center" style="width:100px"><a>品項</a></td>
@@ -590,6 +591,7 @@
 						<input type="text" id="txtNoq.*" style="display:none;"/>
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
+					<td><input type="text" id="txtTtype.*" style="width:95%;"/></td>
 					<td><input type="text" id="txtTrandate.*" style="width:95%;"/></td>
 					<td>
 						<input type="text" id="txtCustno.*" style="float:left;width:95%;" />
