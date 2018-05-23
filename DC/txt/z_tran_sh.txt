@@ -347,9 +347,9 @@ declare @tmp table(
 insert @tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.mount,a.unit
 ,a.unit2,case when isnull(a.volume,0)!=0 then a.volume else null end
-,a.addrno,a.addr + REPLICATE('　',6-len(a.addr)) +'- '+a.addr2,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
+,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
 ,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'',''
-,case when isnull(a.weight,0)!=0 then '('+dbo.getComma(isnull(a.weight,0),0)+'KG)' else null end,a.noa,a.no2
+,case when isnull(a.weight,0)!=0 then dbo.getComma(isnull(a.weight,0),0)+'KG' else null end,a.noa,a.no2
 from view_tranvcces a
 left join cust b on a.custno=b.noa
 where (a.time1 between @t_bdate and @t_edate)
@@ -419,7 +419,7 @@ declare @tmp table(
 insert @tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1
 ,a.product,a.tranno
-,a.addrno,a.addr + REPLICATE('　',6-len(a.addr)) +'- '+a.addr2,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
+,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
 ,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'','',min(a.noa),min(a.noq)
 from view_tranvcces a
 left join cust b on a.custno=b.noa

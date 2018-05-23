@@ -14,8 +14,8 @@
 		<script src="css/jquery/ui/jquery.ui.widget.js"></script>
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
-			var q_name = "view_tranvcces";
-			var q_readonly = ['txtNoa','txtTime1','txtWorker','txtWorker2'];
+			var q_name = "tranvcces";
+			var q_readonly = ['txtNoa','txtNoq','txtTime1','txtWorker','txtWorker2'];
 			var bbmNum = [['txtTotal',10,0,1],['txtTotal2',10,0,1]];
 			var bbmMask = [];
 			q_sqlCount = 6;
@@ -25,7 +25,7 @@
 			brwKey = 'noa,noq';
 			q_desc = 1;
             q_xchg = 1;
-            brwCount2 = 18;
+            brwCount2 = 20;
 
             aPop = new Array(
 			);
@@ -33,6 +33,7 @@
 			$(document).ready(function() {
 				bbmKey = ['noa','noq'];
 				q_brwCount();
+				q_content='order= order by noa desc,noq ^^'
 				q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
 
 			});
@@ -48,6 +49,14 @@
 			    q_getFormat();
                 q_mask(bbmMask);
 			    $('#btnIns').hide();
+			    
+			    $('#lblNoa').click(function() {
+                    q_pop('txtNoa', "tranvcce_sh.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";charindex(noa,'" + $('#txtNoa').val() + "')>0;" + r_accy + '_' + r_cno, 'tranvcce', 'noa', '', "100%", "1024px", q_getMsg('lblNoa'), true);
+                });
+                
+                $('#chkChk1').click(function(){
+                    
+                });
 			}
 
 			function sum() {
@@ -124,6 +133,13 @@
 
 			function refresh(recno) {
 				_refresh(recno);
+				if($('#chkChk1').is(':checked')==true){
+				    $('#Chk1').prop('checked',true);
+				}
+				
+				if($('#chkChk2').is(':checked')==true){
+                    $('#Chk2').prop('checked',true);
+                }
 			}
 
 			function readonly(t_para, empty) {
@@ -319,7 +335,8 @@
 				<table class="tview" id="tview">
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id="vewChk"> </a></td>
-						<td align="center" style="width:30px"><a>讀單</a>
+						<td align="center" style="width:30px"><a>讀單</a></td>
+						<td align="center" style="width:30px"><a>列印</a></td>
 						<td align="center" style="width:100px"><a>電腦編號 </a></td>
 						<td align="center" style="width:40px"><a>項次</a></td>
                         <td align="center" style="width:40px"><a>付款</a></td>
@@ -343,7 +360,8 @@
 					</tr>
 					<tr>
 						<td ><input id="chkBrow.*" type="checkbox"/></td>
-						<td id="chk4" style="text-align: center;">~chk4</td>
+						<td id="chk1" style="text-align: center;">~chk1</td>
+						<td id="chk2" style="text-align: center;">~chk2</td>
 						<td id="noa" style="text-align: center;">~noa</td>
 						<td id="no2" style="text-align: center;">~no2</td>
 						<td id="typea" style="text-align: center;">~typea</td>
@@ -380,13 +398,22 @@
 						<td class="tdZ"> </td>
 					</tr>
 					<tr>
-					    <td><span> </span><a id="lblNoa" class="lbl" >電腦編號</a></td>
-					    <td colspan="2"><input id="txtNoa" type="text" class="txt" style="width: 75%"/>
-                            <input id="txtNo2" type="text" class="txt" style="width:25%"/>
-                            <input id="txtNoq" type="text" class="txt" style="display: none"/>
+					    <td><span> </span><a id="lblNoa" class="lbl btn" >電腦編號</a></td>
+					    <td colspan="2"><input id="txtNoa" type="text" class="txt" style="width: 70%"/>
+                            <input id="txtNoq" type="text" class="txt" style="width:25%"/>
+                            
                         </td>
+                        <td><span> </span><a id="lblN2" class="lbl" >項次</a></td>
+                        <td><input id="txtNo2" type="text" class="txt" style="width:40%"/> </td>
+                        <td><span> </span><a id='lblChk1'>讀單</a>
+                            <input id="Chk1" type="checkbox" style="zoom:1.5"/>
+                            <input id="chkChk1" type="checkbox" style="display: none"/></td>
+                        <td><span> </span><a id='lblChk2'>列印</a>
+                            <input id="chkChk2" type="checkbox" style="zoom:1.5"/></td>
+                    </tr>
+                    <tr>
                         <td><span> </span><a id="lblTime1" class="lbl" >日期</a></td>
-                        <td><input id="txtTime1" type="text" class="txt c1" /></td>
+                        <td colspan="2"><input id="txtTime1" type="text" class="txt c1" /></td>
                         <td><span> </span><a id="lblType" class="lbl" >付款</a></td>
                         <td><input id="txtType" type="text" class="txt c1" /></td>
                     </tr>
