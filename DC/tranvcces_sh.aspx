@@ -397,7 +397,7 @@
 						<td id="no2" style="text-align: center;">~no2</td>
 						<td id="typea" style="text-align: center;">~typea</td>
 						<td id="time1" style="text-align: center;">~time1</td>
-						<td id="comp" style="text-align: center;">~comp</td>
+						<td id="cust" style="text-align: center;">~cust</td>
 						<td id="product" style="text-align: center;">~product</td>
 						<td id="mount" style="text-align: center;">~mount</td>
 						<td id="unit" style="text-align: center;">~unit</td>

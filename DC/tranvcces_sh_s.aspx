@@ -43,16 +43,32 @@
 				t_noa = $.trim($('#txtNoa').val());
 				t_custno = $.trim($('#txtCustno').val());
 				t_cust = $.trim($('#txtCust').val());
+				t_productno = $.trim($('#txtProductno').val());
+                t_product = $.trim($('#txtProduct').val());
+                t_addrno = $.trim($('#txtAddrno').val());
+                t_addr = $.trim($('#txtAddr').val());
+                t_addrno2 = $.trim($('#txtAddrno2').val());
+                t_addr2= $.trim($('#txtAddr2').val());
+                
 				
 				var t_where = " 1=1 "
 					+q_sqlPara2("time1", t_bdate, t_edate)
 					+q_sqlPara2("noa", t_noa)
 					+q_sqlPara2("custno", t_custno)
+					+q_sqlPara2("productno", t_productno)
+					+q_sqlPara2("addrno", t_addrno)
+					+q_sqlPara2("addrno2", t_addrno2)
 					;
 					
 				if (t_cust.length>0)
                     t_where += " and charindex('" + t_cust + "',cust)>0";
-                    
+                if (t_product.length>0)
+                    t_where += " and charindex('" + t_product + "',product)>0";
+                if (t_addr.length>0)
+                    t_where += " and charindex('" + t_addr + "',addr)>0";
+                if (t_addr2.length>0)
+                    t_where += " and charindex('" + t_addr2 + "',addr2)>0";
+                        
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
 			}
@@ -89,6 +105,30 @@
 					<td class='seek'  style="width:20%;"><a id='lblCust'>客戶名稱</a></td>
 					<td><input class="txt" id="txtCust" type="text" style="width:220px;float:left; font-size:medium;" /></td>
 				</tr>
+				<tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblProductno'>品項編號</a></td>
+                    <td><input class="txt" id="txtProductno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblProduct'>品項</a></td>
+                    <td><input class="txt" id="txtProduct" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddrno'>起點編號</a></td>
+                    <td><input class="txt" id="txtAddrno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddr'>起點</a></td>
+                    <td><input class="txt" id="txtAddr" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddrno2'>迄點編號</a></td>
+                    <td><input class="txt" id="txtAddrno2" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblAddr2'>迄點</a></td>
+                    <td><input class="txt" id="txtAddr2" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
 			<datalist id="listTypea"> </datalist>
