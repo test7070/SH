@@ -15,7 +15,7 @@
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
 			var q_name = "tranvcces";
-			var q_readonly = ['txtNoa','txtNoq','txtTime1','txtWorker','txtWorker2'];
+			var q_readonly = ['txtNoa','txtNoq','txtTime1','txtWorker','txtWorker2','txtConn'];
 			var bbmNum = [['txtTotal',10,0,1],['txtTotal2',10,0,1]];
 			var bbmMask = [];
 			q_sqlCount = 6;
@@ -28,12 +28,17 @@
             brwCount2 = 20;
 
             aPop = new Array(
-			);
+             ['txtCustno', 'lblCustno', 'cust', 'noa,paytype,nick', 'txtCustno,cmbTypea,txtCust', 'cust_b.aspx']
+            , ['txtProductno_', 'lblProductno', 'ucc', 'noa,product', 'txtProductno,txtProduct', 'ucc_b.aspx']
+            , ['txtCarno', 'lblCarno', 'car2', 'driverno,a.noa,driver', 'txtDriverno,txtCarno,txtDriver', 'car2_b.aspx']
+            , ['txtAddrno', '', 'addr', 'noa,addr', '0txtAddrno,txtAddr', 'addr_b.aspx']
+            , ['txtAddrno2', '',  'addr', 'noa,addr', '0txtAddrno2,txtAddr2', 'addr_b.aspx']
+            , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']);
             	
 			$(document).ready(function() {
 				bbmKey = ['noa','noq'];
 				q_brwCount();
-				q_content='order= order by noa desc,noq ^^'
+				q_content='order=^^noa desc,no2^^'
 				q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
 
 			});
@@ -43,21 +48,47 @@
 					return;
 				}
 				mainForm(0);
+				window.parent.document.title='讀單作業';
 			}
-
+            
 			function mainPost() {
 			    q_getFormat();
                 q_mask(bbmMask);
 			    $('#btnIns').hide();
-			    
+			    q_cmbParse("cmbTypea",'月結@月結,付清@付清');
 			    $('#lblNoa').click(function() {
                     q_pop('txtNoa', "tranvcce_sh.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";charindex(noa,'" + $('#txtNoa').val() + "')>0;" + r_accy + '_' + r_cno, 'tranvcce', 'noa', '', "100%", "1024px", q_getMsg('lblNoa'), true);
                 });
                 
-                $('#chkChk1').click(function(){
+                $('#btnApv').click(function() {
+                    var t_noa = $('#txtNoa').val();
+                    var t_noq = $('#txtNoq').val();
+                    var t_chk1='1';
+                    q_func('qtxt.query.tranvccesh_chk1', 'tranvcce.txt,tranvccesh_chk1,' + encodeURI(t_noa) + ';' + encodeURI(t_noq)+ ';' + encodeURI(r_name)+ ';' + encodeURI(t_chk1));
                     
+                    $('#chkChk1').prop('checked', true);
+                    
+                    for (var i = 0; i < brwCount; i++) {
+                        if($('#vtnoa_'+i).text()!=''){
+                             if($('#vtnoa_'+i).text()==$('#txtNoa').val() && $('#vtnoq_'+i).text()==$('#txtNoq').val()){
+                                 $('#vtchk1_'+i).text('V');
+                             }
+                        }
+                        $('#chkBrow_'+i).focus();
+                    }
                 });
 			}
+			
+			function q_funcPost(t_func, result) {
+                switch(t_func) {
+                    case 'qtxt.query.tranvccesh_chk1':
+                        var as = _q_appendData("tmp0", "", true, true);
+                        alert(as[0].msg);
+                        break;
+                    default:
+                        break;
+                }
+            }
 
 			function sum() {
 				
@@ -111,10 +142,8 @@
             }
 			function btnOk() {
                 sum();
-                if(q_cur ==1){
-                    $('#txtWorker').val(r_name);
-                }else if(q_cur ==2){
-                    $('#txtWorker2').val(r_name);
+                if(q_cur ==2){
+                    $('#txtConn').val(r_name);
                 }else{
                     alert("error: btnok!");
                 }
@@ -133,12 +162,13 @@
 
 			function refresh(recno) {
 				_refresh(recno);
-				if($('#chkChk1').is(':checked')==true){
-				    $('#Chk1').prop('checked',true);
-				}
-				
-				if($('#chkChk2').is(':checked')==true){
-                    $('#Chk2').prop('checked',true);
+				for (var i = 0; i < brwCount; i++) {
+                        if($('#vtchk1_'+i).text()=='V'){
+                            if($('#vtnoa_'+i).text()==$('#txtNoa').val() && $('#vtnoq_'+i).text()==$('#txtNoq').val()){
+                                 $('#chkChk1').prop('checked', true);
+                             }                           
+                        }
+                        $('#chkBrow_'+i).focus();
                 }
 			}
 
@@ -148,7 +178,7 @@
 					$('#txtDatea').datepicker('destroy');
 				}else{
 					$('#txtDatea').datepicker();
-				}
+				}            
 			}
 
 			function btnMinus(id) {
@@ -363,6 +393,7 @@
 						<td id="chk1" style="text-align: center;">~chk1</td>
 						<td id="chk2" style="text-align: center;">~chk2</td>
 						<td id="noa" style="text-align: center;">~noa</td>
+						<td id="noq" style="text-align: center; display: none">~noq</td>
 						<td id="no2" style="text-align: center;">~no2</td>
 						<td id="typea" style="text-align: center;">~typea</td>
 						<td id="time1" style="text-align: center;">~time1</td>
@@ -400,33 +431,33 @@
 					<tr>
 					    <td><span> </span><a id="lblNoa" class="lbl btn" >電腦編號</a></td>
 					    <td colspan="2"><input id="txtNoa" type="text" class="txt" style="width: 70%"/>
-                            <input id="txtNoq" type="text" class="txt" style="width:25%"/>
+                            <input id="txtNoq" type="text" class="txt" style="width:30%"/>
                             
                         </td>
                         <td><span> </span><a id="lblN2" class="lbl" >項次</a></td>
                         <td><input id="txtNo2" type="text" class="txt" style="width:40%"/> </td>
-                        <td><span> </span><a id='lblChk1'>讀單</a>
-                            <input id="Chk1" type="checkbox" style="zoom:1.5"/>
-                            <input id="chkChk1" type="checkbox" style="display: none"/></td>
-                        <td><span> </span><a id='lblChk2'>列印</a>
-                            <input id="chkChk2" type="checkbox" style="zoom:1.5"/></td>
+                        <td style="text-align: right;"><input id="chkChk1" type="checkbox" style="zoom:1.2"/>
+                            <span> </span><a id='lblChk1'>讀單</a></td>
+                        <td><input id="btnApv" type="button" value="讀單"/></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblTime1" class="lbl" >日期</a></td>
                         <td colspan="2"><input id="txtTime1" type="text" class="txt c1" /></td>
-                        <td><span> </span><a id="lblType" class="lbl" >付款</a></td>
-                        <td><input id="txtType" type="text" class="txt c1" /></td>
+                        <td><span> </span><a id="lblTypea" class="lbl" >付款</a></td>
+                        <td><select id="cmbTypea" class="txt c1"> </select></td>
+                        <td style="text-align: right;"><input id="chkChk2" type="checkbox" style="zoom:1.2"/>
+                        <span> </span><a id='lblChk2'>列印</a></td>
                     </tr>
                     <tr>
-                        <td><span> </span><a id="lblCustno" class="lbl" >客戶</a></td>
+                        <td><span> </span><a id="lblCustno" class="lbl btn" >客戶</a></td>
                         <td colspan="2"><input id="txtCustno" type="text" class="txt" style="width: 40%"/>
-                            <input id="txtComp" type="text" class="txt" style="width:60%"/>
+                            <input id="txtCust" type="text" class="txt" style="width:60%"/>
                         </td>
                         <td><span> </span><a id="lblTotal" class="lbl" >金額</a></td>
                         <td><input id="txtTotal" type="text" class="txt c1 num" /></td>
                     </tr>
                     <tr>
-                        <td><span> </span><a id="lblProductno" class="lbl" >品項</a></td>
+                        <td><span> </span><a id="lblProductno" class="lbl btn" >品項</a></td>
                         <td colspan="2"><input id="txtProductno" type="text" class="txt" style="width: 40%"/>
                             <input id="txtProduct" type="text" class="txt" style="width:60%"/>
                         </td>
@@ -456,18 +487,22 @@
                         <td><input id="txtTranno" type="text" class="txt c1" /></td>
                     </tr>
                     <tr>
-                        <td><span> </span><a id="lblDriverno" class="lbl" >司機</a></td>
+                        <td><span> </span><a id="lblCarno" class="lbl btn" >車牌</a></td>
+                        <td><input id="txtCarno" type="text" class="txt c1" /></td>
+                        <td><span> </span><a id="lblDriverno" class="lbl btn" >司機</a></td>
                         <td colspan="2"><input id="txtDriverno" type="text" class="txt" style="width: 50%"/>
                             <input id="txtDriver" type="text" class="txt" style="width:50%"/>
                         </td>
-                        <td><span> </span><a id="lblCarno" class="lbl" >車牌</a></td>
-                        <td><input id="txtCarno" type="text" class="txt c1" /></td>
                         <td><span> </span><a id="lblTotal2" class="lbl" >司機運費</a></td>
                         <td><input id="txtTotal2" type="text" class="txt c1 num" /></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblMemo" class="lbl" >備註</a></td>
-                        <td colspan="5"><input id="txtMemo" type="text" class="txt c1" /></td>
+                        <td colspan="6"><input id="txtMemo" type="text" class="txt c1" /></td>
+                    </tr>
+                    <tr>
+                        <td><span> </span><a id="lblConn" class="lbl" >修改者</a></td>
+                        <td colspan="2"><input id="txtConn" type="text" class="txt c1" /></td>
                     </tr>
 				</table>
 			</div>
