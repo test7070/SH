@@ -134,7 +134,17 @@
 				sum();
 			}
 			function btnPrint() {
-				q_box('z_tran_sh.aspx' + "?;;;;" + r_accy, '', "95%", "95%", q_getMsg("popPrint"));
+			    var t_noa,t_no2;
+			    for (var i = 0; i < brwCount; i++) {
+                        if($('#chkBrow_'+i).prop('checked')){
+                             t_no2=$('#vtno2_'+i).text();
+                             t_noa=$('#vtnoa_'+i).text();
+                        }
+                        $('#chkBrow_'+i).focus();
+                }
+				q_box('z_tranvccep_sh.aspx?' + r_userno + ";" + r_name + ";" + q_time + ";" + JSON.stringify(
+                            noa=t_noa) + ";" + JSON.stringify(
+                            no2=t_no2) + ";" + r_accy + "_" + r_cno, '', "95%", "95%", q_getMsg("popPrint"));
 			}
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
@@ -434,7 +444,7 @@
                             <input id="txtNoq" type="text" class="txt" style="width:30%"/>
                             
                         </td>
-                        <td><span> </span><a id="lblN2" class="lbl" >項次</a></td>
+                        <td><span> </span><a id="lblNo2" class="lbl" >項次</a></td>
                         <td><input id="txtNo2" type="text" class="txt" style="width:40%"/> </td>
                         <td style="text-align: right;"><input id="chkChk1" type="checkbox" style="zoom:1.2"/>
                             <span> </span><a id='lblChk1'>讀單</a></td>

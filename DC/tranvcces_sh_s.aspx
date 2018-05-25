@@ -16,9 +16,13 @@
 		<script type="text/javascript">
 			var q_name = "tranvcces";
 			
-			aPop = new Array(['txtCustno', 'lblCustno', 'cust', 'noa,comp,nick', 'txtCustno', 'cust_b.aspx']
-			    ,['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno', 'acomp_b.aspx']
-				,['txtProductno', 'lblProductno', 'ucc', 'noa,product', 'txtProductno', 'ucc_b.aspx']);
+			aPop = new Array(['txtCustno', '', 'cust', 'noa,comp,nick', 'txtCustno', 'cust_b.aspx']
+			    ,['txtCno', '', 'acomp', 'noa,acomp', 'txtCno', 'acomp_b.aspx']
+				,['txtProductno', '', 'ucc', 'noa,product', 'txtProductno', 'ucc_b.aspx']
+				,['txtAddrno', '', 'addr', 'noa,addr', 'txtAddrno', 'addr_b.aspx']
+				,['txtAddrno2', '', 'Addr', 'noa,product', 'txtAddrno2', 'addr_b.aspx']
+				,['txtCarno', '', 'car2', 'a.noa,driverno,driver', 'txtCarno', 'car2_b.aspx']
+				,['txtDriverno', '', 'driver', 'noa,namea', 'txtDriverno', 'driver_b.aspx']);
 				
 			$(document).ready(function() {
 				main();
@@ -41,6 +45,7 @@
 				t_bdate = $.trim($('#txtBdate').val());
 				t_edate = $.trim($('#txtEdate').val());
 				t_noa = $.trim($('#txtNoa').val());
+				t_no2= $.trim($('#txtNo2').val());
 				t_custno = $.trim($('#txtCustno').val());
 				t_cust = $.trim($('#txtCust').val());
 				t_productno = $.trim($('#txtProductno').val());
@@ -49,15 +54,24 @@
                 t_addr = $.trim($('#txtAddr').val());
                 t_addrno2 = $.trim($('#txtAddrno2').val());
                 t_addr2= $.trim($('#txtAddr2').val());
-                
+                t_tranno= $.trim($('#txtTranno').val());
+                t_carno= $.trim($('#txtCarno').val());
+                t_driverno= $.trim($('#txtDriverno').val());
+                t_driver= $.trim($('#txtDriver').val());
+                t_total= $.trim($('#txtTotal').val());
 				
 				var t_where = " 1=1 "
 					+q_sqlPara2("time1", t_bdate, t_edate)
 					+q_sqlPara2("noa", t_noa)
+					+q_sqlPara2("no2", t_no2)
 					+q_sqlPara2("custno", t_custno)
 					+q_sqlPara2("productno", t_productno)
 					+q_sqlPara2("addrno", t_addrno)
 					+q_sqlPara2("addrno2", t_addrno2)
+					+q_sqlPara2("tranno", t_tranno)
+					+q_sqlPara2("carno", t_carno)
+					+q_sqlPara2("driverno", t_driverno)
+					+q_sqlPara2("total", t_total)
 					;
 					
 				if (t_cust.length>0)
@@ -68,6 +82,8 @@
                     t_where += " and charindex('" + t_addr + "',addr)>0";
                 if (t_addr2.length>0)
                     t_where += " and charindex('" + t_addr2 + "',addr2)>0";
+                if (t_driver.length>0)
+                    t_where += " and charindex('" + t_driver + "',driver)>0";
                         
 				t_where = ' where=^^' + t_where + '^^ ';
 				return t_where;
@@ -98,6 +114,10 @@
 					<td><input class="txt" id="txtNoa" type="text" style="width:220px;float:left; font-size:medium;" /></td>
 				</tr>
 				<tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblNo2'>項次</a></td>
+                    <td><input class="txt" id="txtNo2" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+				<tr class='seek_tr'>
 					<td class='seek'  style="width:20%;"><a id='lblCustno'>客戶編號</a></td>
 					<td><input class="txt" id="txtCustno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
 				</tr>
@@ -114,20 +134,31 @@
                     <td><input class="txt" id="txtProduct" type="text" style="width:220px;float:left; font-size:medium;" /></td>
                 </tr>
                 <tr class='seek_tr'>
-                    <td class='seek'  style="width:20%;"><a id='lblAddrno'>起點編號</a></td>
-                    <td><input class="txt" id="txtAddrno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                    <td class='seek'  style="width:20%;"><a id='lblAddrno'>起點</a></td>
+                    <td><input class="txt" id="txtAddrno" type="text" style="width:80px;float:left; font-size:medium;" />
+                        <input class="txt" id="txtAddr" type="text" style="width:140px;float:left; font-size:medium;" /></td>
                 </tr>
                 <tr class='seek_tr'>
-                    <td class='seek'  style="width:20%;"><a id='lblAddr'>起點</a></td>
-                    <td><input class="txt" id="txtAddr" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                    <td class='seek'  style="width:20%;"><a id='lblAddrno2'>迄點</a></td>
+                    <td><input class="txt" id="txtAddrno2" type="text" style="width:80px;float:left; font-size:medium;" />            
+                        <input class="txt" id="txtAddr2" type="text" style="width:140px;float:left; font-size:medium;" /></td>
                 </tr>
                 <tr class='seek_tr'>
-                    <td class='seek'  style="width:20%;"><a id='lblAddrno2'>迄點編號</a></td>
-                    <td><input class="txt" id="txtAddrno2" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                    <td class='seek'  style="width:20%;"><a id='lblTranno'>櫃號</a></td>
+                    <td><input class="txt" id="txtTranno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
                 </tr>
                 <tr class='seek_tr'>
-                    <td class='seek'  style="width:20%;"><a id='lblAddr2'>迄點</a></td>
-                    <td><input class="txt" id="txtAddr2" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                    <td class='seek'  style="width:20%;"><a id='lblTotal'>金額</a></td>
+                    <td><input class="txt" id="txtTotal" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblCarno'>車牌</a></td>
+                    <td><input class="txt" id="txtCarno" type="text" style="width:220px;float:left; font-size:medium;" /></td>
+                </tr>
+                <tr class='seek_tr'>
+                    <td class='seek'  style="width:20%;"><a id='lblDriverno'>司機</a></td>
+                    <td><input class="txt" id="txtDriverno" type="text" style="width:110px;float:left; font-size:medium;" />
+                        <input class="txt" id="txtDriver" type="text" style="width:110px;float:left; font-size:medium;" /></td>
                 </tr>
 			</table>
 			<!--#include file="../inc/seek_ctrl.inc"-->
