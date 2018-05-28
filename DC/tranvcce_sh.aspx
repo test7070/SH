@@ -678,13 +678,13 @@
 						<input id="txtWorker2" type="text" class="txt c1" />
 						</td>
 					</tr>
-					<tr>
+					<!--<tr>
                         <td><span> </span><a id="lblWorker" class="lbl" >讀單單號</a></td>
                         <td colspan="2"><input id="textNoa" type="text" class="txt c1"  style="width: 60%;"/>
                             <input id="textNoq" type="text" class="txt c1"  style="width: 35%;" /></td>
                         <td><input id="btnshseek" type="button" value="查詢" style="width:30%;"/>
                             <input id="btnImport" type="button" value="讀單確認" style="width:50%;"/></td>
-                    </tr>
+                    </tr>-->
 				</table>
 			</div>
 		</div>
