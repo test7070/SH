@@ -133,18 +133,21 @@
 				_btnModi();
 				sum();
 			}
+			var t_noa,t_no2;
 			function btnPrint() {
 			    var t_noa,t_no2;
 			    for (var i = 0; i < brwCount; i++) {
                         if($('#chkBrow_'+i).prop('checked')){
                              t_no2=$('#vtno2_'+i).text();
                              t_noa=$('#vtnoa_'+i).text();
+                             $('#vtchk2_'+i).text('V');
                         }
+                        
                         $('#chkBrow_'+i).focus();
                 }
 				q_box('z_tranvccep_sh.aspx?' + r_userno + ";" + r_name + ";" + q_time + ";" + JSON.stringify(
-                            noa=t_noa) + ";" + JSON.stringify(
-                            no2=t_no2) + ";" + r_accy + "_" + r_cno, '', "95%", "95%", q_getMsg("popPrint"));
+                            noa=t_noa) + JSON.stringify(
+                            no2=t_no2) + ";" + r_accy + "_" + r_cno, '', "95%", "95%", q_getMsg("popPrint")); 
 			}
 			function q_stPost() {
                 if (!(q_cur == 1 || q_cur == 2))
@@ -178,8 +181,14 @@
                                  $('#chkChk1').prop('checked', true);
                              }                           
                         }
+                        
+                        if($('#vtnoa_'+i).text()==t_noa && $('#vtno2_'+i).text()==t_no2){
+                             $('#vtchk2').prop('checked', true);
+                        }  
+                                                 
                         $('#chkBrow_'+i).focus();
                 }
+                
 			}
 
 			function readonly(t_para, empty) {

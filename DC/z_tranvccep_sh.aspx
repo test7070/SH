@@ -41,8 +41,8 @@
 
                 var t_noa=typeof(q_getId()[3])=='undefined'?'':q_getId()[3];
                 t_noa = t_noa.substring(1,13);
-                var t_no2=typeof(q_getId()[4])=='undefined'?'':q_getId()[4];
-                t_no2 = t_no2.substring(3,6);
+                var t_no2=typeof(q_getId()[3])=='undefined'?'':q_getId()[3];
+                t_no2 = t_no2.substring(15,18);
                 $('#txtXnoa').val(t_noa);
                 $('#txtXno2').val(t_no2);
 	        }

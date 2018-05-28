@@ -1,0 +1,142 @@
+﻿z_tranvccep_sh01:--z_tranvccep_sh01
+declare @accy nvarchar(20) = case when '#non'='[1]' then '' else '[1]' end
+declare @t_noa nvarchar(20) = case when '#non'=[2] then '' else [2] end
+declare @t_no2 nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
+SET QUOTED_IDENTIFIER OFF
+
+declare @tmp table( 
+	gno nvarchar(10),
+	rr int,
+	page int,
+	noa nvarchar(50),
+	no2 nvarchar(50), 
+	custno nvarchar(50),
+	comp nvarchar(50),							
+	fax nvarchar(50),	
+	datea nvarchar(50),
+	mount float,
+	volume float,
+	weight nvarchar(50),
+	addrno nvarchar(50), 
+	addr nvarchar(max),
+	addrno2 nvarchar(50),
+	addr2 nvarchar(max),
+	total float,
+	memo nvarchar(max),
+	addrno3 nvarchar(50),
+	addr3 nvarchar(50),
+	te1 nvarchar(50),
+	address nvarchar(max),							
+	worker nvarchar(50),
+	driverno nvarchar(50),
+	driver nvarchar(200),
+	driverno2 nvarchar(50),
+	driver2 nvarchar(200),
+	driverno3 nvarchar(50),
+	driver3 nvarchar(200),
+	driverno4 nvarchar(50),
+	driver4 nvarchar(200),
+	product nvarchar(100),
+	caseno nvarchar(100),
+	po nvarchar(100),
+	unit1 nvarchar(50),
+	unit2 nvarchar(50)
+) 
+insert @tmp
+select '9',ROW_NUMBER()over(partition by a.noa,a.no2 order by a.no2),'',a.noa,a.no2,a.custno,cust,c.fax,time1,a.mount,a.volume
+,case when isnull(a.weight,0)!=0 then '('+cast(a.weight as nvarchar(50))+'KG)' end,a.addrno,a.addr,addrno2
+,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','','','',''
+,a.product,a.tranno,a.productno2,isnull(a.unit,''),isnull(a.unit2,'')
+from view_tranvcces a
+left join view_tranvcce b on a.noa=b.noa
+left join cust c on a.custno=c.noa
+left join cust d on a.addrno3=d.noa
+where (a.noa=@t_noa and a.no2=@t_no2)
+
+update @tmp 
+set driver2=b.driver,driverno2=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=2)b
+
+update @tmp 
+set driver3=b.driver,driverno3=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=3)b
+
+update @tmp 
+set driver4=b.driver,driverno4=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=0)b
+
+delete @tmp where rr%4!=1
+
+insert @tmp
+select '1',rr,page,noa,no2,custno,comp,fax,datea,mount,volume,weight,addrno,addr,addrno2,addr2,total,memo,addrno3,addr3,te1,address,worker,driverno,driver
+,driverno2,driver2,driverno3,driver3,driverno4,driver4,product,caseno,po,unit1,unit2
+from @tmp
+
+delete  @tmp where gno='9'
+
+declare @pageline int =2--一頁個品項
+declare @custno nvarchar(50)
+declare @noa nvarchar(50)
+declare @no2 nvarchar(50) 
+declare @idno int
+declare @page int
+
+--補空白行
+declare cursor_table cursor for 
+select noa,no2,custno,MAX(rr),MAX(page) from @tmp group by custno,noa,no2
+open cursor_table 
+fetch next from cursor_table 
+into @noa,@no2,@custno,@idno,@page
+while(@@FETCH_STATUS <> -1) 
+begin
+	while ((@idno)%@pageline>0)
+	begin
+		set @idno=@idno+1
+		insert @tmp(gno,noa,no2,custno,rr,page)
+		select '2',@noa,@no2,@custno,@idno,@page
+	end
+
+	fetch next from cursor_table 
+	into @noa,@no2,@custno,@idno,@page
+end 
+close cursor_table 
+deallocate cursor_table
+
+insert @tmp(gno,rr,noa,no2,addr3,address,te1,worker)
+select '3',9998,noa,no2,addr3,address,te1,worker
+from @tmp
+where gno='1'
+group by noa,no2,addr3,address,te1,worker
+
+update @tmp
+set driver=isnull(b.driver,'')+' '+isnull(b.driver2,'')+' '+isnull(b.driver3,'')+' '+isnull(b.driver4,'')
+from @tmp a
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and gno='1')b
+where a.gno='3'
+
+insert @tmp(gno,rr,noa,no2,custno,comp,fax,datea)
+select '5','0',noa,no2,custno,comp,fax,datea
+from @tmp
+where gno='1'
+
+update @tmp
+set gno='6'
+where gno='5' and no2!='001'
+
+insert @tmp(gno,rr,noa,no2)
+select '4',9999,noa,no2
+from @tmp
+group by noa,no2
+
+exec(" 
+update tranvcces"+@accy+" 
+set chk2='1' 
+where noa='"+@t_noa+"' and no2='"+@t_no2+"' 
+") 
+
+select * from @tmp
+order by noa,no2,rr
+;
