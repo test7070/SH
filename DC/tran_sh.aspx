@@ -31,6 +31,7 @@
             aPop = new Array(['txtDriverno', 'lblDriverno', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']
             , ['txtCarno', 'lblCarno', 'car2', 'a.noa,driverno,driver', 'txtCarno,txtDriverno,txtDriver', 'car2_b.aspx']
             , ['txtAddrno', '', 'cust', 'noa,comp', 'txtAddrno,txtAddr', '']
+            , ['textCustno', '', 'cust', 'noa,comp', 'textCustno', '']
             , ['txtCno', 'lblCno', 'acomp', 'noa,acomp', 'txtCno,txtAcomp', 'acomp_b.aspx']
             , ['txtUccno_', 'btnProduct_', 'ucc', 'noa,product', 'txtUccno_,txtProduct_', 'ucc_b.aspx']
             , ['txtStraddrno_', 'btnStraddr_', 'addr', 'noa,addr', 'txtStraddrno_,txtStraddr_', 'addr_b.aspx']
@@ -61,9 +62,10 @@
 
             function mainPost() {
                 q_mask(bbmMask);
-                bbsMask = [['txtDatea', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
+                bbsMask = [['txtDatea', r_picd],['textBdate', r_picd],['textEdate', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
+                q_cmbParse("cmbCaseuse",'月結@月結,付清@付清','s');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
 
                 $('#btnImport').click(function(e){
@@ -81,11 +83,35 @@
                         q_box("cust_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'cust', "95%", "650px");
                 });
                 
+                $('#btnTranvcce2tran').click(function() {
+                    $('#divImport').toggle();
+                    $('#textBdate').focus();
+                });
+                $('#btnCancel_import').click(function() {
+                    $('#divImport').toggle();
+                });
+                
+                
+                $('#btnImport_trans').click(function() {
+                   if(q_cur != 1 && q_cur != 2){
+                        var t_key = q_getPara('sys.key_tran');
+                        var t_bdate = $('#textBdate').val();
+                        var t_edate = $('#textEdate').val();
+                        var t_custno = $('#textCustno').val();
+                        if(t_bdate.length==0 || t_edate.length==0){
+                            alert('請輸入日期'+q_getMsg('lblMon')+'!!');
+                            return;
+                        }else{
+                            q_func('qtxt.query.tranvcce2transh', 'tran.txt,tranvcce2transh,'+ encodeURI(r_accy) + ';'+ encodeURI(t_key) + ';'+ encodeURI(t_bdate) + ';'+ encodeURI(t_edate) + ';'+ encodeURI(t_custno)+ ';'+ encodeURI(q_date())); 
+                        }    
+                   }
+                });
+                
             }
             
             function q_funcPost(t_func, result) {
                 switch(t_func) {
-                    case 'qtxt.query.tranpayb_jr':
+                    case 'qtxt.query.tranvcce2transh':
                         var as = _q_appendData("tmp0", "", true, true);
                         alert(as[0].msg);
                         break;
@@ -480,6 +506,65 @@
 	ondragover="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
 	>
+	   <div id="divImport" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+            <table style="width:100%;">
+                <tr style="height:1px;">
+                    <td style="width:150px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                </tr>
+                <tr style="height:35px;">
+                    <td><span> </span><a id="lblMon" style="float:right; color: blue; font-size: medium;">匯入日期</a></td>
+                    <td colspan="4">
+                    <input id="textBdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    <input id="textEdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    </td>
+                </tr> 
+                <tr style="height:35px;">
+                    <td><span> </span><a id="lblCustno" style="float:right; color: blue; font-size: medium;">客戶編號</a></td>
+                    <td colspan="4">
+                    <input id="textCustno"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    </td>
+                </tr>              
+                <tr style="height:35px;">
+                    <td> </td>
+                    <td><input id="btnImport_trans" type="button" value="派車匯入"/></td>
+                    <td></td>
+                    <td></td>
+                    <td><input id="btnCancel_import" type="button" value="關閉"/></td>
+                </tr>
+            </table>
+        </div>
+        div id="divImporttrd" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+            <table style="width:100%;">
+                <tr style="height:1px;">
+                    <td style="width:150px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                    <td style="width:80px;"></td>
+                </tr>
+                <tr style="height:35px;">
+                    <td><span> </span><a id="lblCaseuse" style="float:right; color: blue; font-size: medium;">付款方式</a></td>
+                    <td><select id="combCaseuse" class="txt" style="width:95%;"> </select></td>
+                </tr> 
+                <tr style="height:35px;">
+                    <td><span> </span><a id="lblCustno" style="float:right; color: blue; font-size: medium;">客戶編號</a></td>
+                    <td colspan="4">
+                    <input id="textCustno"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    </td>
+                </tr>              
+                <tr style="height:35px;">
+                    <td> </td>
+                    <td><input id="btnImport_trd" type="button" value="立帳匯入"/></td>
+                    <td></td>
+                    <td></td>
+                    <td><input id="btnCancel_importtrd" type="button" value="關閉"/></td>
+                </tr>
+            </table>
+        </div>
 		<!--#include file="../inc/toolbar.inc"-->
 		<div id="dmain" >
 			<div class="dview" id="dview">
@@ -563,7 +648,7 @@
 				<tr style='color:white; background:#003366;' >
 					<td align="center" style="width:25px"><input class="btn"  id="btnPlus" type="button" value='+' style="font-weight: bold;"  /></td>
 					<td align="center" style="width:20px;"> </td>
-					<td align="center" style="width:40px"><a>付款</a></td>
+					<td align="center" style="width:60px"><a>付款</a></td>
 					<td align="center" style="width:90px"><a>出車日期</a></td>
 					<td align="center" style="width:80px"><a>客戶</a></td>
 					<td align="center" style="width:100px"><a>品項</a></td>
@@ -590,7 +675,7 @@
 						<input type="text" id="txtNoq.*" style="display:none;"/>
 					</td>
 					<td><a id="lblNo.*" style="font-weight: bold;text-align: center;display: block;"> </a></td>
-					<td><input type="text" id="txtTtype.*" style="width:95%;"/></td>
+					<td><select id="cmbCaseuse.*" class="txt" style="width:95%;"> </select></td>
 					<td><input type="text" id="txtTrandate.*" style="width:95%;"/></td>
 					<td>
 						<input type="text" id="txtCustno.*" style="float:left;width:95%;" />
