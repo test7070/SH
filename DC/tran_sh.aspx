@@ -20,7 +20,7 @@
             var q_readonlys = ['txtOrdeno', 'txtCaseno2',];
             var bbmNum = [];
             var bbsNum = [['txtMount', 10, 0, 1],['txtVolume', 10, 3, 1],['txtWeight', 10, 2, 1],['txtTotal', 10, 0, 1],['txtTotal2', 10, 0, 1]];
-            var bbmMask = [['txtDatea','999/99/99'],['textBdate','999/99/99'],['textEdate','999/99/99']];
+            var bbmMask = [['txtDatea','999/99/99'],['textBdate','999/99/99'],['textEdate','999/99/99'],['textBtdate','999/99/99'],['textEtdate','999/99/99']];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
@@ -62,10 +62,11 @@
 
             function mainPost() {
                 q_mask(bbmMask);
-                bbsMask = [['txtDatea', r_picd],['textBdate', r_picd],['textEdate', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
+                bbsMask = [['txtDatea', r_picd],['textBdate', r_picd],['textEdate', r_picd],['textBtdate', r_picd],['textEtdate', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_cmbParse("cmbCaseuse",'月結@月結,付清@付清','s');
+                q_cmbParse("combCaseuse",'月結日@月結日,付清@付清');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
 
                 $('#btnImport').click(function(e){
@@ -107,11 +108,36 @@
                    }
                 });
                 
+                $('#btnCusttrd').click(function() {
+                    $('#divImporttrd').toggle();
+                    $('#combCaseuse').focus();
+                });
+                $('#btnCancel_importtrd').click(function() {
+                    $('#divImporttrd').toggle();
+                });
+                
+                
+                $('#btnImport_trans').click(function() {
+                   if(q_cur != 1 && q_cur != 2){
+                        var t_key = q_getPara('sys.key_tran');
+                        var t_bdate = $('#textBdate').val();
+                        var t_custno = $('#textCustno').val();
+                        var t_bdate = $('#textBtdate').val();
+                        var t_edate = $('#textEtdate').val();
+                        if(t_bdate.length==0 || t_edate.length==0){
+                            alert('請輸入日期'+q_getMsg('lblMon')+'!!');
+                            return;
+                        }else{
+                            q_func('qtxt.query.tran2trdsh', 'tran.txt,tran2trdsh,'+ encodeURI(r_accy) + ';'+ encodeURI(t_key) + ';'+ encodeURI(t_bdate) + ';'+ encodeURI(t_edate));
+                        }  
+                   }
+                });
+                
             }
             
             function q_funcPost(t_func, result) {
                 switch(t_func) {
-                    case 'qtxt.query.tranvcce2transh':
+                    case 'qtxt.query.tran2trdsh':
                         var as = _q_appendData("tmp0", "", true, true);
                         alert(as[0].msg);
                         break;
@@ -537,7 +563,7 @@
                 </tr>
             </table>
         </div>
-        div id="divImporttrd" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
+        <div id="divImporttrd" style="position:absolute; top:250px; left:600px; display:none; width:400px; height:200px; background-color: #cad3ff; border: 5px solid gray;">
             <table style="width:100%;">
                 <tr style="height:1px;">
                     <td style="width:150px;"></td>
@@ -549,11 +575,18 @@
                 <tr style="height:35px;">
                     <td><span> </span><a id="lblCaseuse" style="float:right; color: blue; font-size: medium;">付款方式</a></td>
                     <td><select id="combCaseuse" class="txt" style="width:95%;"> </select></td>
-                </tr> 
+                </tr>
                 <tr style="height:35px;">
-                    <td><span> </span><a id="lblCustno" style="float:right; color: blue; font-size: medium;">客戶編號</a></td>
+                    <td><span> </span><a id="lblTrddate" style="float:right; color: blue; font-size: medium;">匯入日期</a></td>
                     <td colspan="4">
-                    <input id="textCustno"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    <input id="textBtdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    <input id="textEtdate"  type="text" style="float:left; width:100px; font-size: medium;"/>
+                    </td>
+                </tr>
+                <tr style="height:35px;">
+                    <td><span> </span><a id="lblTrdday" style="float:right; color: blue; font-size: medium;">結帳日</a></td>
+                    <td colspan="4">
+                    <input id="textTrdday"  type="text" style="float:left; width:100px; font-size: medium;"/>
                     </td>
                 </tr>              
                 <tr style="height:35px;">
