@@ -119,7 +119,7 @@
                 
                 $('#btnImport_trd').click(function() {
                    if(q_cur != 1 && q_cur != 2){
-                        var t_key = q_getPara('sys.key_tran');
+                        var t_key = q_getPara('sys.key_trd');
                         var t_ttype = $('#combCaseuse').val();
                         var t_day = $('#textTrdday').val();
                         var t_bdate = $('#textBtdate').val();
