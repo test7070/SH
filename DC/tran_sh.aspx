@@ -66,7 +66,7 @@
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_cmbParse("cmbCaseuse",'月結@月結,付清@付清','s');
-                q_cmbParse("combCaseuse",'月結日@月結日,付清@付清');
+                q_cmbParse("combCaseuse",'月結@月結,付清@付清');
                 q_gt('carteam', '', 0, 0, 0, 'transInit_1');
 
                 $('#btnImport').click(function(e){
@@ -117,18 +117,18 @@
                 });
                 
                 
-                $('#btnImport_trans').click(function() {
+                $('#btnImport_trd').click(function() {
                    if(q_cur != 1 && q_cur != 2){
                         var t_key = q_getPara('sys.key_tran');
-                        var t_bdate = $('#textBdate').val();
-                        var t_custno = $('#textCustno').val();
+                        var t_ttype = $('#combCaseuse').val();
+                        var t_day = $('#textTrdday').val();
                         var t_bdate = $('#textBtdate').val();
                         var t_edate = $('#textEtdate').val();
                         if(t_bdate.length==0 || t_edate.length==0){
                             alert('請輸入日期'+q_getMsg('lblMon')+'!!');
                             return;
                         }else{
-                            q_func('qtxt.query.tran2trdsh', 'tran.txt,tran2trdsh,'+ encodeURI(r_accy) + ';'+ encodeURI(t_key) + ';'+ encodeURI(t_bdate) + ';'+ encodeURI(t_edate));
+                            q_func('qtxt.query.tran2trdsh', 'tran.txt,tran2trdsh,'+ encodeURI(r_accy) + ';'+ encodeURI(t_key) + ';'+ encodeURI(t_ttype) + ';'+ encodeURI(t_day) + ';'+ encodeURI(t_bdate) + ';'+ encodeURI(t_edate));
                         }  
                    }
                 });
@@ -137,6 +137,10 @@
             
             function q_funcPost(t_func, result) {
                 switch(t_func) {
+                    case 'qtxt.query.tranvcce2transh':
+                        var as = _q_appendData("tmp0", "", true, true);
+                        alert(as[0].msg);
+                        break;
                     case 'qtxt.query.tran2trdsh':
                         var as = _q_appendData("tmp0", "", true, true);
                         alert(as[0].msg);

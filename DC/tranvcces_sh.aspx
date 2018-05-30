@@ -56,6 +56,7 @@
                 q_mask(bbmMask);
 			    $('#btnIns').hide();
 			    q_cmbParse("cmbTypea",'月結@月結,付清@付清');
+			    q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M');
 			    $('#lblNoa').click(function() {
                     q_pop('txtNoa', "tranvcce_sh.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";charindex(noa,'" + $('#txtNoa').val() + "')>0;" + r_accy + '_' + r_cno, 'tranvcce', 'noa', '', "100%", "1024px", q_getMsg('lblNoa'), true);
                 });
@@ -493,7 +494,7 @@
                         <td><span> </span><a id="lblVolume" class="lbl" >材積</a></td>
                         <td><input id="txtVolume" type="text" class="txt c1 num" /></td>
                         <td><span> </span><a id="lblUnit2" class="lbl" >材積單位</a></td>
-                        <td><input id="txtUnit2" type="text" class="txt c1" /></td>
+                        <td><select id="cmbUnit2" class="txt c1"> </select></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblAddrno2" class="lbl" >迄點</a></td>

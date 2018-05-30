@@ -105,11 +105,11 @@ update a
 set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
 from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenoq,datea)rx,rr,page from #tmp) a
 
-insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano)
-select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano
+insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2)
+select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
 from #tmp
 where gno='1'
-group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano
+group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
 
 insert #tmp(gno,page,noa,custno)
 select '3',page,noa,custno
