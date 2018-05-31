@@ -432,7 +432,7 @@
 						<td id="driverno" style="text-align: center;">~driverno</td>
 						<td id="driver" style="text-align: center;">~driver</td>
 						<td id="total2" style="text-align: center;">~total2</td>
-						<td id="memo" style="text-align: center;">~memo</td>
+						<td id="memo" style="text-align: left;">~memo</td>
 					</tr>
 				</table>
 			</div>

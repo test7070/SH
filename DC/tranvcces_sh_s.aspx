@@ -40,6 +40,20 @@
 				$('#txtBdate').datepicker();
 				$('#txtEdate').datepicker(); 
 				$('#txtNoa').focus();
+				$('#txtNoa').val('BP');
+				if($('#txtEdate').val()==''){
+                    $('#txtEdate').val($('#txtBdate').val());
+                }
+                $('#txtBdate').change(function() {
+                        if($('#txtEdate').val().length==0){
+                            $('#txtEdate').val($('#txtBdate').val());
+                        }  
+                });
+                $('#txtNoa').change(function() {
+                        if($('#txtNoa').val().length!=0){
+                            $('#txtNoa').val($('#txtNoa').val());
+                        }  
+                });
 			}
 			function q_seekStr() {
 				t_bdate = $.trim($('#txtBdate').val());
