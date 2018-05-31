@@ -25,7 +25,7 @@
 			brwKey = 'noa,noq';
 			q_desc = 1;
             q_xchg = 1;
-            brwCount2 = 20;
+            brwCount2 = 40; 
 
             aPop = new Array(
              ['txtCustno', 'lblCustno', 'cust', 'noa,paytype,nick', 'txtCustno,cmbTypea,txtCust', 'cust_b.aspx']
@@ -38,7 +38,7 @@
 			$(document).ready(function() {
 				bbmKey = ['noa','noq'];
 				q_brwCount();
-				q_content='order=^^noa desc,no2^^'
+				q_content='order=^^noa desc,no2,noq^^'
 				q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
 
 			});
@@ -49,6 +49,7 @@
 				}
 				mainForm(0);
 				window.parent.document.title='讀單作業';
+				
 			}
             
 			function mainPost() {
@@ -78,6 +79,7 @@
                         $('#chkBrow_'+i).focus();
                     }
                 });
+                   
 			}
 			
 			function q_funcPost(t_func, result) {
@@ -177,6 +179,12 @@
 			function refresh(recno) {
 				_refresh(recno);
 				for (var i = 0; i < brwCount; i++) {
+                		if($("#chkBrow_"+i).prop('checked')){
+                			$("#chkBrow_"+i).parent().parent().addClass("vewSel");
+                		}else{
+                			$("#chkBrow_"+i).parent().parent().removeClass("vewSel")
+                		}
+                		
                         if($('#vtchk1_'+i).text()=='V'){
                             if($('#vtnoa_'+i).text()==$('#txtNoa').val() && $('#vtnoq_'+i).text()==$('#txtNoq').val()){
                                  $('#chkChk1').prop('checked', true);
@@ -185,9 +193,9 @@
                         
                         if($('#vtnoa_'+i).text()==t_noa && $('#vtno2_'+i).text()==t_no2){
                              $('#vtchk2').prop('checked', true);
-                        }  
-                                                 
-                        $('#chkBrow_'+i).focus();
+                        }
+                        
+                        
                 }
                 
 			}
@@ -198,7 +206,7 @@
 					$('#txtDatea').datepicker('destroy');
 				}else{
 					$('#txtDatea').datepicker();
-				}            
+				}  
 			}
 
 			function btnMinus(id) {
@@ -273,19 +281,22 @@
                 width: 1900px;
                 border-width: 0px;
             }
+            .vewSel {
+               background-color: lightpink;
+            }
             .tview {
                 border: 5px solid gray;
                 font-size: medium;
-                background-color: black;
+                background-color: #cad3ff;
             }
             .tview tr {
                 height: 30px;
             }
+            
             .tview td {
                 padding: 2px;
                 text-align: center;
                 border-width: 0px;
-                background-color: #cad3ff;
                 color: blue;
             }
             .dbbm {
@@ -382,7 +393,7 @@
 		<!--#include file="../inc/toolbar.inc"-->
 		<div id="dmain">
 			<div class="dview" id="dview">
-				<table class="tview" id="tview">
+				<table class="tview" id="tview" style="background-color:black;">
 					<tr>
 						<td align="center" style="width:20px; color:black;"><a id="vewChk"> </a></td>
 						<td align="center" style="width:30px"><a>讀單</a></td>
