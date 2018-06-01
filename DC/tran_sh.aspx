@@ -20,7 +20,7 @@
             var q_readonlys = ['txtOrdeno', 'txtCaseno2',];
             var bbmNum = [];
             var bbsNum = [['txtMount', 10, 0, 1],['txtVolume', 10, 3, 1],['txtWeight', 10, 2, 1],['txtTotal', 10, 0, 1],['txtTotal2', 10, 0, 1]];
-            var bbmMask = [['txtDatea','999/99/99'],['textBdate','999/99/99'],['textEdate','999/99/99'],['textBtdate','999/99/99'],['textEtdate','999/99/99']];
+            var bbmMask = [['txtDatea','999/99/99'],['txtBtime','999/99/99'],['txtEtime','999/99/99'],['textBdate','999/99/99'],['textEdate','999/99/99'],['textBtdate','999/99/99'],['textEtdate','999/99/99']];
             var bbsMask = [];
             q_sqlCount = 6;
             brwCount = 6;
@@ -62,7 +62,7 @@
 
             function mainPost() {
                 q_mask(bbmMask);
-                bbsMask = [['txtDatea', r_picd],['textBdate', r_picd],['textEdate', r_picd],['textBtdate', r_picd],['textEtdate', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
+                bbsMask = [['txtDatea', r_picd],['txtBtime', r_picd],['txtEtime', r_picd],['textBdate', r_picd],['textEdate', r_picd],['textBtdate', r_picd],['textEtdate', r_picd],['txtTrandate', r_picd],['txtLtime','99:99'],['txtStime','99:99'],['txtDtime','99:99']];
                 $('#txtDatea').datepicker();
                 q_cmbParse("cmbUnit2",'@,cm^3@cm^3,m^3@m^3,材@材,CBM@CBM,M@M','s');
                 q_cmbParse("cmbCaseuse",'月結@月結,付清@付清','s');
@@ -71,8 +71,8 @@
 
                 $('#btnImport').click(function(e){
                         t_custno=$('#txtAddrno').val();
-                        var t_bdate = $('#textBdate').val();
-                        var t_edate = $('#textEdate').val();
+                        var t_bdate = $('#txtBtime').val();
+                        var t_edate = $('#txtEtime').val();
                         var t_where = "custno='"+t_custno+"' and ((len('"+t_bdate+"')=0) or (len('"+t_edate+"')=0) or(time1 between '"+t_bdate+"' and '"+t_edate+"')) and not exists(select noa,noq from view_trans where view_tranvcces.noa=ordeno and view_tranvcces.noq=caseno2) order by noa,noq";
                         q_box("tranvcce_sh_b.aspx?" + r_userno + ";" + r_name + ";" + q_time + ";" + t_where, 'tranvcce_tran', "95%", "650px");
                 });

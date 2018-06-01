@@ -17,7 +17,7 @@
             q_tables = 's';
             var q_name = "tranvcce";
             var q_readonly = ['txtNoa', 'txtWeight','txtTotal', 'txtWorker', 'txtWorker2'];
-            var q_readonlys = [];
+            var q_readonlys = ['txtCust'];
             var bbmNum = [];
             var bbsNum = [['txtMount', 10, 2, 1],['txtWeight', 10, 2, 1],['txtVolume', 10, 1, 1],['txtTotal', 10, 2, 1],['txtTotal2', 10, 0, 1]];
             var bbmMask = [];
@@ -248,7 +248,7 @@
                                                 $('#txtMount_' + seq).val(s4);
                                                 var s5 = $('#txtUnit_' + x).val();
                                                 $('#txtUnit_' + seq).val(s5); 
-                                                var s6 = $('#txtAddrno_' + i).val();
+                                                var s6 = $('#txtAddrno_' + x).val();
                                                 $('#txtAddrno_' + seq).val(s6);
                                                 var s7 = $('#txtAddr_' + x).val();
                                                 $('#txtAddr_' + seq).val(s7);

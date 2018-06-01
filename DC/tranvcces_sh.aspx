@@ -15,7 +15,7 @@
 		<script src="css/jquery/ui/jquery.ui.datepicker_tw.js"></script>
 		<script type="text/javascript">
 			var q_name = "tranvcces";
-			var q_readonly = ['txtNoa','txtNoq','txtTime1','txtWorker','txtWorker2','txtConn'];
+			var q_readonly = ['txtNoa','txtCust','txtNoq','txtTime1','txtWorker','txtWorker2','txtConn'];
 			var bbmNum = [['txtTotal',10,0,1],['txtTotal2',10,0,1]];
 			var bbmMask = [];
 			q_sqlCount = 6;
