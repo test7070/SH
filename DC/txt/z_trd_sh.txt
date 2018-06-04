@@ -154,7 +154,7 @@ declare @t_ecustno nvarchar(20)
 declare @t_vccano nvarchar(max) 
 declare @t_noa nvarchar(max) 
 
-set @pagecount = 30 
+set @pagecount = 35
 set @t_bdate = case when '#non'=[4] then '' else [4] end 
 set @t_edate = case when '#non'=[5] then char(255) else [5] end 
 set @t_bcustno = case when '#non'=[2] then '' else [2] end 
