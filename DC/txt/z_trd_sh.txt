@@ -76,17 +76,17 @@ and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')=''
 group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,d.weight,b.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
-select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,datea,vccano,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno 
 where ISNULL(minusitem,'')!=''
-group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
+group by a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
-select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno
 where ISNULL(plusitem,'')!=''
-group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
+group by a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
 
 insert #tmp(gno,noa,custno,mount,money)
 select '2',noa,custno,SUM(mount),sum(money)
@@ -105,17 +105,17 @@ update a
 set rr=rx,page=ceiling(cast(rx as float)/@pagecount)
 from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenoq,datea)rx,rr,page from #tmp) a
 
-insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2)
+insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2) 
 select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
-from #tmp
-where gno='1'
+from #tmp 
+where gno='1' 
 group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
 
-insert #tmp(gno,page,noa,custno)
-select '3',page,noa,custno
-from #tmp
-where gno='4'
-group by noa,page,custno
+insert #tmp(gno,page,noa,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano) 
+select '3',page,noa,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano
+from #tmp 
+where gno='4' 
+group by noa,page,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano
 
 insert #tmp(gno,page,noa,custno)
 select '6',page,noa,custno
@@ -215,17 +215,17 @@ and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')!=''
 group by a.noa,a.custno,a.comp,c.serial,c.tel,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.caseno,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
-select '4',a.noa,a.custno,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,datea,vccano,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno 
 where ISNULL(minusitem,'')!=''
-group by a.noa,a.custno,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
+group by a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,b.noa,b.minusitem,b.minusmoney,b.memo 
 
-insert #tmp(gno,noa,custno,datea,typea,custchgno,item,money,memo) 
-select '4',a.noa,a.custno,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
+insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,vccano,datea,typea,custchgno,item,money,memo) 
+select '4',a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,'加',b.noa,b.plusitem,b.plusmoney,b.memo 
 from #tmp a left join custchg b on a.noa=b.trdno
 where ISNULL(plusitem,'')!=''
-group by a.noa,a.custno,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
+group by a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,b.noa,b.plusitem,b.plusmoney,b.memo 
 
 insert #tmp(gno,noa,custno,money) 
 select '2',noa,custno,sum(money) 
@@ -244,17 +244,17 @@ update a
 set rr=rx,page=ceiling(cast(rx as float)/@pagecount) 
 from (select ROW_NUMBER()over(partition by noa order by gno,ordeno,ordenonoq,datea)rx,rr,page from #tmp) a 
 
-insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano) 
-select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano 
+insert #tmp(gno,page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2) 
+select '0',page,noa,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
 from #tmp 
 where gno='1' 
-group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano 
+group by noa,page,custno,comp,serial,tel,btrandatea,etrandatea,vccano,mo2
 
-insert #tmp(gno,page,noa,custno) 
-select '3',page,noa,custno 
+insert #tmp(gno,page,noa,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano) 
+select '3',page,noa,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano
 from #tmp 
 where gno='4' 
-group by noa,page,custno 
+group by noa,page,custno,comp,tel,serial,mo2,btrandatea,etrandatea,vccano
 
 insert #tmp(gno,page,noa,custno) 
 select '6',page,noa,custno 

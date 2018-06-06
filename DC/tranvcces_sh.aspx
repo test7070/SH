@@ -23,7 +23,7 @@
 			brwList = [];
 			brwNowPage = 0;
 			brwKey = 'noa,noq';
-			q_desc = 1;
+			//q_desc = 1;
             q_xchg = 1;
             brwCount2 = 40; 
 
@@ -36,9 +36,9 @@
             , ['txtDriverno', 'lblDriver', 'driver', 'noa,namea', 'txtDriverno,txtDriver', 'driver_b.aspx']);
             	
 			$(document).ready(function() {
-				bbmKey = ['noa','noq'];
+				bbmKey = ['ordeno'];
 				q_brwCount();
-				q_content='order=^^noa desc,no2,noq^^'
+				q_content='order=^^ordeno,noq^^'
 				q_gt(q_name, q_content, q_sqlCount, 1, 0, '', r_accy);
 
 			});

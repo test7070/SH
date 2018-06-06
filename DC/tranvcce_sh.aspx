@@ -151,6 +151,23 @@
                         return;
                     }
                 }
+                //自動更換noq
+                for(var i=0;i<q_bbsCount;i++){
+                    $('#txtNoq_'+i).val('');
+                    $('#txtNoq_'+i).val($('#txtNo2_'+i).val());
+                }
+                for(var i=0;i<q_bbsCount;i++){
+                    var t_noq=$('#txtNoq_'+i).val();
+                    var t_nos=1;
+                    if(t_noq.indexOf('-')==-1){
+                        for(var j=i+1;j<q_bbsCount;j++){
+                            if(t_noq==$('#txtNoq_'+j).val()){
+                                $('#txtNoq_'+j).val(t_noq+'-'+t_nos);
+                            }
+                        }
+                    }
+                }
+                
                 if(q_cur ==1){
                     $('#txtWorker').val(r_name);
                 }else if(q_cur ==2){
@@ -385,6 +402,17 @@
             function wrServer(key_value) {
                 var i;
                 $('#txt' + bbmKey[0].substr(0, 1).toUpperCase() + bbmKey[0].substr(1)).val(key_value);
+
+                var date = new Date(dec(r_accy)+1911+'-'+$('#txtDatea').val().substr(4,2)+'-'+$('#txtDatea').val().substr(7,2)+' 00:00:00');
+                    //隔年度第一天
+                var until = new Date(dec(r_accy)+1911+1+'-01-01 00:00:00');
+                    //算出剩下天數
+                var days = round((until - date)/1000/3600/24,0);
+                
+                for(var i=0;i<q_bbsCount;i++){ 
+                    $('#txtOrdeno_'+i).val(days+'-'+key_value+$('#txtNoq_'+i).val());
+                }
+                
                 _btnOk(key_value, bbmKey[0], bbsKey[1], '', 2);
             }
 
@@ -738,6 +766,7 @@
 						<input type="text" id="txtCustno.*" style="float:left;width:95%;" />
 						<input type="text" id="txtCust.*" style="float:left;width:95%;">
 						<input type="button" id="btnCust.*" style="display:none;">
+						<input type="text" id="txtOrdeno.*" style="display:none;"/>
 					</td>
 					<td>
                         <input type="text" id="txtProductno.*" style="float:left;width:95%;" />
