@@ -36,6 +36,12 @@ declare @tmp table(
 	driver3 nvarchar(200),
 	driverno4 nvarchar(50),
 	driver4 nvarchar(200),
+	driverno5 nvarchar(50),
+	driver5 nvarchar(200),
+	driverno6 nvarchar(50),
+	driver6 nvarchar(200),
+	driverno7 nvarchar(50),
+	driver7 nvarchar(200),
 	product nvarchar(100),
 	caseno nvarchar(100),
 	po nvarchar(100),
@@ -45,7 +51,7 @@ declare @tmp table(
 insert @tmp
 select '9',ROW_NUMBER()over(partition by a.noa,a.no2 order by a.no2),'',a.noa,a.no2,a.custno,cust,c.fax,time1,a.mount,a.volume
 ,case when isnull(a.weight,0)!=0 then '('+cast(a.weight as nvarchar(50))+'KG)' end,a.addrno,a.addr,addrno2
-,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','','','',''
+,addr2,total,a.memo,isnull(addrno3,''),addr3,d.tel,d.addr_comp,b.worker,driverno,driver,'','','','','','','','','','','',''
 ,a.product,a.tranno,a.productno2,isnull(a.unit,''),isnull(a.unit2,'')
 from view_tranvcces a
 left join view_tranvcce b on a.noa=b.noa
@@ -56,23 +62,38 @@ where (a.noa=@t_noa and a.no2=@t_no2)
 update @tmp 
 set driver2=b.driver,driverno2=b.driverno
 from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=2)b
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=2)b
 
 update @tmp 
 set driver3=b.driver,driverno3=b.driverno
 from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=3)b
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=3)b
 
 update @tmp 
 set driver4=b.driver,driverno4=b.driverno
 from @tmp a 
-outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%4=0)b
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=4)b
 
-delete @tmp where rr%4!=1
+update @tmp 
+set driver5=b.driver,driverno5=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=5)b
+
+update @tmp 
+set driver6=b.driver,driverno6=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=6)b
+
+update @tmp 
+set driver7=b.driver,driverno7=b.driverno
+from @tmp a 
+outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and rr%7=0)b
+
+delete @tmp where rr%7!=1
 
 insert @tmp
 select '1',rr,page,noa,no2,custno,comp,fax,datea,mount,volume,weight,addrno,addr,addrno2,addr2,total,memo,addrno3,addr3,te1,address,worker,driverno,driver
-,driverno2,driver2,driverno3,driver3,driverno4,driver4,product,caseno,po,unit1,unit2
+,driverno2,driver2,driverno3,driver3,driverno4,driver4,driverno5,driver5,driverno6,driver6,driverno7,driver7,product,caseno,po,unit1,unit2
 from @tmp
 
 delete  @tmp where gno='9'
@@ -112,7 +133,7 @@ where gno='1'
 group by noa,no2,addr3,address,te1,worker
 
 update @tmp
-set driver=isnull(b.driver,'')+' '+isnull(b.driver2,'')+' '+isnull(b.driver3,'')+' '+isnull(b.driver4,'')
+set driver=isnull(b.driver,'')+' '+isnull(b.driver2,'')+' '+isnull(b.driver3,'')+' '+isnull(b.driver4,'')+' '+isnull(b.driver5,'')+' '+isnull(b.driver6,'')+' '+isnull(b.driver7,'')
 from @tmp a
 outer apply(select * from @tmp where a.noa=noa and a.no2=no2 and gno='1')b
 where a.gno='3'

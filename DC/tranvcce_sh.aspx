@@ -163,8 +163,10 @@
                         for(var j=i+1;j<q_bbsCount;j++){
                             if(t_noq==$('#txtNoq_'+j).val()){
                                 $('#txtNoq_'+j).val(t_noq+'-'+t_nos);
+                                t_nos=t_nos+1
                             }
                         }
+                        t_nos=0
                     }
                 }
                 
@@ -408,9 +410,9 @@
                 var until = new Date(dec(r_accy)+1911+1+'-01-01 00:00:00');
                     //算出剩下天數
                 var days = round((until - date)/1000/3600/24,0);
-                
+                var maxno=('000'+(999-dec($('#txtNoa').val().substr(10,3)))).slice(-3);
                 for(var i=0;i<q_bbsCount;i++){ 
-                    $('#txtOrdeno_'+i).val(days+'-'+key_value+$('#txtNoq_'+i).val());
+                    $('#txtOrdeno_'+i).val(days+'-'+maxno+'-'+key_value+$('#txtNoq_'+i).val());
                 }
                 
                 _btnOk(key_value, bbmKey[0], bbsKey[1], '', 2);

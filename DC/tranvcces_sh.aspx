@@ -63,21 +63,14 @@
                 });
                 
                 $('#btnApv').click(function() {
+                	btnModi();
                     var t_noa = $('#txtNoa').val();
                     var t_noq = $('#txtNoq').val();
                     var t_chk1='1';
                     q_func('qtxt.query.tranvccesh_chk1', 'tranvcce.txt,tranvccesh_chk1,' + encodeURI(t_noa) + ';' + encodeURI(t_noq)+ ';' + encodeURI(r_name)+ ';' + encodeURI(t_chk1));
                     
                     $('#chkChk1').prop('checked', true);
-                    
-                    for (var i = 0; i < brwCount; i++) {
-                        if($('#vtnoa_'+i).text()!=''){
-                             if($('#vtnoa_'+i).text()==$('#txtNoa').val() && $('#vtnoq_'+i).text()==$('#txtNoq').val()){
-                                 $('#vtchk1_'+i).text('V');
-                             }
-                        }
-                        $('#chkBrow_'+i).focus();
-                    }
+                    btnOk();
                 });
                    
 			}
@@ -156,6 +149,7 @@
                 if (!(q_cur == 1 || q_cur == 2))
                     return false;
             }
+            var OKCHK='0'
 			function btnOk() {
                 sum();
                 if(q_cur ==2){
@@ -206,11 +200,18 @@
 					$('#txtDatea').datepicker('destroy');
 				}else{
 					$('#txtDatea').datepicker();
-				}  
+				} 
+				
+				if (q_cur==2) {
+                    $('#btnApv').attr('disabled','disabled');
+                }else{
+                	$('#btnApv').removeAttr('disabled');
+                }
 			}
 
 			function btnMinus(id) {
 				_btnMinus(id);
+				
 			}
 
 			function btnPlus(org_htm, dest_tag, afield) {
@@ -467,7 +468,7 @@
                         </td>
                         <td><span> </span><a id="lblNo2" class="lbl" >項次</a></td>
                         <td><input id="txtNo2" type="text" class="txt" style="width:40%"/> </td>
-                        <td style="text-align: right;"><input id="chkChk1" type="checkbox" style="zoom:1.2"/>
+                        <td style="text-align: right;"><input id="chkChk1" type="checkbox" style="zoom:1.5"/>
                             <span> </span><a id='lblChk1'>讀單</a></td>
                         <td><input id="btnApv" type="button" value="讀單"/></td>
                     </tr>
@@ -476,7 +477,7 @@
                         <td colspan="2"><input id="txtTime1" type="text" class="txt c1" /></td>
                         <td><span> </span><a id="lblTypea" class="lbl" >付款</a></td>
                         <td><select id="cmbTypea" class="txt c1"> </select></td>
-                        <td style="text-align: right;"><input id="chkChk2" type="checkbox" style="zoom:1.2"/>
+                        <td style="text-align: right;"><input id="chkChk2" type="checkbox" style="zoom:1.5"/>
                         <span> </span><a id='lblChk2'>列印</a></td>
                     </tr>
                     <tr>
