@@ -95,7 +95,7 @@
                 
                 $('#btnImport_trans').click(function() {
                    if(q_cur != 1 && q_cur != 2){
-                        var t_key = q_getPara('sys.key_tran');
+                        var t_key = q_getPara('sys.key_trans');
                         var t_bdate = $('#textBdate').val();
                         var t_edate = $('#textEdate').val();
                         var t_custno = $('#textCustno').val();
