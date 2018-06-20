@@ -478,15 +478,15 @@ where (trandate between @t_bdate and @t_edate)
 and(custno between @t_bcustno and @t_ecustno)
 group by custno,b.comp
 
-insert @tmp(gno,total)
-select '1',SUM(total)
+insert @tmp(gno,custno,total)
+select '1',char(255),SUM(total)
 from @tmp
 
 select 
 @t_bdate bdate,@t_edate edate
 ,dbo.getComma(total,0)total
 ,* from @tmp
-where ISNULL(custno,'')!='' and total!=0
+where ISNULL(custno,'')!='' and total!=0 
 order by gno,custno
 ;
 --------------------------------------------------------------------------------------------------
@@ -1052,10 +1052,10 @@ order by a.custno,a.pno,a.sel;
 z_tran_sh10:--z_tran_sh10
 	SET QUOTED_IDENTIFIER OFF
 	declare @cmd nvarchar(max) 
-	declare @t_bmon nvarchar(20) = case when '#non'='106/01' then '' else '106/01' end 
-	declare @t_emon nvarchar(20) = case when '#non'='106/11' then char(255) else '106/11' end 
-	declare @t_bcustno nvarchar(20) = case when '#non'='#non' then '' else '#non' end 
-	declare @t_ecustno nvarchar(20) = case when '#non'='#non' then char(255) else '#non' end 
+	declare @t_bdate nvarchar(20) = case when '#non'=[2] then '' else [2] end
+	declare @t_edate nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
+	declare @t_bcustno nvarchar(20) = case when '#non'=[6] then '' else [6] end
+	declare @t_ecustno nvarchar(20) = case when '#non'=[7] then char(255) else [7] end
 	-------------------------------------------------------------------------------------------------
 	declare @tmp table(
 		gno nvarchar(10),
@@ -1099,7 +1099,7 @@ z_tran_sh10:--z_tran_sh10
 		,sum(isnull(a.driverpay,0))
 	from trans_sum a 
 	left join view_trans b on a.tranaccy=b.accy and a.tranno=b.noa and a.trannoq=b.noq
-	where a.mon between @t_bmon and @t_emon
+	where a.mon between left(@t_bdate,6) and left(@t_bdate,6)
 	and isnull(a.custno,'') between @t_bcustno and @t_ecustno
 	group by isnull(a.custno,'')
 	
@@ -1117,7 +1117,7 @@ z_tran_sh10:--z_tran_sh10
 	update @tmp set tax2=0
 	update @tmp set tax2=round(isnull(a.money1,0)*0.03,0)
 	from @tmp a
-	outer apply(select noa from view_trd where custno=a.custno and mon between @t_bmon and @t_emon and len(vccano)>0) b
+	outer apply(select noa from view_trd where custno=a.custno and mon between left(@t_bdate,6) and left(@t_bdate,6) and len(vccano)>0) b
 	where b.noa is not null
 	and gno='1'
 	update @tmp set profit = money1-money2-insures+custplus-custminus-driverplus+driverminus-reserve-tolls

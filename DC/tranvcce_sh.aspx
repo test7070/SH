@@ -121,6 +121,14 @@
 
             function q_gtPost(t_name) {
                 switch (t_name) {
+                    case 'cust':
+                        var as = _q_appendData("cust", "", true);
+                        for(var i=0;i<q_bbsCount;i++){
+                                   if ($('#txtCustno_' +i).val()==as[0].noa) {
+                                        $('#cmbTypea'+i).val(as[0].paytype);
+                                   }
+                        }
+                        break;
                 case q_name:
                     if (q_cur == 4)
                         q_Seek_gtPost();
@@ -129,6 +137,12 @@
             }
 
             function q_popPost(s1) {
+                switch (s1) {
+                    case 'txtCustno_':
+                        var t_where = "where=^^ noa='"+$('#txtCustno_'+b_seq).val()+"' ^^";
+                        q_gt('cust', t_where, 0, 0, 0, "");
+                        break;
+                }
             }
 
             function btnOk() {
