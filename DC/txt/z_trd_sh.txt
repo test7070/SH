@@ -62,7 +62,7 @@ create table #tmp(
 insert #tmp(gno,noa,custno,comp,serial,tel,fax,mo2,btrandatea,etrandatea,vccano,datea,addr,product,mount,unit1,unit2,volume,money,memo,tmoney,tax,discount,pl,plusmoney,minusmoney,total,ordeno,ordenoq,weight)
 select '1',a.noa,a.custno,a.comp,c.serial,c.tel,c.fax,c.memo2,a.btrandate,a.etrandate,a.vccano,b.trandate
 ,SUBSTRING(b.straddr,0,CHARINDEX('-',b.straddr))+REPLICATE('　',6-len(SUBSTRING(b.straddr,0,CHARINDEX('-',b.straddr))))+'- '+SUBSTRING(b.straddr,CHARINDEX('-',b.straddr)+1,LEN(b.straddr)-CHARINDEX('-',b.straddr))
-,b.product,b.mount,b.unit,d.unit2
+,b.product,b.mount,d.unit,d.unit2
 ,case when isnull(d.volume,0)!='' then d.volume else null end,sum(b.total),b.memo,a.money,a.tax,a.discount,a.plus
 ,a.plusmoney,a.minusmoney,a.total,e.noa,e.no2
 ,case when isnull(d.weight,0)!=0 then dbo.getComma(d.weight,0)+'KG' else null end
@@ -75,7 +75,7 @@ and (a.custno between @t_bcustno and @t_ecustno)
 and (len(@t_noa)=0 or @t_noa=a.noa)
 and (len(@t_vccano)=0 or @t_vccano=a.vccano)
 and isnull(b.caseno,'')=''
-group by a.noa,a.custno,a.comp,c.serial,c.tel,c.fax,c.memo2,d.weight,d.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,b.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
+group by a.noa,a.custno,a.comp,c.serial,c.tel,c.fax,c.memo2,d.weight,d.volume,a.btrandate,a.etrandate,a.vccano,b.trandate,b.straddr,b.product,b.mount,d.unit,d.unit2,a.total,b.memo,a.money,a.tax,a.discount,a.plus,a.plusmoney,a.minusmoney,e.noa,e.no2
 
 insert #tmp(gno,noa,custno,comp,serial,tel,mo2,btrandatea,etrandatea,datea,vccano,typea,custchgno,item,money,memo) 
 select '4',a.noa,a.custno,a.comp,a.serial,a.tel,a.mo2,a.btrandatea,a.etrandatea,a.vccano,b.datea,'減',b.noa,b.minusitem,b.minusmoney,b.memo 
