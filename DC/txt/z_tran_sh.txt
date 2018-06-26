@@ -517,19 +517,20 @@ end
 else
 begin
 	insert @tmp
-	select '9',a.addrno,b.comp,b.zip_comp,b.addr_comp,b.boss,tel,'出車'
-	from view_tran a
-	left join cust b on a.addrno=b.noa
-	where (a.addrno between @t_bcustno and @t_ecustno)
-	and(a.datea between @t_bdate and @t_ecustno)
+	select '9',a.custno,b.comp,b.zip_comp,b.addr_comp,b.boss,b.tel,'派車'
+	from view_tranvcces a
+	left join cust b on a.custno=b.noa
+	where (a.custno between @t_bcustno and @t_ecustno)
+	and(a.time1 between @t_bdate and @t_edate)
 	and isnull(b.noa,'')!=''
+	group by a.custno,b.comp,b.zip_comp,b.addr_comp,b.boss,b.tel
 
 	insert @tmp
 	select '9',a.custno,b.comp,b.zip_comp,b.addr_comp,b.boss,tel,'進貨'
 	from view_ina a
 	left join cust b on a.custno=b.noa
 	where (a.custno between @t_bcustno and @t_ecustno)
-	and(a.datea between @t_bdate and @t_ecustno)
+	and(a.datea between @t_bdate and @t_edate)
 	and isnull(b.noa,'')!=''
 
 	insert @tmp
@@ -537,18 +538,20 @@ begin
 	from view_get a
 	left join cust b on a.custno=b.noa
 	where (a.custno between @t_bcustno and @t_ecustno)
-	and(a.datea between @t_bdate and @t_ecustno)
+	and(a.datea between @t_bdate and @t_edate)
 	and isnull(b.noa,'')!=''
 end
 
 insert @tmp
-select '1',noa,comp,zip,addr,boss,tel,''
+select '0',noa,comp,zip,addr,boss,tel,''
 from @tmp
 group by noa,comp,zip,addr,boss,tel
 
 delete @tmp where gno='9'
 
-select * from @tmp
+select 
+boss boss
+,* from @tmp
 order by noa
 ;
 --------------------------------------------------------------------------------------------------
