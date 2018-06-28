@@ -100,7 +100,7 @@
                             value : ('統計,明細').split(',')
                     },{
                         type : '6',//[20]
-                        name : 'xncustno'
+                        name : 'xpaydate'
                     }]
                     });
                 q_popAssign();
@@ -116,6 +116,12 @@
                 t_noa  =  t_noa.replace('noa=','');
                 $('#txtNoa1').val(t_noa);
                 $('#txtNoa2').val(t_noa);
+                
+                $('#txtXpaydate').focus(function() {
+                    q_msg( $(this), '若要查詢客戶收款日沒登打，請輸入32');
+                }).blur(function () {
+                    q_msg();
+                });
                 
                  var t_date,t_year,t_month,t_day;
 	                t_date = new Date();

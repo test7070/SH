@@ -316,6 +316,7 @@ declare @t_bdriver nvarchar(20) = case when '#non'=[12] then '' else [12] end
 declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13] end
 declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
+declare @t_paydate nvarchar(20) = case when '#non'=[20] then '' else [20] end
 
 declare @tmp table( 
 	gno nvarchar(1),
@@ -357,6 +358,15 @@ and isnull(a.tranno,'')=''
 and(a.custno between @t_bcustno and @t_ecustno)
 group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.unit2,a.addrno,a.addr,a.addrno2,a.addr2,a.typea,a.noa,a.no2,a.weight,a.memo,a.mount,a.volume
 
+if(isnull(@t_paydate,'')='32')
+begin
+	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!='')
+end
+else if(isnull(@t_paydate,'')!='')
+begin
+	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
+end
+
 insert @tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
 from @tmp
@@ -391,6 +401,7 @@ declare @t_bdriver nvarchar(20) = case when '#non'=[12] then '' else [12] end
 declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13] end
 declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
+declare @t_paydate nvarchar(20) = case when '#non'=[20] then '' else [20] end
 
 declare @tmp table( 
 	gno nvarchar(1),
@@ -428,6 +439,14 @@ and len(a.tranno)!=0
 and(a.custno between @t_bcustno and @t_ecustno)
 group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.addrno,a.addr,a.addrno2,a.addr2,a.memo,a.product,a.tranno,a.typea,a.noa,a.no2
 
+if(isnull(@t_paydate,'')='32')
+begin
+	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!='')
+end
+else if(isnull(@t_paydate,'')!='')
+begin
+	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
+end
 
 insert @tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
@@ -451,43 +470,53 @@ order by custno,datea,gno,noa,noq
 ;
 --------------------------------------------------------------------------------------------------
 z_tran_sh5:--z_tran_sh5
+SET QUOTED_IDENTIFIER OFF
 declare @t_bdate nvarchar(20) = case when '#non'=[2] then '' else [2] end
 declare @t_edate nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
 declare @t_bcustno nvarchar(20) = case when '#non'=[6] then '' else [6] end
 declare @t_ecustno nvarchar(20) = case when '#non'=[7] then char(255) else [7] end
-declare @t_baddr1 nvarchar(20) = case when '#non'=[8] then '' else [8] end 
-declare @t_eaddr1 nvarchar(20) = case when '#non'=[9] then char(255) else [9] end
-declare @t_baddr2 nvarchar(20) = case when '#non'=[10] then '' else [10] end 
-declare @t_eaddr2 nvarchar(20) = case when '#non'=[11] then char(255) else [11] end
-declare @t_bdriver nvarchar(20) = case when '#non'=[12] then '' else [12] end
-declare @t_edriver nvarchar(20) = case when '#non'=[13] then char(255) else [13] end
-declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
-declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
 
-declare @tmp table( 
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+
+create table #tmp( 
 	gno nvarchar(1),
 	custno nvarchar(50),
 	comp nvarchar(50),
+	vtotal float,
 	total float
 )
-insert @tmp
-select '0',isnull(custno,''),b.comp,sum(isnull(total,0))
-from view_trans a
+insert #tmp
+select '0',isnull(custno,''),b.comp,sum(isnull(total,0)),''
+from view_tranvcces a
 left join cust b on a.custno=b.noa
-where (trandate between @t_bdate and @t_edate)
+where (isnull(time1,'') between @t_bdate and @t_edate)
 and(custno between @t_bcustno and @t_ecustno)
 group by custno,b.comp
 
-insert @tmp(gno,custno,total)
-select '1',char(255),SUM(total)
-from @tmp
+update #tmp
+set total=b.total
+from #tmp a
+outer apply(select sum(total)total from view_trans where a.custno=custno and (isnull(trandate,'') between @t_bdate and @t_edate))b
+
+insert #tmp(gno,custno,vtotal,total)
+select '1',char(255),SUM(vtotal),SUM(total)
+from #tmp
 
 select 
 @t_bdate bdate,@t_edate edate
 ,dbo.getComma(total,0)total
-,* from @tmp
-where ISNULL(custno,'')!='' and total!=0 
+,dbo.getComma(vtotal,0)vtotal
+,* from #tmp
+where ISNULL(custno,'')!='' and (vtotal!=0 or total!=0) 
 order by gno,custno
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
 ;
 --------------------------------------------------------------------------------------------------
 z_tran_sh6:--z_tran_sh6
