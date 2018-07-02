@@ -2,6 +2,7 @@
 declare @accy nvarchar(20) = case when '#non'='[1]' then '' else '[1]' end
 declare @t_noa nvarchar(20) = case when '#non'=[2] then '' else [2] end
 declare @t_no2 nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
+declare @t_showtotal nvarchar(20) = case when '#non'=[4] then char(255) else [4] end
 SET QUOTED_IDENTIFIER OFF
 
 declare @tmp table( 
@@ -156,7 +157,13 @@ exec("
 update tranvcces"+@accy+" 
 set chk2='1' 
 where noa='"+@t_noa+"' and no2='"+@t_no2+"' 
-") 
+")
+
+--2018/06/29 方先生 託運單不用列印金額 只有勾選才需要
+if(@t_showtotal!='1')
+begin
+	update @tmp set total=null
+end
 
 select * from @tmp
 order by noa,no2,rr

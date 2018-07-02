@@ -35,7 +35,11 @@
 					},{
 						type : '6',//[3]
                         name : 'xno2'
-					}]
+					},{
+                        type : '8',//[4]
+                        name : 'xshowtotal',
+                        value : "1@顯示金額".split(',')
+                    }]
                     });
                 q_popAssign();
 
