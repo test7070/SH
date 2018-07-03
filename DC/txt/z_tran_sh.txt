@@ -475,6 +475,7 @@ declare @t_bdate nvarchar(20) = case when '#non'=[2] then '' else [2] end
 declare @t_edate nvarchar(20) = case when '#non'=[3] then char(255) else [3] end
 declare @t_bcustno nvarchar(20) = case when '#non'=[6] then '' else [6] end
 declare @t_ecustno nvarchar(20) = case when '#non'=[7] then char(255) else [7] end
+declare @t_paydate nvarchar(20) = case when '#non'=[20] then '' else [20] end
 
 IF OBJECT_ID('tempdb..#tmp')is not null
 BEGIN
@@ -495,6 +496,15 @@ left join cust b on a.custno=b.noa
 where (isnull(time1,'') between @t_bdate and @t_edate)
 and(custno between @t_bcustno and @t_ecustno)
 group by custno,b.comp
+
+if(isnull(@t_paydate,'')='32')
+begin
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!='')
+end
+else if(isnull(@t_paydate,'')!='')
+begin
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
+end
 
 update #tmp
 set total=b.total
@@ -603,6 +613,7 @@ declare @tmp table(
 	dno nvarchar(50),
 	driver nvarchar(50),
 	datea nvarchar(10),
+	no2 nvarchar(50),
 	custno nvarchar(50),
 	nick nvarchar(50),
 	productno nvarchar(50),
@@ -612,7 +623,6 @@ declare @tmp table(
 	unit2 nvarchar(50),
 	volume float,
 	caseno nvarchar(50),
-	po nvarchar(50),
 	straddrno nvarchar(50),
 	straddr nvarchar(50),
 	endaddrno nvarchar(50),
@@ -623,19 +633,13 @@ declare @tmp table(
 	memo nvarchar(max),
 	money3 float,
 	tax float,
-	fee float,
-	borrow float,
-	bill float,
-	rest float,
 	total float
 )
 insert @tmp
-select '0',a.driverno,a.driver,a.trandate,custno,nick,uccno,a.product,a.mount,a.unit,a.unit2,a.volume,a.caseno,po,straddrno,a.straddr,endaddrno
-,a.endaddr,total2,'','',a.memo,'','','','','','',''
-from view_trans a
-left join view_tres b on a.noa=b.tranno and a.noq=b.trannoq
-left join view_tre c on b.noa=c.noa
-where (a.trandate between @t_bdate and @t_edate)
+select '0',a.driverno,a.driver,a.time1,no2,custno,cust,productno,a.product,a.mount,a.unit,a.unit2,a.volume,a.Tranno,addrno,addr,addrno2
+,addr2,total2,'','',a.memo,'','',''
+from view_tranvcces a
+where (a.time1 between @t_bdate and @t_edate)
 and (a.driverno between @t_bdriver and @t_edriver) 
 
 insert @tmp(gno,dno,driver,datea,total2,money,money2,money3)
@@ -643,26 +647,8 @@ select '1',dno,driver,CHAR(255),SUM(total2),SUM(money),SUM(money2),SUM(total2)-S
 from @tmp a
 group by dno,driver
 
---公費.利息.佣金
 update @tmp
-set fee=b.fee,bill=b.bill,rest=b.rest
-from @tmp a
-outer apply(select 
-(case when minusitem like '%公費%' or plusitem like '%公費%' then SUM(minusmoney-plusmoney) end) bill, 
-(case when minusitem like '%佣金%' or plusitem like '%佣金%' then SUM(minusmoney-plusmoney) end) fee, 
-(case when minusitem like '%利息%' or plusitem like '%利息%' then SUM(minusmoney-plusmoney) end) rest 
-from carchg where driverno=a.dno and (datea between @t_bdate and @t_edate) group by minusitem,plusitem)b
-where gno='1'
-
---借支 
-update @tmp 
-set borrow=b.money 
-from @tmp a 
-outer apply(select sum(sb.money)money from carborr sa left join carborrs sb on sa.noa=sb.noa where driverno=a.dno and (sb.mon between left(@t_bdate,6) and left(@t_edate,6)))b 
-where gno='1' 
-
-update @tmp
-set tax=money3*0.05,total=money3-money3*0.05-isnull(fee,0)-isnull(borrow,0)-isnull(bill,0)-isnull(rest,0)
+set tax=money3*0.05,total=money3-money3*0.05
 from @tmp a
 where gno='1'
 
@@ -679,13 +665,9 @@ dbo.getComma(mount,0)mount
 ,dbo.getComma(money2,0)money2
 ,dbo.getComma(money3,0)money3
 ,dbo.getComma(tax,0)tax
-,dbo.getComma(fee,0)fee
-,dbo.getComma(borrow,0)borrow
-,dbo.getComma(bill,0)bill
-,dbo.getComma(rest,0)rest
 ,dbo.getComma(total,0)total
 ,* from @tmp 
-order by dno,datea,gno
+order by dno,datea,gno,no2
 ;
 ---------------------------------------------------------------------------------------------------
 z_tran_sh8:--z_tran_sh8

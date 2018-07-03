@@ -72,6 +72,36 @@
                     $('#chkChk1').prop('checked', true);
                     btnOk();
                 });
+                
+                $('#btnShowin').click(function() {
+                     if ($('#btnShowin').val().indexOf("隱藏") > -1) {
+                        $(".hid_Mount").hide();
+                        $(".hid_Unit").hide();
+                        $(".hid_Volume").hide();
+                        $(".hid_Unit2").hide();
+                        $(".hid_Weight").hide();
+                        $("#btnShowin").val("物流顯示");
+                    } else {
+                        $(".hid_Mount").show();
+                        $(".hid_Unit").show();
+                        $(".hid_Volume").show();
+                        $(".hid_Unit2").show();
+                        $(".hid_Weight").show();
+                        $("#btnShowin").val("物流隱藏");
+                    }
+                });
+                
+                $('#btnShowout').click(function() {
+                    if ($('#btnShowout').val().indexOf("隱藏") > -1) {
+                        $(".hid_Product").hide();
+                        $(".hid_Tranno").hide();
+                        $("#btnShowout").val("貨櫃顯示");
+                    } else {
+                        $(".hid_Product").show();
+                        $(".hid_Tranno").show();
+                        $("#btnShowout").val("貨櫃隱藏");
+                    } 
+                });
                    
 			}
 			
@@ -190,6 +220,19 @@
                         }
                         
                         
+                }
+                
+                if ($('#btnShowin').val().indexOf("顯示") > -1) {
+                        $(".hid_Mount").hide();
+                        $(".hid_Unit").hide();
+                        $(".hid_Volume").hide();
+                        $(".hid_Unit2").hide();
+                        $(".hid_Weight").hide();
+                }
+                
+                if ($('#btnShowout').val().indexOf("顯示") > -1) {
+                        $(".hid_Product").hide();
+                        $(".hid_Tranno").hide();
                 }
                 
 			}
@@ -392,6 +435,10 @@
     ondrop="event.dataTransfer.dropEffect='none';event.stopPropagation(); event.preventDefault();"
     >
 		<!--#include file="../inc/toolbar.inc"-->
+		<div>
+			<td><input id="btnShowin" type="button" value="物流隱藏" style="width:100px;"/></td>
+            <td><input id="btnShowout" type="button" value="貨櫃隱藏" style="width:100px;"/></td>
+        </div>
 		<div id="dmain">
 			<div class="dview" id="dview">
 				<table class="tview" id="tview" style="background-color:black;">
@@ -404,15 +451,15 @@
                         <td align="center" style="width:40px"><a>付款</a></td>
                         <td align="center" style="width:90px;"><a>出車日期</a></td>
                         <td align="center" style="width:90px"><a>客戶</a></td>
-                        <td align="center" style="width:100px"><a>品項</a></td>
-                        <td align="center" style="width:75px"><a>數量</a></td>
-                        <td align="center" style="width:50px"><a>單位</a></td>
-                        <td align="center" style="width:75px"><a>材積</a></td>
-                        <td align="center" style="width:55px"><a>材積單位</a></td>
-                        <td align="center" style="width:75px"><a>重量(KG)</a></td>
+                        <td class="hid_Product" align="center" style="width:100px"><a>品項</a></td>
+                        <td class="hid_Mount" align="center" style="width:75px"><a>數量</a></td>
+                        <td class="hid_Unit" align="center" style="width:50px"><a>單位</a></td>
+                        <td class="hid_Volume" align="center" style="width:75px"><a>材積</a></td>
+                        <td class="hid_Unit2" align="center" style="width:55px"><a>材積單位</a></td>
+                        <td class="hid_Weight" align="center" style="width:75px"><a>重量(KG)</a></td>
                         <td align="center" style="width:120px"><a>起點</a></td>
                         <td align="center" style="width:120px"><a>迄點</a></td>
-                        <td align="center" style="width:120px"><a>櫃號</a></td>
+                        <td class="hid_Tranno" align="center" style="width:120px"><a>櫃號</a></td>
                         <td align="center" style="width:80px"><a>金額</a></td>
                         <td align="center" style="width:90px"><a>車牌</a></td>
                         <td align="center" style="width:70px"><a>司機編號</a></td>
@@ -430,15 +477,15 @@
 						<td id="typea" style="text-align: center;">~typea</td>
 						<td id="time1" style="text-align: center;">~time1</td>
 						<td id="cust" style="text-align: center;">~cust</td>
-						<td id="product" style="text-align: center;">~product</td>
-						<td id="mount" style="text-align: center;">~mount</td>
-						<td id="unit" style="text-align: center;">~unit</td>
-						<td id="volume" style="text-align: center;">~volume</td>
-						<td id="unit2" style="text-align: center;">~unit2</td>
-						<td id="weight" style="text-align: center;">~weight</td>
+						<td class='hid_Product' id="product" style="text-align: center;">~product</td>
+						<td class='hid_Mount' id="mount" style="text-align: center;">~mount</td>
+						<td class='hid_Unit' id="unit" style="text-align: center;">~unit</td>
+						<td class='hid_Volume' id="volume" style="text-align: center;">~volume</td>
+						<td class='hid_Unit2' id="unit2" style="text-align: center;">~unit2</td>
+						<td class='hid_Weight' id="weight" style="text-align: center;">~weight</td>
 						<td id="addr" style="text-align: center;">~addr</td>
 						<td id="addr2" style="text-align: center;">~addr2</td>
-						<td id="tranno" style="text-align: center;">~tranno</td>
+						<td class='hid_Tranno' id="tranno" style="text-align: center;">~tranno</td>
 						<td id="total" style="text-align: center;">~total</td>
 						<td id="carno" style="text-align: center;">~carno</td>
 						<td id="driverno" style="text-align: center;">~driverno</td>
@@ -489,34 +536,34 @@
                         <td><input id="txtTotal" type="text" class="txt c1 num" /></td>
                     </tr>
                     <tr>
-                        <td><span> </span><a id="lblProductno" class="lbl btn" >品項</a></td>
-                        <td colspan="2"><input id="txtProductno" type="text" class="txt" style="width: 40%"/>
+                        <td class='hid_Product'><span> </span><a id="lblProductno" class="lbl btn" >品項</a></td>
+                        <td colspan="2" class='hid_Product'><input id="txtProductno" type="text" class="txt" style="width: 40%"/>
                             <input id="txtProduct" type="text" class="txt" style="width:60%"/>
                         </td>
-                        <td><span> </span><a id="lblMount" class="lbl" >數量</a></td>
-                        <td><input id="txtMount" type="text" class="txt c1 num" /></td>
-                        <td><span> </span><a id="lblUnit" class="lbl" >單位</a></td>
-                        <td><input id="txtUnit" type="text" class="txt c1" /></td>
+                        <td class='hid_Mount'><span> </span><a id="lblMount" class="lbl" >數量</a></td>
+                        <td class='hid_Mount'><input id="txtMount" type="text" class="txt c1 num" /></td>
+                        <td class='hid_Unit'><span> </span><a id="lblUnit" class="lbl" >單位</a></td>
+                        <td class='hid_Unit'><input id="txtUnit" type="text" class="txt c1" /></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblAddrno" class="lbl" >起點</a></td>
                         <td colspan="2"><input id="txtAddrno" type="text" class="txt" style="width: 40%"/>
                             <input id="txtAddr" type="text" class="txt" style="width:60%"/>
                         </td>
-                        <td><span> </span><a id="lblVolume" class="lbl" >材積</a></td>
-                        <td><input id="txtVolume" type="text" class="txt c1 num" /></td>
-                        <td><span> </span><a id="lblUnit2" class="lbl" >材積單位</a></td>
-                        <td><select id="cmbUnit2" class="txt c1"> </select></td>
+                        <td class='hid_Volume'><span> </span><a id="lblVolume" class="lbl" >材積</a></td>
+                        <td class='hid_Volume'><input id="txtVolume" type="text" class="txt c1 num" /></td>
+                        <td class='hid_Unit2'><span> </span><a id="lblUnit2" class="lbl" >材積單位</a></td>
+                        <td class='hid_Unit2'><select id="cmbUnit2" class="txt c1"> </select></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblAddrno2" class="lbl" >迄點</a></td>
                         <td colspan="2"><input id="txtAddrno2" type="text" class="txt" style="width: 40%"/>
                             <input id="txtAddr2" type="text" class="txt" style="width:60%"/>
                         </td>                           
-                        <td><span> </span><a id="lblWeight" class="lbl" >重量(KG)</a></td>
-                        <td><input id="txtWeight" type="text" class="txt c1 num" /></td>
-                        <td><span> </span><a id="lblTranno" class="lbl" >櫃號</a></td>
-                        <td><input id="txtTranno" type="text" class="txt c1" /></td>
+                        <td class='hid_Weight'><span> </span><a id="lblWeight" class="lbl" >重量(KG)</a></td>
+                        <td class='hid_Weight'><input id="txtWeight" type="text" class="txt c1 num" /></td>
+                        <td class='hid_Tranno'><span> </span><a id="lblTranno" class="lbl" >櫃號</a></td>
+                        <td class='hid_Tranno'><input id="txtTranno" type="text" class="txt c1" /></td>
                     </tr>
                     <tr>
                         <td><span> </span><a id="lblCarno" class="lbl btn" >車牌</a></td>

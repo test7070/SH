@@ -79,6 +79,7 @@
                           }
                       }      
                 });
+                
                 $('#btnImport').click(function() {
                       var t_noa = $('#textNoa').val();
                       var t_noq = $('#textNoq').val();
@@ -95,6 +96,67 @@
                            }
                            
                       }
+                });
+                
+                $('#btnShowin').click(function() {
+                     if ($('#btnShowin').val().indexOf("隱藏") > -1) {
+                        $(".hid_Mount").hide();
+                        $(".hid_Unit").hide();
+                        $(".hid_Volume").hide();
+                        $(".hid_Unit2").hide();
+                        $(".hid_Weight").hide();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $('#hid_Mount_' + j).hide();
+                            $("#hid_Unit_" + j).hide();
+                            $("#hid_Volume_" + j).hide();
+                            $("#hid_Unit2_" + j).hide();
+                            $("#hid_Weight_" + j).hide();
+
+                        }
+                        $('#tbbs').css("width",(dec($('#tbbs')[0].offsetWidth)-355)+"px");
+                        scroll("tbbs", "box", 1);
+                        $("#btnShowin").val("物流顯示");
+                    } else {
+                        $(".hid_Mount").show();
+                        $(".hid_Unit").show();
+                        $(".hid_Volume").show();
+                        $(".hid_Unit2").show();
+                        $(".hid_Weight").show();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $("#hid_Mount_" + j).show();
+                            $("#hid_Unit_" + j).show();
+                            $("#hid_Volume_" + j).show();
+                            $("#hid_Unit2_" + j).show();
+                            $("#hid_Weight_" + j).show();
+                        }
+                        $('#tbbs').css("width",(dec($('#tbbs')[0].offsetWidth)+355)+"px");
+                        scroll("tbbs", "box", 1);
+                        $("#btnShowin").val("物流隱藏");
+                    }
+                });
+                
+                $('#btnShowout').click(function() {
+                    if ($('#btnShowout').val().indexOf("隱藏") > -1) {
+                        $(".hid_Product").hide();
+                        $(".hid_Tranno").hide();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $('#hid_Product_' + j).hide();
+                            $("#hid_Tranno_" + j).hide();
+                        }
+                        $('#tbbs').css("width",(dec($('#tbbs')[0].offsetWidth)-240)+"px");
+                        scroll("tbbs", "box", 1);
+                        $("#btnShowout").val("貨櫃顯示");
+                    } else {
+                        $(".hid_Product").show();
+                        $(".hid_Tranno").show();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $("#hid_Product_" + j).show();
+                            $("#hid_Tranno_" + j).show();
+                        }
+                        $('#tbbs').css("width",(dec($('#tbbs')[0].offsetWidth)+240)+"px");
+                        scroll("tbbs", "box", 1);
+                        $("#btnShowout").val("貨櫃隱藏");
+                    } 
                 });
             }
             
@@ -386,6 +448,32 @@
                   });*/
                 }
                 _bbsAssign();
+                
+                 if ($('#btnShowin').val().indexOf("顯示") > -1) {
+                        $(".hid_Mount").hide();
+                        $(".hid_Unit").hide();
+                        $(".hid_Volume").hide();
+                        $(".hid_Unit2").hide();
+                        $(".hid_Weight").hide();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $('#hid_Mount_' + j).hide();
+                            $("#hid_Unit_" + j).hide();
+                            $("#hid_Volume_" + j).hide();
+                            $("#hid_Unit2_" + j).hide();
+                            $("#hid_Weight_" + j).hide();
+
+                        }
+                }
+                
+                if ($('#btnShowout').val().indexOf("顯示") > -1) {
+                        $(".hid_Product").hide();
+                        $(".hid_Tranno").hide();
+                        for (var j = 0; j < q_bbsCount; j++) {
+                            $('#hid_Product_' + j).hide();
+                            $("#hid_Tranno_" + j).hide();
+                        }
+                }
+                    
                 $('#tbbs').find('tr.data').children().hover(function(e){
 					$(this).parent().css('background','#F2F5A9');
 				},function(e){
@@ -722,13 +810,11 @@
 						<input id="txtWorker2" type="text" class="txt c1" />
 						</td>
 					</tr>
-					<!--<tr>
-                        <td><span> </span><a id="lblWorker" class="lbl" >讀單單號</a></td>
-                        <td colspan="2"><input id="textNoa" type="text" class="txt c1"  style="width: 60%;"/>
-                            <input id="textNoq" type="text" class="txt c1"  style="width: 35%;" /></td>
-                        <td><input id="btnshseek" type="button" value="查詢" style="width:30%;"/>
-                            <input id="btnImport" type="button" value="讀單確認" style="width:50%;"/></td>
-                    </tr>-->
+					<tr>
+					    <td> </td>
+                        <td><input id="btnShowin" type="button" value="物流隱藏" style="width:98%;"/></td>
+                        <td><input id="btnShowout" type="button" value="貨櫃隱藏" style="width:98%;"/></td>
+                    </tr>
 				</table>
 			</div>
 		</div>
@@ -746,15 +832,15 @@
 					<td align="center" style="width:70px"><a>付款</a></td>
 					<td align="center" style="width:90px;display:none;"><a>出車日期</a></td>
 					<td align="center" style="width:90px"><a>客戶</a></td>
-					<td align="center" style="width:100px"><a>品項</a></td>
-					<td align="center" style="width:75px"><a>數量</a></td>
-					<td align="center" style="width:50px"><a>單位</a></td>
-					<td align="center" style="width:75px"><a>材積</a></td>
-					<td align="center" style="width:80px"><a>材積單位</a></td>
-					<td align="center" style="width:75px"><a>重量(KG)</a></td>
+					<td class="hid_Product" align="center" style="width:100px"><a>品項</a></td>
+					<td class="hid_Mount" align="center" style="width:75px"><a>數量</a></td>
+					<td class="hid_Unit" align="center" style="width:50px"><a>單位</a></td>
+					<td class="hid_Volume" align="center" style="width:75px"><a>材積</a></td>
+					<td class="hid_Unit2" align="center" style="width:80px"><a>材積單位</a></td>
+					<td class="hid_Weight" align="center" style="width:75px"><a>重量(KG)</a></td>
 					<td align="center" style="width:100px"><a>起點</a></td>
 					<td align="center" style="width:100px"><a>迄點</a></td>
-					<td align="center" style="width:140px"><a>櫃號</a></td>
+					<td class="hid_Tranno" align="center" style="width:140px"><a>櫃號</a></td>
 					<td align="center" style="width:140px;display:none;"><a>S/O</a></td>
 					<td align="center" style="width:100px;display:none;"><a>貨主</a></td>
 					<td align="center" style="width:80px"><a>金額</a></td>
@@ -784,16 +870,16 @@
 						<input type="button" id="btnCust.*" style="display:none;">
 						<input type="text" id="txtOrdeno.*" style="display:none;"/>
 					</td>
-					<td>
+					<td id='hid_Product.*'>
                         <input type="text" id="txtProductno.*" style="float:left;width:95%;" />
                         <input type="text" id="txtProduct.*" style="float:left;width:95%;">
                         <input type="button" id="btnProduct.*" style="display:none;">
                     </td>
-					<td><input type="text" id="txtMount.*" class="num" style="width:95%;"/></td>
-					<td><input type="text" id="txtUnit.*" style="width:95%;"/></td>
-					<td><input type="text" id="txtVolume.*" class="num" style="width:95%;"/></td>
-					<td><select id="cmbUnit2.*" class="txt" style="width:95%;"> </select></td>
-					<td><input type="text" id="txtWeight.*" class="num" style="width:95%;"/></td>
+					<td id='hid_Mount.*'><input type="text" id="txtMount.*" class="num" style="width:95%;"/></td>
+					<td id='hid_Unit.*'><input type="text" id="txtUnit.*" style="width:95%;"/></td>
+					<td id='hid_Volume.*'><input type="text" id="txtVolume.*" class="num" style="width:95%;"/></td>
+					<td id='hid_Unit2.*'><select id="cmbUnit2.*" class="txt" style="width:95%;"> </select></td>
+					<td id='hid_Weight.*'><input type="text" id="txtWeight.*" class="num" style="width:95%;"/></td>
 					<td>
                         <input type="text" id="txtAddrno.*" style="float:left;width:95%;"/>
                         <input type="text" id="txtAddr.*" style="float:left;width:95%;"/>
@@ -804,7 +890,7 @@
                         <input type="text" id="txtAddr2.*" style="float:left;width:95%;"/>
                         <input type="button" id="btnEndaddr.*" style="display:none;"/>
                     </td>
-                    <td><input type="text" id="txtTranno.*" style="float:left;width:95%;"/></td>
+                    <td id='hid_Tranno.*'><input type="text" id="txtTranno.*" style="float:left;width:95%;"/></td>
                     <td style="display: none"><input type="text" id="txtProductno2.*" style="float:left;width:95%;"/></td>
                     <td style="display: none">
                         <input type="text" id="txtAddrno3.*" style="float:left;width:95%;"/>
