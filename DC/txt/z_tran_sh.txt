@@ -318,7 +318,12 @@ declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
 declare @t_paydate nvarchar(20) = case when '#non'=[20] then '' else [20] end
 
-declare @tmp table( 
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+
+create table #tmp( 
 	gno nvarchar(1),
 	custno nvarchar(50),
 	comp nvarchar(100),
@@ -343,14 +348,15 @@ declare @tmp table(
 	total2 float,
 	weight nvarchar(50),
 	noa  nvarchar(50),
-	noq  nvarchar(50)
+	noq  nvarchar(50),
+	counta nvarchar(50)--貨櫃數量
 )
-insert @tmp
+insert #tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.mount,a.unit
 ,a.unit2,case when isnull(a.volume,0)!=0 then a.volume else null end
 ,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
 ,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'',''
-,case when isnull(a.weight,0)!=0 then dbo.getComma(isnull(a.weight,0),0)+'KG' else null end,a.noa,a.no2
+,case when isnull(a.weight,0)!=0 then dbo.getComma(isnull(a.weight,0),0)+'KG' else null end,a.noa,a.no2,''
 from view_tranvcces a
 left join cust b on a.custno=b.noa
 where (a.time1 between @t_bdate and @t_edate)
@@ -358,34 +364,45 @@ and isnull(a.tranno,'')=''
 and(a.custno between @t_bcustno and @t_ecustno)
 group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.unit2,a.addrno,a.addr,a.addrno2,a.addr2,a.typea,a.noa,a.no2,a.weight,a.memo,a.mount,a.volume
 
+update #tmp
+set counta=b.counta
+from #tmp a
+outer apply(select count(*)counta from view_tranvcces where (time1 between @t_bdate and @t_edate) and isnull(tranno,'')!='' and(a.custno between @t_bcustno and @t_ecustno) and a.custno=custno)b
+
 if(isnull(@t_paydate,'')='32')
 begin
-	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!='')
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!='')
 end
 else if(isnull(@t_paydate,'')!='')
 begin
-	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
 end
 
-insert @tmp(gno,custno,datea,total,tax,total2)
+insert #tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
-from @tmp
+from #tmp
 group by custno
 
-insert @tmp(gno,custno,datea)
+insert #tmp(gno,custno,datea)
 select '2',custno,CHAR(255)
-from @tmp
+from #tmp
 group by custno
 
 select 
 @t_bdate bdate,@t_edate edate
+,case when isnull(counta,0)!=0 then '客戶承運明細表(物流)●' else '客戶承運明細表(物流)' end title
 ,dbo.getComma(total,0)total
 ,dbo.getComma(money,0)money
 ,dbo.getComma(money2,0)money2
 ,dbo.getComma(tax,0)tax
 ,dbo.getComma(total2,0)total2
-,* from @tmp
+,* from #tmp
 order by custno,datea,gno,noa,noq
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
 ;
 --------------------------------------------------------------------------------------------------
 z_tran_sh4:--z_tran_sh4
@@ -403,7 +420,12 @@ declare @t_chk1 nvarchar(20) = case when '#non'=[14] then '' else [14] end
 declare @t_chk2 nvarchar(20) = case when '#non'=[15] then '' else [15] end
 declare @t_paydate nvarchar(20) = case when '#non'=[20] then '' else [20] end
 
-declare @tmp table( 
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END 
+
+create table #tmp( 
 	gno nvarchar(1),
 	custno nvarchar(50),
 	comp nvarchar(50),
@@ -425,13 +447,14 @@ declare @tmp table(
 	tax float,
 	total2 float,
 	noa  nvarchar(50),
-	noq  nvarchar(50)
+	noq  nvarchar(50),
+	counta  nvarchar(50)
 )
-insert @tmp
+insert #tmp
 select '0',isnull(a.custno,''),b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1
 ,a.product,a.tranno
 ,a.addrno,a.addr,a.addrno2,a.addr2,case when a.typea!='付清' then sum(isnull(a.total,0)) end
-,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'','',min(a.noa),min(a.noq)
+,case when a.typea='付清' then sum(isnull(a.total,0)) end,'',a.memo,'','',min(a.noa),min(a.noq),''
 from view_tranvcces a
 left join cust b on a.custno=b.noa
 where (a.time1 between @t_bdate and @t_edate)
@@ -439,34 +462,46 @@ and len(a.tranno)!=0
 and(a.custno between @t_bcustno and @t_ecustno)
 group by a.custno,b.comp,b.serial,b.memo2,b.tel,b.fax,a.time1,a.unit,a.addrno,a.addr,a.addrno2,a.addr2,a.memo,a.product,a.tranno,a.typea,a.noa,a.no2
 
+update #tmp
+set counta=b.counta
+from #tmp a
+outer apply(select count(*)counta from view_tranvcces where (time1 between @t_bdate and @t_edate) and isnull(tranno,'')='' and(a.custno between @t_bcustno and @t_ecustno) and a.custno=custno)b
+
 if(isnull(@t_paydate,'')='32')
 begin
-	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!='')
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!='')
 end
 else if(isnull(@t_paydate,'')!='')
 begin
-	delete @tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
+	delete #tmp where custno in (select noa from cust where isnull([getdate],'')!=@t_paydate)
 end
 
-insert @tmp(gno,custno,datea,total,tax,total2)
+insert #tmp(gno,custno,datea,total,tax,total2)
 select '1',custno,CHAR(255),SUM(total),SUM(total)*0.05,SUM(total)*1.05
-from @tmp
+from #tmp
 group by custno
 
-insert @tmp(gno,custno,datea)
+insert #tmp(gno,custno,datea)
 select '2',custno,CHAR(255)
-from @tmp
+from #tmp
 group by custno
 
 select 
 @t_bdate bdate,@t_edate edate
+,case when isnull(counta,0)!=0 then '客戶承運明細表(貨櫃)●' else '客戶承運明細表(貨櫃)' end title
 ,dbo.getComma(total,0)total
 ,dbo.getComma(money,0)money
 ,dbo.getComma(money2,0)money2
 ,dbo.getComma(tax,0)tax
 ,dbo.getComma(total2,0)total2
-,* from @tmp
+,* from #tmp
 order by custno,datea,gno,noa,noq
+
+IF OBJECT_ID('tempdb..#tmp')is not null
+BEGIN
+   drop table #tmp
+END
+;
 ;
 --------------------------------------------------------------------------------------------------
 z_tran_sh5:--z_tran_sh5
